@@ -72,7 +72,9 @@ OTHER_FILES += \
     resources/fontfix.css \
     resources/fontfix.js \
     resources/mag/languages_utf8.txt \
-    resources/mag/timezone_list.txt
+    resources/mag/timezone_list.txt \
+    LICENSE \
+    README.md
 
 include(../common.pri)
 DESTDIR = $$DEFAULT_PLUGIN_DIR
