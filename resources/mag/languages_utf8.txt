@@ -1,0 +1,3 @@
+"en","English"
+"ru","Russian"
+"de","Deutsch (German)"

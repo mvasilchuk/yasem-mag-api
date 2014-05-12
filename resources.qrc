@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/mag/config/defaults">
+        <file alias="MAG250">resources/mag250-default-config.ini</file>
+    </qresource>
+    <qresource prefix="/usr/lib/fonts">
+        <file alias="Ubuntu.ttf">resources/Ubuntu-R.ttf</file>
+    </qresource>
+    <qresource prefix="/mag/fixes">
+        <file alias="fontfix.css">resources/fontfix.css</file>
+        <file alias="fontfix.js">resources/fontfix.js</file>
+    </qresource>
+    <qresource prefix="/mag/files">
+        <file alias="languages_utf8.txt">resources/mag/languages_utf8.txt</file>
+        <file alias="timezone_list.txt">resources/mag/timezone_list.txt</file>
+    </qresource>
+</RCC>

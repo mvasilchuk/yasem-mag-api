@@ -1,0 +1,7 @@
+{
+  "name":"MAG API implementation",
+  "version": "0.1",
+  "id": "mag-api",
+    "roles": ["stbapi"],
+    "dependencies": ["datasource", "browser"]
+}
