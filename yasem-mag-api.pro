@@ -4,13 +4,14 @@
 #
 #-------------------------------------------------
 
+VERSION = 1.0.0
+
 QT      = core gui widgets
 
-CONFIG += C++11
+CONFIG += c++11
 
 TARGET = yasem-mag-api
 TEMPLATE = lib
-CONFIG += plugin mobility
 
 QMAKE_CXXFLAGS += -pedantic -Wall -Wextra
 #-Wunused-parameter -Wstrict-overflow=5 -Wundef -Wshadow -Wcast-qual -Wcast-align -Wconversion -Wsign-conversion -Wmissing-declarations -Wredundant-decls -Wdisabled-optimization -Woverloaded-virtual -Wctor-dtor-privacy -Wold-style-cast

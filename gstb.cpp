@@ -412,16 +412,17 @@ int GStb::GetPosPercentEx()
 int GStb::GetPosTime()
 {
     STUB();
-    CHECK_PLAYER(0);
-    return player()->position() / 1000;
+    int pos = player()->position() / 1000;
+    qDebug() << "position:" << pos;
+    return pos;
 }
 
 int GStb::GetPosTimeEx()
 {
     STUB();
-    CHECK_PLAYER(0);
-    //TODO: fixme
-    return player()->position();
+    int pos = player()->position();
+    qDebug() << "position:" << pos;
+    return pos;
 }
 
 QString GStb::GetPppoeIp()
@@ -711,14 +712,14 @@ QString GStb::ListDir(const QString &dir)
 
     // for some reasons Stalker in some cases puts two slashes in path instead of one (as it possibly should).
     QRegularExpression rootMatch("^(/){1,2}media(/){1,2}$");
-    QRegularExpression diskRegex("USB-\\d+-(\\d+)");
+    QRegularExpression diskRegex("[/{0,2}]USB-\\d+-(\\d+)");
     QRegularExpressionMatch diskRegexMatch = diskRegex.match(directoryPath);
     QList<DiskInfo*> disks = Core::instance()->disks();
 
     // root dir
     if(rootMatch.match(directoryPath).hasMatch())
     {
-        DEBUG(QString("1"));
+        qDebug() << "match root";
         dirs.append(QString("SAMBA/"));
         dirs.append(QString("UPnP/"));
 
@@ -730,8 +731,11 @@ QString GStb::ListDir(const QString &dir)
     // USB-X-Y dir (actually, it should be HDD)
     else if(diskRegexMatch.hasMatch())
     {
+        qDebug() << "match disk";
         int diskIndex = diskRegexMatch.captured(1).toInt() - 1; // Disk index starts from 1
-        QString path = directoryPath.replace(QRegularExpression("(/){1,2}media(/){1,2}USB-\\d+-\\d+/"), disks.at(diskIndex)->mountPoint);
+        //QString path = directoryPath.replace(QRegularExpression("(/){1,2}media(/){1,2}USB-\\d+-\\d+/"), disks.at(diskIndex)->mountPoint);
+        QString path = directoryPath.replace(diskRegex, disks.at(diskIndex)->mountPoint);
+        qDebug() << "new path:" << path;
         return listLocalFiles(path);
     }
     else
