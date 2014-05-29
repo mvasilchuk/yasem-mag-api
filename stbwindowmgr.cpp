@@ -82,6 +82,11 @@ void StbWindowMgr::SetVirtualKeyboardCoord(const QString &coord)
    STUB_WITH_PARAMS(coord);
 }
 
+void StbWindowMgr::windowInit(const QString &params)
+{
+    STUB_WITH_PARAMS(params);
+}
+
 /**
  * Set VK window init parameters
  * @param options parameters from windowInit function
@@ -131,4 +136,9 @@ void StbWindowMgr::raiseWebWindow()
 void StbWindowMgr::raiseWebFaceWindow()
 {
    STUB();
+}
+
+void StbWindowMgr::openWebFace(const QString &url)
+{
+    STUB_WITH_PARAMS(url);
 }

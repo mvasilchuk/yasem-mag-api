@@ -729,25 +729,45 @@ QString GStb::ListDir(const QString &dir)
         }
     }
     // USB-X-Y dir (actually, it should be HDD)
-    else if(diskRegexMatch.hasMatch())
-    {
-        qDebug() << "match disk";
-        int diskIndex = diskRegexMatch.captured(1).toInt() - 1; // Disk index starts from 1
-        //QString path = directoryPath.replace(QRegularExpression("(/){1,2}media(/){1,2}USB-\\d+-\\d+/"), disks.at(diskIndex)->mountPoint);
-        QString path = directoryPath.replace(diskRegex, disks.at(diskIndex)->mountPoint);
-        qDebug() << "new path:" << path;
-        return listLocalFiles(path);
-    }
     else
     {
-        DEBUG(QString("FIXME: ").append(dir));
+        QString newPath = translateStbPathToLocal(directoryPath);
+        if(!newPath.isEmpty())
+        {
+            return listLocalFiles(newPath);
+        }
+        else
+        {
+            DEBUG(QString("FIXME: ").append(dir));
+        }
     }
+
 
     dirs.append(QString(""));
     files.append(QJsonValue::fromVariant(QJsonDocument(QJsonObject()).toVariant()));
 
     DEBUG(result);
     return QString("var dirs = %1; var files = %2;").arg(QString(QJsonDocument(dirs).toJson(QJsonDocument::Compact))).arg(QString(QJsonDocument(files).toJson(QJsonDocument::Compact)));
+}
+
+QString GStb::translateStbPathToLocal(const QString& path)
+{
+    QRegularExpression diskRegex("[/{0,2}]USB-\\d+-(\\d+)");
+    QRegularExpressionMatch diskRegexMatch = diskRegex.match(path);
+    QList<DiskInfo*> disks = Core::instance()->disks();
+
+    if(diskRegexMatch.hasMatch())
+    {
+        qDebug() << "match disk";
+        int diskIndex = diskRegexMatch.captured(1).toInt() - 1; // Disk index starts from 1
+        QString newPath = path;
+        newPath = newPath.replace(diskRegex, disks.at(diskIndex)->mountPoint);
+        return newPath;
+    }
+    else
+    {
+        return "";
+    }
 
 }
 
@@ -789,32 +809,34 @@ void GStb::Play(const QString &playStr, const QString &proxyParmas)
 {
     STUB_WITH_LIST(QStringList() << playStr << proxyParmas);
 
-    QString protocol = "auto";
-    QString url;
+    QString urlString = playStr.trimmed();
 
-    QStringList urlData = playStr.split(" ");
-    int len = urlData.length();
-    switch(len)
+    QRegularExpression urlRegex("^(?<proto>auto|rtsp)?\\s+(?<url>.*?)$");
+    QRegularExpressionMatch urlMatch = urlRegex.match(urlString);
+
+
+    if(!urlMatch.hasMatch())
     {
-        case 0:
-        {
-            WARN(QString("Empty URL? [%1]").arg(playStr));
-            return;
-        }
-        case 1:
-        {
-            url = urlData.at(0);
-            break;
-        }
-        case 2:
-        default:
-        {
-            protocol = urlData.at(0);
-            url = urlData.at(1);
-        }
+        qDebug() << "Unknown URL type!";
+        return;
     }
 
+    QString protocol = !urlMatch.captured("proto").isEmpty() ? urlMatch.captured("proto"): "auto";
+    QString url = urlMatch.captured("url");
+
+    qDebug() << "matched proto:" << protocol << ", url:" << url;
+
+
     CHECK_PLAYER_VOID;
+
+    if(url.startsWith("//"))
+    {
+        url = url.replace("//", "/");
+
+        url = translateStbPathToLocal(url);
+    }
+
+
     player()->mediaPlay(url);
 }
 
@@ -1295,14 +1317,6 @@ void GStb::SetViewport(int xsize, int ysize, int x, int y)
 
     plugin->player()->fullscreen(false);
     plugin->player()->setViewport(plugin->browser()->rect(), plugin->browser()->scale(), QRect(x, y, xsize, ysize));
-
-    //qreal scale = plugin->browser()->scale();
-    //QRect browserRect = plugin->browser()->rect();
-    //plugin->player()->rect(QRect(browserRect.x() + (int)(scale * x), browserRect.y() + (int)(scale * y), (int)(scale * xsize), (int)(scale * ysize)));
-
-    //plugin->gui()->setFullscreen(false);
-
-    //plugin->gui()->setBrowserRect(QRect(x, y, xsize, ysize));
 }
 
 void GStb::SetVolume(int volume)
@@ -1414,7 +1428,8 @@ void GStb::WritePrefs(const QString &prefs)
 
 /**
 *
-* FIXME: Possibly this method is incorrect. Should get another hash.
+* FIXME: Possibly this method is incorrect. Should be another hashing method.
+*
 * Hashes the given string using the HMAC-SHA1 algorithm.
 *
 * \param key The string to be hashed

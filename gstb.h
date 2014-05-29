@@ -19,6 +19,7 @@ class GStb : public QObject
 public:
     explicit GStb(MagProfile *profile);
 
+
 protected:
     enum WINDOW_TYPE {
         WINDOW_BROWSER = 0,
@@ -29,6 +30,8 @@ protected:
     MagProfile *profile;
     QString listLocalFiles(const QString &dir);
     MediaPlayerPlugin* player();
+
+    QString translateStbPathToLocal(const QString &path);
 
 signals:
 

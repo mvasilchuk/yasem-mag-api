@@ -3,13 +3,13 @@
 
 #include "enums.h"
 #include "macros.h"
+#include "magprofile.h"
 
 #include <QObject>
 #include <QHash>
 
 namespace yasem
 {
-class MagProfile;
 class MediaPlayerPlugin;
 
 class StbStorage : public QObject
@@ -27,8 +27,6 @@ public slots:
     QString getItem(const QString &name);
 protected:
     MagProfile *profile;
-    QHash<QString, QString> items;
-
 };
 
 }

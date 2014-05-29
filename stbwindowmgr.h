@@ -31,6 +31,8 @@ public slots:
     void resizeWebWindow(int x, int y, int width, int height);
     void raiseWebWindow();
     void raiseWebFaceWindow();
+    void openWebFace(const QString &url);
+    void windowInit(const QString &params);
 protected:
     GuiPlugin* gui;
     MagProfile *profile;
