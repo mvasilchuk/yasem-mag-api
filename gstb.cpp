@@ -445,7 +445,7 @@ int GStb::GetSaturation()
 
 QString GStb::GetSmbGroups()
 {
-    //FIXME: Fix SAMBA sheres.
+    //FIXME: Fix SAMBA shares.
     //Next code doesn't work because QFile/QDir only supports local files
     STUB();
 
@@ -811,7 +811,7 @@ void GStb::Play(const QString &playStr, const QString &proxyParmas)
 
     QString urlString = playStr.trimmed();
 
-    QRegularExpression urlRegex("^(?<proto>auto|rtsp)?\\s+(?<url>.*?)$");
+    QRegularExpression urlRegex("^(?<proto>auto|rtp|rtsp|rtpac3|rtsp_ac3|ptpmpeg4|rtpmpeg4_aac|mpegts|mpegps|file|mp4|mp4_mpa|fm|ffmpeg|ffrt|ffrt2|ffrt3)?\\s+(?<url>.*?)$");
     QRegularExpressionMatch urlMatch = urlRegex.match(urlString);
 
 

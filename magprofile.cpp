@@ -19,6 +19,16 @@ MagProfile::MagProfile(StbPlugin *profilePlugin, const QString &id = "") :
 {
     Q_ASSERT(profilePlugin);
 
+    submodelNames.insert(MAG_100, "MAG100");
+    submodelNames.insert(MAG_200, "MAG200");
+    submodelNames.insert(MAG_245, "MAG245");
+    submodelNames.insert(MAG_250, "MAG250");
+    submodelNames.insert(MAG_254, "MAG254");
+    submodelNames.insert(MAG_255, "MAG255");
+    submodelNames.insert(MAG_260, "MAG260");
+    submodelNames.insert(MAG_270, "MAG270");
+    submodelNames.insert(MAG_275, "MAG275");
+
     userAgents.insert("MAG250", "Mozilla/5.0 (QtEmbedded; U; Linux; C) AppleWebKit/533.3 (KHTML, like Gecko) MAG200 stbapp ver: 2 rev: 234 Safari/533.3");
 
     portalResolutions.insert("720", QSize(720, 576));
@@ -178,6 +188,7 @@ void MagProfile::initDefaults()
     ds->set(DB_TAG_ENV, "lang_audiotracks", "0");
     ds->set(DB_TAG_ENV, "subtitles_on", "true");
     ds->set(DB_TAG_ENV, "mtdparts", "");
+
     ds->set(DB_TAG_ENV, "update_url", "");
     ds->set(DB_TAG_ENV, "ntpurl", "");
     ds->set(DB_TAG_ENV, "graphicres", "720");
@@ -188,6 +199,7 @@ void MagProfile::initDefaults()
     ds->set(DB_TAG_ENV, "betaupdate_cond", "");
     ds->set(DB_TAG_ENV, "front_panel", "");
     ds->set(DB_TAG_ENV, "screen_clock", "");
+
     ds->set(DB_TAG_ENV, "ts_endType", "");
     ds->set(DB_TAG_ENV, "ts_exitType", "");
     ds->set(DB_TAG_ENV, "ts_icon", "");
@@ -195,6 +207,7 @@ void MagProfile::initDefaults()
     ds->set(DB_TAG_ENV, "ts_on", "");
     ds->set(DB_TAG_ENV, "ts_path", "");
     ds->set(DB_TAG_ENV, "ts_time", "");
+
     ds->set(DB_TAG_ENV, "video_clock", "0");
     ds->set(DB_TAG_ENV, "upnp_conf", "lan");
 
