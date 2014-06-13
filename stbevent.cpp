@@ -19,5 +19,5 @@ void StbEvent::sendEvent(int eventCode)
 
 void StbEvent::onEvent(int eventCode)
 {
-    STUB_WITH_PARAMS(eventCode);
+    STUB() << eventCode;
 }

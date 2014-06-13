@@ -11,7 +11,7 @@ PvrManager::PvrManager(MagProfile *profile)
 
 void PvrManager::SetMaxRecordingCnt(int count)
 {
-    STUB_WITH_PARAMS(count);
+    STUB() << count;
 }
 
 QString PvrManager::GetAllTasks()
@@ -22,6 +22,6 @@ QString PvrManager::GetAllTasks()
 
 QString PvrManager::GetTaskByID(const QString &id)
 {
-     STUB_WITH_PARAMS(id);
+    STUB() << id;
     return "{}";
 }

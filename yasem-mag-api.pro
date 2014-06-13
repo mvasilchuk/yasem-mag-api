@@ -13,8 +13,7 @@ CONFIG += c++11
 TARGET = yasem-mag-api
 TEMPLATE = lib
 
-QMAKE_CXXFLAGS += -pedantic -Wall -Wextra
-#-Wunused-parameter -Wstrict-overflow=5 -Wundef -Wshadow -Wcast-qual -Wcast-align -Wconversion -Wsign-conversion -Wmissing-declarations -Wredundant-decls -Wdisabled-optimization -Woverloaded-virtual -Wctor-dtor-privacy -Wold-style-cast
+QMAKE_CXXFLAGS += -pedantic -Wall -Wextra -rdynamic -ldl
 
 MOBILITY += systeminfo
 

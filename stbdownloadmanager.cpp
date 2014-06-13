@@ -14,24 +14,24 @@ StbDownloadManager::StbDownloadManager(MagProfile *profile)
 
 bool StbDownloadManager::AddJob(const QString &urlToDownload, const QString &filePath)
 {
-    STUB_WITH_LIST(QStringList() << urlToDownload << filePath);
+    STUB() << urlToDownload << filePath;
     return false;
 }
 
 bool StbDownloadManager::AddMeasureJob(const QString &urlToDownload)
 {
-    STUB_WITH_PARAMS(urlToDownload);
+    STUB() << urlToDownload;
     return false;
 }
 
 void StbDownloadManager::AdjustJobPriority(long id, bool rise)
 {
-    STUB_WITH_LIST(QStringList() << QString::number(id) << QString::number(rise));
+    STUB() << id << rise;
 }
 
 bool StbDownloadManager::DeleteJob(const QString &id, bool deleteFile)
 {
-    STUB_WITH_LIST(QStringList() << id << QVariant::fromValue(deleteFile).toString());
+    STUB() << id << deleteFile;
     return false;
 }
 
@@ -65,7 +65,7 @@ QString StbDownloadManager::GetMeasureInfo()
  */
 QString StbDownloadManager::GetQueueInfo(const QString &idList)
 {
-    STUB_WITH_PARAMS(idList);
+    STUB() << idList;
 
     QJsonArray arr = QJsonDocument::fromJson(QByteArray(idList.toUtf8())).array();
 
@@ -116,27 +116,27 @@ QString StbDownloadManager::GetQueueInfo()
 
 void StbDownloadManager::InvalidateCatalog(const QString &strVal)
 {
-    STUB_WITH_PARAMS(strVal);
+    STUB() << strVal;
 }
 
 void StbDownloadManager::PlayDownloadedMedia(long id)
 {
-    STUB_WITH_PARAMS(id);
+    STUB() << id;
 }
 
 void StbDownloadManager::RestoreJobs(const QString &val)
 {
-    STUB_WITH_PARAMS(val);
+    STUB() << val;
 }
 
 bool StbDownloadManager::StartJob(long id)
 {
-    STUB_WITH_PARAMS(id);
+    STUB() << id;
     return false;
 }
 
 bool StbDownloadManager::StopJob(long id)
 {
-    STUB_WITH_PARAMS(id);
+    STUB() << id;
     return false;
 }

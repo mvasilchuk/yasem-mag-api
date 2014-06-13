@@ -72,7 +72,6 @@ QString MagApi::getStorageInfo()
 
 Profile* MagApi::createProfile(const QString &id = "")
 {
-    STUB();
     return new MagProfile(this, id);
 }
 

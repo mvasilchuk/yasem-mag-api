@@ -69,7 +69,7 @@ QString StbWindowMgr::openNewWindow(const QString &url, const QString &params, c
 
 void StbWindowMgr::setBookmarkImplUrl(const QString &url)
 {
-    STUB_WITH_PARAMS(url);
+    STUB() << url;
 }
 
 void StbWindowMgr::showBrowserBookmarks()
@@ -79,12 +79,12 @@ void StbWindowMgr::showBrowserBookmarks()
 
 void StbWindowMgr::SetVirtualKeyboardCoord(const QString &coord)
 {
-   STUB_WITH_PARAMS(coord);
+   STUB() << coord;
 }
 
 void StbWindowMgr::windowInit(const QString &params)
 {
-    STUB_WITH_PARAMS(params);
+    STUB() << params;
 }
 
 /**
@@ -93,7 +93,7 @@ void StbWindowMgr::windowInit(const QString &params)
  */
 void StbWindowMgr::setVirtualKeyboardInitAttr(const QString &options)
 {
-    STUB_WITH_PARAMS(options);
+    STUB() << options;
 }
 
 /**
@@ -102,7 +102,7 @@ void StbWindowMgr::setVirtualKeyboardInitAttr(const QString &options)
  */
 void StbWindowMgr::setWebFaceInitAttr(const QString &options)
 {
-   STUB_WITH_PARAMS(options);
+   STUB() << options;
 }
 
 QString StbWindowMgr::getCurrWebUrl()
@@ -113,7 +113,7 @@ QString StbWindowMgr::getCurrWebUrl()
 
 void StbWindowMgr::initWebWindow(const QString &url)
 {
-    STUB_WITH_PARAMS(url);
+    STUB() << url;
 }
 
 /**
@@ -125,7 +125,7 @@ void StbWindowMgr::initWebWindow(const QString &url)
  */
 void StbWindowMgr::resizeWebWindow(int x, int y, int width, int height)
 {
-    STUB_WITH_LIST(QStringList() << QString::number(x) << QString::number(y) << QString::number(width) <<QString::number(height));
+    STUB() << x << y << width << height;
 }
 
 void StbWindowMgr::raiseWebWindow()
@@ -140,5 +140,5 @@ void StbWindowMgr::raiseWebFaceWindow()
 
 void StbWindowMgr::openWebFace(const QString &url)
 {
-    STUB_WITH_PARAMS(url);
+    STUB() << url;
 }

@@ -43,7 +43,7 @@ QString GStb::listLocalFiles(const QString &dir)
     QJsonArray files;
     QJsonArray dirs;
 
-    DEBUG(directory->absolutePath());
+    DEBUG() << directory->absolutePath();
     foreach (QFileInfo file, directory->entryInfoList(QDir::Files | QDir::Dirs, QDir::Name))
     {
         if(file.isDir())
@@ -95,7 +95,7 @@ void GStb::Continue()
 
 void GStb::Debug(const QString &str)
 {
-    STUB_WITH_PARAMS(str);
+    STUB() << str;
 }
 
 void GStb::DeinitPlayer()
@@ -110,57 +110,57 @@ void GStb::DeleteAllCookies()
 
 void GStb::EnableAppButton(bool enable)
 {
-    STUB_WITH_PARAMS(enable);
+    STUB() << enable;
 }
 
 void GStb::EnableCustomNavigation(bool enable)
 {
-    STUB_WITH_PARAMS(enable);
+    STUB() << enable;
 }
 
 void GStb::EnableJavaScriptInterrupt(bool enable)
 {
-    STUB_WITH_PARAMS(enable);
+    STUB() << enable;
 }
 
 void GStb::EnableMulticastProxy(bool enable)
 {
-    STUB_WITH_PARAMS(enable);
+    STUB() << enable;
 }
 
 void GStb::EnableServiceButton(bool enable)
 {
-    STUB_WITH_PARAMS(enable);
+    STUB() << enable;
 }
 
 void GStb::EnableSetCookieFrom(const QString &domain, bool enable)
 {
-    STUB_WITH_LIST(QStringList() << domain << QVariant::fromValue(enable).toString());
+    STUB() << domain << enable;
 }
 
 void GStb::EnableSpatialNavigation(bool enable)
 {
-    STUB_WITH_PARAMS(QString("EnableSpatialNavigation(%1)").arg(enable));
+    STUB() << QString("EnableSpatialNavigation(%1)").arg(enable);
 }
 
 void GStb::EnableVKButton(bool enable)
 {
-    STUB_WITH_PARAMS(enable);
+    STUB() << enable;
 }
 
 void GStb::ExecAction(const QString &str)
 {
-    STUB_WITH_PARAMS(str);
+    STUB() << str;
 }
 
 void GStb::ExtProtocolCommand(const QString &val1, const QString &val2, const QString &val3)
 {
-    STUB_WITH_LIST(QStringList() << val1 << val2 << val3);
+    STUB() << val1 << val2 << val3;
 }
 
 void GStb::ForceHDMItoDVI(int forceDVI)
 {
-    STUB_WITH_PARAMS(forceDVI);
+    STUB() << forceDVI;
 }
 
 int GStb::Get3DConversionMode()
@@ -234,14 +234,14 @@ QString GStb::GetDeviceActiveBank()
 QString GStb::GetDeviceImageDesc()
 {
     QString description = profile->datasource()->get(DB_TAG_RDIR, "ImageDescription");
-    LOG(description);
+    LOG() << description;
     return description;
 }
 
 QString GStb::GetDeviceImageVersion()
 {
     QString version = profile->datasource()->get(DB_TAG_RDIR, "ImageVersion");
-    LOG(QString("GetDeviceImageVersion(): %1").arg(version));
+    LOG() << QString("GetDeviceImageVersion(): %1").arg(version);
     return version;
 }
 
@@ -257,14 +257,14 @@ QString GStb::GetDeviceMacAddress()
         return "";
 
     QString mac = profile->datasource()->get(DB_TAG_RDIR, "MACAddress");
-    LOG(QString("GetDeviceMacAddress(): %1").arg(mac));
+    LOG() << QString("GetDeviceMacAddress(): %1").arg(mac);
     return mac;
 }
 
 QString GStb::GetDeviceModel()
 {
     QString model = "MAG250";
-    STUB_WITH_PARAMS(QString("GetDeviceModel(): ").arg(model));
+    STUB() << QString("GetDeviceModel(): ").arg(model);
     return model;
 }
 
@@ -280,14 +280,14 @@ QString GStb::GetDeviceSerialNumber()
         return "";
 
     QString serial = profile->datasource()->get(DB_TAG_RDIR, "SerialNumber");
-    LOG(QString("GetDeviceSerialNumber(): %1").arg(serial));
+    LOG() << QString("GetDeviceSerialNumber(): %1").arg(serial);
     return serial;
 }
 
 QString GStb::GetDeviceVendor()
 {
     QString vendor = "TeleTec";
-    STUB_WITH_PARAMS(QString("GetDeviceVendor(): %1").arg(vendor));
+    STUB() << QString("GetDeviceVendor(): %1").arg(vendor);
     return vendor;
 }
 
@@ -318,7 +318,7 @@ QString GStb::GetEnv(const QString &data)
     QJsonObject result;
     result.insert("result", elements);
     QString strResult  = QString(QJsonDocument(result).toJson(QJsonDocument::Compact));
-    STUB_WITH_PARAMS(QString("GetEnv(%1): %2").arg(data, strResult));
+    STUB() << QString("GetEnv(%1): %2").arg(data, strResult);
     return strResult;
 }
 
@@ -486,7 +486,7 @@ QString GStb::GetSmbGroups()
 
 QString GStb::GetSmbServers(const QString &args)
 {
-    STUB_WITH_PARAMS(args);
+    STUB() << args;
 
     QJsonObject result;
     QJsonArray resultArray;
@@ -500,7 +500,7 @@ QString GStb::GetSmbServers(const QString &args)
 
 QString GStb::GetSmbShares(const QString &args)
 {
-    STUB_WITH_PARAMS(args);
+    STUB() << args;
 
     QJsonObject result;
     QJsonObject resultData;
@@ -529,7 +529,7 @@ qint32 GStb::GetSpeed()
  */
 QString GStb::GetStorageInfo(const QString &param)
 {
-    STUB_WITH_PARAMS(param);
+    STUB() << param;
     return "{}";
 }
 
@@ -580,13 +580,13 @@ qint32 GStb::GetVolume()
 
 QString GStb::GetWepKey128ByPassPhrase(const QString &passPhrase)
 {
-    STUB_WITH_PARAMS(passPhrase);
+    STUB() << passPhrase;
     return "";
 }
 
 QString GStb::GetWepKey64ByPassPhrase(const QString &passPhrase)
 {
-    STUB_WITH_PARAMS(passPhrase);
+    STUB() << passPhrase;
     return "";
 }
 
@@ -620,7 +620,7 @@ void GStb::HideVirtualKeyboardEx()
 
 void GStb::IgnoreUpdates(bool ignore)
 {
-    STUB_WITH_PARAMS(ignore);
+    STUB() << ignore;
 }
 
 void GStb::InitPlayer()
@@ -634,7 +634,7 @@ void GStb::InitPlayer()
 
 bool GStb::IsFileExist(QString fileName)
 {
-    STUB_WITH_PARAMS(fileName);
+    STUB() << fileName;
 
     //Font fix
     //fixme: should be really checked
@@ -648,7 +648,7 @@ bool GStb::IsFileExist(QString fileName)
 
 bool GStb::IsFolderExist(const QString &folderName)
 {
-    STUB_WITH_PARAMS(folderName);
+    STUB() << folderName;
     return QDir(folderName).exists();
 }
 
@@ -662,7 +662,7 @@ bool GStb::IsPlaying()
 {
     CHECK_PLAYER(StoppedState);
     bool state = player()->state() == PlayingState;
-    LOG("IsPlaying(): " + QVariant(state).toString());
+    LOG() << "IsPlaying(): " << state;
     return state;
 }
 
@@ -703,7 +703,7 @@ bool GStb::IsVirtualKeyboardActiveEx()
 QString GStb::ListDir(const QString &dir)
 {
     //TODO: Add UPnP, LAN & Favourites support
-    STUB_WITH_PARAMS(dir);
+    STUB() << dir;
     QString directoryPath = dir;
 
     QJsonArray files;
@@ -738,7 +738,7 @@ QString GStb::ListDir(const QString &dir)
         }
         else
         {
-            DEBUG(QString("FIXME: ").append(dir));
+            STUB();
         }
     }
 
@@ -746,7 +746,7 @@ QString GStb::ListDir(const QString &dir)
     dirs.append(QString(""));
     files.append(QJsonValue::fromVariant(QJsonDocument(QJsonObject()).toVariant()));
 
-    DEBUG(result);
+    DEBUG() << result;
     return QString("var dirs = %1; var files = %2;").arg(QString(QJsonDocument(dirs).toJson(QJsonDocument::Compact))).arg(QString(QJsonDocument(files).toJson(QJsonDocument::Compact)));
 }
 
@@ -773,17 +773,17 @@ QString GStb::translateStbPathToLocal(const QString& path)
 
 void GStb::LoadCASIniFile(const QString &iniFileName)
 {
-    STUB_WITH_PARAMS(iniFileName);
+    STUB() << iniFileName;
 }
 
 void GStb::LoadExternalSubtitles(const QString &url)
 {
-    STUB_WITH_PARAMS(url);
+    STUB() << url;
 }
 
 void GStb::LoadURL(const QString &str)
 {
-    STUB_WITH_PARAMS(str);
+    STUB() << str;
 }
 
 /**
@@ -794,7 +794,7 @@ void GStb::LoadURL(const QString &str)
 QString GStb::LoadUserData(const QString &str)
 {
     QString data = profile->datasource()->get(DB_TAG_USER, str);
-    STUB_WITH_LIST(QStringList() << str << data);
+    STUB() << str << data;
     return data;
 }
 
@@ -807,7 +807,7 @@ void GStb::Pause()
 
 void GStb::Play(const QString &playStr, const QString &proxyParmas)
 {
-    STUB_WITH_LIST(QStringList() << playStr << proxyParmas);
+    STUB() << playStr << proxyParmas;
 
     QString urlString = playStr.trimmed();
 
@@ -842,7 +842,7 @@ void GStb::Play(const QString &playStr, const QString &proxyParmas)
 
 void GStb::PlaySolution(const QString &solution, const QString &url)
 {
-    STUB_WITH_LIST(QStringList() << solution << url);
+    STUB() << solution << url;
 }
 
 QString GStb::RDir(const QString &name)
@@ -868,7 +868,7 @@ QString GStb::RDir(const QString &name)
         QStringList params = name.split(" ");
 
         if(params.length() != 3)
-            WARN(QString("Wrong length:").append(params.length()));
+           qWarning() << "Wrong length:", params.length();
         else
         {
             if(params[1] == "read")
@@ -889,7 +889,7 @@ QString GStb::RDir(const QString &name)
         result = profile->datasource()->get(DB_TAG_RDIR, name);
     }
 
-    LOG(QString("[\"%1\"] -> \"%2\"").arg(name, result));
+    LOG() << QString("[\"%1\"] -> \"%2\"").arg(name, result);
     return result;
 }
 
@@ -906,43 +906,43 @@ void GStb::ResetUserFs()
 
 void GStb::Rotate(qint16 angle)
 {
-    STUB_WITH_PARAMS(angle);
+    STUB() << angle;
 }
 
 void GStb::SaveUserData(const QString &fileName, const QString &data)
 {
-    STUB_WITH_LIST(QStringList() << fileName << data);
+    STUB() << fileName << data;
     profile->datasource()->set(DB_TAG_USER, fileName, data);
 }
 
 void GStb::SendEventToPortal(const QString &args)
 {
-    STUB_WITH_PARAMS(args);
+    STUB() << args;
 }
 
 void GStb::ServiceControl(const QString &serviceName, const QString &action)
 {
-    STUB_WITH_LIST(QStringList() << serviceName << action);
+    STUB() << serviceName << action;
 }
 
 void GStb::Set3DConversionMode(int mode)
 {
-    STUB_WITH_PARAMS(mode);
+    STUB() << mode;
 }
 
 void GStb::SetAdditionalCasParam(const QString &name, const QString &value)
 {
-    STUB_WITH_LIST(QStringList() << name << value);
+    STUB() << name << value;
 }
 
 void GStb::SetAlphaLevel(qint32 alpha)
 {
-    STUB_WITH_PARAMS(alpha);
+    STUB() << alpha;
 }
 
 void GStb::SetAspect(int aspect)
 {
-    STUB_WITH_PARAMS(aspect);
+    STUB() << aspect;
     //fixme
     ASPECT_RATIO aspectRatio = ASPECT_RATIO_AUTO; // (int) aspect;
     CHECK_PLAYER_VOID;
@@ -951,84 +951,84 @@ void GStb::SetAspect(int aspect)
 
 void GStb::SetAudioLangs(const QString &priLang, const QString &secLang)
 {
-    STUB_WITH_LIST(QStringList() << priLang << secLang);
+    STUB() << priLang << secLang;
 }
 
 void GStb::SetAudioOperationalMode(int mode)
 {
-    STUB_WITH_PARAMS(mode);
+    STUB() << mode;
 }
 
 void GStb::SetAudioPID(int pid)
 {
-    STUB_WITH_PARAMS(pid);
+    STUB() << pid;
     CHECK_PLAYER_VOID;
     player()->audioPID(pid);
 }
 
 void GStb::SetAutoFrameRate(int mode)
 {
-    STUB_WITH_PARAMS(mode);
+    STUB() << mode;
 }
 
 void GStb::SetBrightness(qint32 bri)
 {
-    STUB_WITH_PARAMS(bri);
+    STUB() << bri;
 }
 
 void GStb::SetBufferSize(qint32 sizeInMs, qint32 maxSizeInBytes)
 {
-    STUB_WITH_LIST(QStringList() << QString::number(sizeInMs) << QString::number(maxSizeInBytes));
+    STUB() << sizeInMs << maxSizeInBytes;
 }
 
 void GStb::SetCASDescrambling(int isSoftware)
 {
-    STUB_WITH_PARAMS(isSoftware);
+    STUB() << isSoftware;
 }
 
 void GStb::SetCASParam(const QString &serverAddr, qint32 port, const QString &companyName, qint32 opID, qint32 errorLevel)
 {
-    STUB_WITH_LIST(QStringList() << serverAddr << QString().number(port) << companyName << QString().number(opID) <<  QString().number(errorLevel));
+    STUB() << serverAddr << port << companyName << opID <<  errorLevel;
 }
 
 void GStb::SetCASType(qint32 type)
 {
-    STUB_WITH_PARAMS(type);
+    STUB() << type;
 }
 
 void GStb::SetCheckSSLCertificate(int val)
 {
-    STUB_WITH_PARAMS(val);
+    STUB() << val;
 }
 
 void GStb::SetChromaKey(qint64 key, qint64 mask)
 {
-    STUB_WITH_LIST(QStringList() << QString::number(key) << QString::number(mask));
+    STUB() << key << mask;
 }
 
 void GStb::SetComponentMode(int mode)
 {
-    STUB_WITH_PARAMS(mode);
+    STUB() << mode;
 }
 
 void GStb::SetContrast(qint16 contrast)
 {
-    STUB_WITH_PARAMS(contrast);
+    STUB() << contrast;
 }
 
 void GStb::SetCustomHeader(const QString &header)
 {
-    STUB_WITH_PARAMS(header);
+    STUB() << header;
 }
 
 void GStb::SetDefaultFlicker(int state)
 {
-    STUB_WITH_PARAMS(state);
+    STUB() << state;
 }
 
 void GStb::SetDRC(int high, int low)
 {
-    STUB_WITH_LIST(QStringList() << QString::number(high) << QString::number(low));
+    STUB() << high << low;
 }
 
 /**
@@ -1044,7 +1044,7 @@ bool GStb::SetEnv(const QString &data, const QString &value)
     if(!profile->datasource())
         return false;
 
-    LOG(QString("SetEnv(%1 = %2)").arg(data).arg(value));
+    LOG() << QString("SetEnv(%1 = %2)").arg(data).arg(value);
     bool result = true;
     if(value == 0)
     {
@@ -1064,35 +1064,35 @@ bool GStb::SetEnv(const QString &data, const QString &value)
 
 void GStb::SetFlicker(int state, int flk, int shp)
 {
-    STUB_WITH_LIST(QStringList() << QString::number(state) << QString::number(flk) << QString::number(shp));
+    STUB() << state << flk << shp;
 }
 
 void GStb::SetHDMIAudioOut(int type)
 {
-    STUB_WITH_PARAMS(type);
+    STUB() << type;
 }
 
 void GStb::SetInternalPortalActive(bool active)
 {
-    STUB_WITH_PARAMS(active);
+    STUB() << active;
 }
 
 void GStb::SetListFilesExt(const QString &exts)
 {
-    STUB_WITH_PARAMS(exts);
+    STUB() << exts;
     listFileExt = exts.split(" ");
 }
 
 void GStb::SetLoop(int loop)
 {
-    STUB_WITH_PARAMS(loop);
+    STUB() << loop;
     CHECK_PLAYER_VOID;
     player()->loop(loop);
 }
 
 void GStb::SetMicVolume(int volume)
 {
-    STUB_WITH_PARAMS(volume);
+    STUB() << volume;
 }
 
 /**
@@ -1102,31 +1102,31 @@ void GStb::SetMicVolume(int volume)
  */
 int GStb::SetMode(int mode)
 {
-    STUB_WITH_PARAMS(mode);
+    STUB() << mode;
     return 0;
 }
 
 int GStb::SetMulticastProxyURL(const QString &val)
 {
-    STUB_WITH_PARAMS(val);
+    STUB() << val;
     return 0;
 }
 
 void GStb::SetMute(int mute)
 {
-    STUB_WITH_PARAMS(mute);
+    STUB() << mute;
     CHECK_PLAYER_VOID;
     player()->mute(mute == 1);
 }
 
 void GStb::SetObjectCacheCapacities(int val1, int val2, int val3)
 {
-    STUB_WITH_LIST(QStringList() << QString::number(val1) << QString::number(val2) << QString::number(val3));
+    STUB() << val1 << val2 << val3;
 }
 
 void GStb::SetPCRModeEnabled(bool val)
 {
-    STUB_WITH_PARAMS(val);
+    STUB() << val;
 }
 
 /**
@@ -1138,7 +1138,7 @@ void GStb::SetPCRModeEnabled(bool val)
  */
 void GStb::SetPIG(int state, float scale, int x, int y)
 {
-    STUB_WITH_LIST(QStringList() << QString::number(state) << QString::number(scale) << QString::number(x) << QString::number(y));
+    STUB() << state << scale << x << y;
 
     if(state == 1)
     {
@@ -1155,104 +1155,104 @@ void GStb::SetPIG(int state, float scale, int x, int y)
 
 void GStb::SetPixmapCacheSize(int val)
 {
-    STUB_WITH_PARAMS(val);
+    STUB() << val;
 }
 
 void GStb::SetPosPercent(int prc)
 {
-    STUB_WITH_PARAMS(prc);
+    STUB() << prc;
 }
 
 void GStb::SetPosPercentEx(int prc)
 {
-    STUB_WITH_PARAMS(prc);
+    STUB() << prc;
 }
 
 void GStb::SetPosTime(int time)
 {
-    STUB_WITH_PARAMS(time);
+    STUB() << time;
     CHECK_PLAYER_VOID;
     player()->position(time * 1000);
 }
 
 void GStb::SetPosTimeEx(int time)
 {
-    STUB_WITH_PARAMS(time);
+    STUB() << time;
 }
 
 void GStb::SetSaturation(int sat)
 {
-    STUB_WITH_PARAMS(sat);
+    STUB() << sat;
 }
 
 void GStb::SetSpeed(int speed)
 {
-    STUB_WITH_PARAMS(speed);
+    STUB() << speed;
 }
 
 void GStb::SetStereoMode(int mode)
 {
-    STUB_WITH_PARAMS(mode);
+    STUB() << mode;
 }
 
 void GStb::SetSubtitleLangs(const QString &priLang, const QString &secLang)
 {
-    STUB_WITH_LIST(QStringList() << priLang << secLang);
+    STUB() << priLang << secLang;
 }
 
 void GStb::SetSubtitlePID(int pid)
 {
-    STUB_WITH_PARAMS(pid);
+    STUB() << pid;
 }
 
 void GStb::SetSubtitles(bool enable)
 {
-    STUB_WITH_PARAMS(enable);
+    STUB() << enable;
 }
 
 void GStb::SetSubtitlesColor(int val)
 {
-    STUB_WITH_PARAMS(val);
+    STUB() << val;
 }
 
 void GStb::SetSubtitlesEncoding(const QString &encoding)
 {
-    STUB_WITH_PARAMS(encoding);
+    STUB() << encoding;
 }
 
 void GStb::SetSubtitlesFont(const QString &font)
 {
-    STUB_WITH_PARAMS(font);
+    STUB() << font;
 }
 
 void GStb::SetSubtitlesOffs(int offset)
 {
-    STUB_WITH_PARAMS(offset);
+    STUB() << offset;
 }
 
 void GStb::SetSubtitlesSize(int size)
 {
-    STUB_WITH_PARAMS(size);
+    STUB() << size;
 }
 
 void GStb::SetSyncCorrection(int val1, int val2)
 {
-    STUB_WITH_LIST(QStringList() << QString::number(val1) << QString::number(val2));
+    STUB() << val1 << val2;
 }
 
 void GStb::SetSyncOffsetCorrection(int val)
 {
-    STUB_WITH_PARAMS(val);
+    STUB() << val;
 }
 
 void GStb::SetTeletext(bool val)
 {
-    STUB_WITH_PARAMS(val);
+    STUB() << val;
 }
 
 void GStb::SetTeletextPID(unsigned int val)
 {
-    STUB_WITH_PARAMS(val);
+    STUB() << val;
 }
 
 /**
@@ -1262,7 +1262,7 @@ void GStb::SetTeletextPID(unsigned int val)
 void GStb::SetTopWin(int winNum)
 {
 
-    STUB_WITH_PARAMS(winNum);
+    STUB() << winNum;
     //return;
     if(winNum == WINDOW_BROWSER)
         profile->getProfilePlugin()->browser()->raise();
@@ -1272,32 +1272,32 @@ void GStb::SetTopWin(int winNum)
 
 void GStb::SetTransparentColor(int color)
 {
-    STUB_WITH_PARAMS(color);
+    STUB() << color;
 }
 
 void GStb::SetupRTSP(int type, int flags)
 {
-    STUB_WITH_LIST(QStringList() << QString::number(type) << QString::number(flags));
+    STUB() << type << flags;
 }
 
 void GStb::SetupSPdif(int flags)
 {
-    STUB_WITH_PARAMS(flags);
+    STUB() << flags;
 }
 
 void GStb::SetUserFlickerControl(int mode)
 {
-    STUB_WITH_PARAMS(mode);
+    STUB() << mode;
 }
 
 void GStb::SetVideoControl(int mode)
 {
-    STUB_WITH_PARAMS(mode);
+    STUB() << mode;
 }
 
 void GStb::SetVideoState(int state)
 {
-    STUB_WITH_PARAMS(state);
+    STUB() << state;
 }
 
 /**
@@ -1311,7 +1311,7 @@ void GStb::SetVideoState(int state)
 void GStb::SetViewport(int xsize, int ysize, int x, int y)
 {
     CHECK_PLAYER_VOID;
-    STUB_WITH_LIST(QStringList() << QString::number(xsize) << QString::number(ysize) << QString::number(x) << QString::number(y));
+    STUB() << xsize << ysize << x << y;
 
     StbPlugin* plugin = profile->getProfilePlugin();
 
@@ -1321,39 +1321,39 @@ void GStb::SetViewport(int xsize, int ysize, int x, int y)
 
 void GStb::SetVolume(int volume)
 {
-    STUB_WITH_PARAMS(volume);
+    STUB() << volume;
     CHECK_PLAYER_VOID;
     player()->volume(volume);
 }
 
 void GStb::SetWebMode(bool val, const QString &str)
 {
-    STUB_WITH_LIST(QStringList() << QVariant::fromValue(val).toString() << str);
+    STUB() << val << str;
 }
 
 void GStb::SetWebProxy(const QString &host, int port, const QString &user, const QString &password, const QString &exclude)
 {
-    STUB_WITH_LIST(QStringList() << host << QString::number(port) << user << password << exclude);
+    STUB() << host << port << user << password << exclude;
 }
 
 void GStb::SetWinAlphaLevel(int winNum, int alpha)
 {
-    STUB_WITH_LIST(QStringList() << QString::number(winNum) << QString::number(alpha));
+    STUB() << winNum <<alpha;
 }
 
 void GStb::SetWinMode(int winNum, int mode)
 {
-    STUB_WITH_LIST(QStringList() << QString::number(winNum) << QString::number(mode));
+    STUB() << winNum << mode;
 }
 
 void GStb::ShowSubtitle(int start, int end, const QString &text)
 {
-     STUB_WITH_LIST(QStringList() << QString::number(start) << QString::number(end) << text);
+     STUB() << start << end << text;
 }
 
 void GStb::ShowVideoImmediately(bool val)
 {
-     STUB_WITH_PARAMS(val);
+     STUB() << val;
 }
 
 void GStb::ShowVirtualKeyboard()
@@ -1363,12 +1363,12 @@ void GStb::ShowVirtualKeyboard()
 
 void GStb::ShowVirtualKeyboard(bool show)
 {
-    STUB_WITH_PARAMS(show);
+    STUB() << show;
 }
 
 void GStb::StandBy(bool standBy)
 {
-    STUB_WITH_PARAMS(standBy);
+    STUB() << standBy;
 }
 
 void GStb::StartLocalCfg()
@@ -1412,7 +1412,7 @@ QString GStb::Version()
  */
 void GStb::WriteCFG(const QString &cfg)
 {
-    STUB_WITH_PARAMS(cfg);
+    STUB() << cfg;
 }
 
 /**
@@ -1423,7 +1423,7 @@ void GStb::WriteCFG(const QString &cfg)
  */
 void GStb::WritePrefs(const QString &prefs)
 {
-    STUB_WITH_PARAMS(prefs);
+    STUB() << prefs;
 }
 
 /**
@@ -1440,7 +1440,7 @@ void GStb::WritePrefs(const QString &prefs)
 */
 QString GStb::GetHashVersion1(QString secret, QString key)
 {
-    STUB_WITH_LIST(QStringList() << secret << key);
+    STUB() << secret << key;
 
    //Length of the text, that will be hashed
    int   text_length;
@@ -1522,7 +1522,7 @@ QString GStb::GetHashVersion1(QString secret, QString key)
 
 void GStb::EnableTvButton(bool enable)
 {
-    STUB_WITH_PARAMS(enable);
+    STUB() << enable;
 }
 
 /**
@@ -1531,12 +1531,12 @@ void GStb::EnableTvButton(bool enable)
  */
 void GStb::SetNativeStringMode(bool native)
 {
-    STUB_WITH_PARAMS(native);
+    STUB() << native;
 }
 
 void GStb::SetScreenSaverTime(int time)
 {
-   STUB_WITH_PARAMS(time);
+   STUB() << time;
 }
 
 /**
@@ -1545,7 +1545,7 @@ void GStb::SetScreenSaverTime(int time)
  */
 void GStb::SetInputLang(const QString &lang)
 {
-    STUB_WITH_PARAMS(lang);
+    STUB() << lang;
 }
 
 /**
@@ -1569,7 +1569,7 @@ QString GStb::GetDefaultUpdateUrl()
  */
 void GStb::SetUiLang(const QString &lang)
 {
-    STUB_WITH_PARAMS(lang);
+    STUB() << lang;
 }
 
 /**
@@ -1578,7 +1578,7 @@ void GStb::SetUiLang(const QString &lang)
  */
 void GStb::SetSettingsInitAttr(const QString &options)
 {
-    STUB_WITH_PARAMS(options);
+    STUB() << options;
 }
 
 /**
@@ -1587,5 +1587,5 @@ void GStb::SetSettingsInitAttr(const QString &options)
  */
 void GStb::SetScreenSaverInitAttr(const QString &options)
 {
-    STUB_WITH_PARAMS(options);
+    STUB() << options;
 }

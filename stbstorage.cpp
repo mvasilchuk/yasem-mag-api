@@ -14,18 +14,18 @@ StbStorage::StbStorage(MagProfile *profile)
 
 void StbStorage::setItem(const QString &name, const QString &value)
 {
-    STUB_WITH_LIST(QStringList() << name << value);
+    STUB() << name << value;
     profile->datasource()->set(STB_STORAGE_GROUP, name, value);
 }
 
 void StbStorage::removeItem(const QString &name)
 {
-    STUB_WITH_PARAMS(name);
+    STUB() << name;
     profile->datasource()->set(STB_STORAGE_GROUP, name, "");
 }
 
 QString StbStorage::getItem(const QString &name)
 {
-    STUB_WITH_PARAMS(name);
+    STUB() << name;
     return profile->datasource()->get(STB_STORAGE_GROUP, name);
 }

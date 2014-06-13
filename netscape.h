@@ -18,7 +18,7 @@ public slots:
 
     void enablePrivilege(const QString &name)
     {
-        DEBUG(QString("netscape.security.privilegeManager.enablePrivilege(%1)").arg(name));
+        DEBUG() << QString("netscape.security.privilegeManager.enablePrivilege(%1)").arg(name);
     }
 };
 
