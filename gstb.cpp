@@ -338,7 +338,9 @@ int GStb::GetMediaLen()
 {
     STUB();
     CHECK_PLAYER(0);
-    return (int)(player()->mediaLength() / 1000);
+    int len = (int)(player()->duration() / 1000);
+    DEBUG() << "media length:" << len;
+    return len;
 
 }
 
@@ -347,7 +349,7 @@ int GStb::GetMediaLenEx()
     STUB();
     CHECK_PLAYER(0);
     //TODO: fixme
-    return (int)(player()->mediaLength() / 1000);
+    return (int)(player()->duration() / 1000);
 }
 
 QString GStb::GetMetadataInfo()
@@ -413,7 +415,7 @@ int GStb::GetPosTime()
 {
     STUB();
     int pos = player()->position() / 1000;
-    qDebug() << "position:" << pos;
+    DEBUG() << "position:" << pos;
     return pos;
 }
 

@@ -52,21 +52,53 @@ void MagProfile::start()
 
     StbEvent* event = static_cast<StbEvent*>(profilePlugin->getStbApiList().find("stbEvent").value());
 
-    connect(&signalHandler, &MediaSignalSender::paused,               this, [=](bool) { event->sendEvent(StbEvent::STB_EVENT_NO_ERROR);});
-    connect(&signalHandler, &MediaSignalSender::started,              this, [=]() {
+    connect(&signalHandler, &MediaSignalSender::paused,               this, [=](bool)
+    {
+        event->sendEvent(StbEvent::STB_EVENT_NO_ERROR);
+    });
+    connect(&signalHandler, &MediaSignalSender::started,              this, [=]()
+    {
         event->sendEvent(StbEvent::STB_EVENT_GOT_VIDEO_INFO);
         event->sendEvent(StbEvent::STB_EVENT_PLAY_START);
     });
-    connect(&signalHandler, &MediaSignalSender::stopped,              this, [=]() { event->sendEvent(StbEvent::STB_EVENT_EOF);});
-    //connect(&signalHandler, &MediaSignalSender::speedChanged,         this, [=](qreal) { });
-    //connect(&signalHandler, &MediaSignalSender::repeatChanged,        this, [=](int) { });
-    //connect(&signalHandler, &MediaSignalSender::currentRepeatChanged, this, [=](int) { });
-    //connect(&signalHandler, &MediaSignalSender::startPositionChanged, this, [=](qint64) { });
-    //connect(&signalHandler, &MediaSignalSender::stopPositionChanged,  this, [=](qint64) { });
-    //connect(&signalHandler, &MediaSignalSender::positionChanged,      this, [=](qint64) { });
-    //connect(&signalHandler, &MediaSignalSender::brightnessChanged,    this, [=](bool) { });
-    //connect(&signalHandler, &MediaSignalSender::contrastChanged,      this, [=](bool) { });
-    //connect(&signalHandler, &MediaSignalSender::saturationChanged,    this, [=](bool) { });
+    connect(&signalHandler, &MediaSignalSender::stopped,              this, [=]()
+    {
+        event->sendEvent(StbEvent::STB_EVENT_EOF);
+    });
+    connect(&signalHandler, &MediaSignalSender::speedChanged,         this, [=](qreal speed)
+    {
+        DEBUG() << "speedChanged" << speed;
+    });
+    connect(&signalHandler, &MediaSignalSender::repeatChanged,        this, [=](int repeat)
+    {
+        DEBUG() << "repeatChanged" << repeat;
+    });
+    connect(&signalHandler, &MediaSignalSender::currentRepeatChanged, this, [=](int repeat)
+    {
+        DEBUG() << "currentRepeatChanged" << repeat;
+    });
+    connect(&signalHandler, &MediaSignalSender::startPositionChanged, this, [=](qint64 pos)
+    {
+        DEBUG() << "startPositionChanged" << pos;
+    });
+    connect(&signalHandler, &MediaSignalSender::stopPositionChanged,  this, [=](qint64 pos)
+    {
+        DEBUG() << "stopPositionChanged" << pos;
+    });
+    connect(&signalHandler, &MediaSignalSender::positionChanged,      this, [=](qint64 pos)
+    {
+        DEBUG() << "stopPositionChanged" << pos;
+    });
+    connect(&signalHandler, &MediaSignalSender::brightnessChanged,    this, [=](bool)
+    {
+
+    });
+    connect(&signalHandler, &MediaSignalSender::contrastChanged,      this, [=](bool)
+    {
+    });
+    connect(&signalHandler, &MediaSignalSender::saturationChanged,    this, [=](bool)
+    {
+    });
 
     //QString defaultUrl = "http://dmichael.org.ua/mag250";
     //QString defaultUrl = "http://tvportal1.global.net.ba";
