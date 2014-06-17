@@ -54,40 +54,43 @@ void MagProfile::start()
 
     connect(&signalHandler, &MediaSignalSender::paused,               this, [=](bool)
     {
+        DEBUG() << "[MEDIA]: paused";
         event->sendEvent(StbEvent::STB_EVENT_NO_ERROR);
     });
     connect(&signalHandler, &MediaSignalSender::started,              this, [=]()
     {
+        DEBUG() << "[MEDIA]: started";
         event->sendEvent(StbEvent::STB_EVENT_GOT_VIDEO_INFO);
         event->sendEvent(StbEvent::STB_EVENT_PLAY_START);
     });
     connect(&signalHandler, &MediaSignalSender::stopped,              this, [=]()
     {
+        DEBUG() << "[MEDIA]: stopped";
         event->sendEvent(StbEvent::STB_EVENT_EOF);
     });
     connect(&signalHandler, &MediaSignalSender::speedChanged,         this, [=](qreal speed)
     {
-        DEBUG() << "speedChanged" << speed;
+        DEBUG() << "[MEDIA]: speedChanged" << speed;
     });
     connect(&signalHandler, &MediaSignalSender::repeatChanged,        this, [=](int repeat)
     {
-        DEBUG() << "repeatChanged" << repeat;
+        DEBUG() << "[MEDIA]: repeatChanged" << repeat;
     });
     connect(&signalHandler, &MediaSignalSender::currentRepeatChanged, this, [=](int repeat)
     {
-        DEBUG() << "currentRepeatChanged" << repeat;
+        DEBUG() << "[MEDIA]: currentRepeatChanged" << repeat;
     });
     connect(&signalHandler, &MediaSignalSender::startPositionChanged, this, [=](qint64 pos)
     {
-        DEBUG() << "startPositionChanged" << pos;
+        DEBUG() << "[MEDIA]: startPositionChanged" << pos;
     });
     connect(&signalHandler, &MediaSignalSender::stopPositionChanged,  this, [=](qint64 pos)
     {
-        DEBUG() << "stopPositionChanged" << pos;
+        DEBUG() << "[MEDIA]: stopPositionChanged" << pos;
     });
     connect(&signalHandler, &MediaSignalSender::positionChanged,      this, [=](qint64 pos)
     {
-        DEBUG() << "stopPositionChanged" << pos;
+        DEBUG() << "[MEDIA]: positionChanged" << pos;
     });
     connect(&signalHandler, &MediaSignalSender::brightnessChanged,    this, [=](bool)
     {
@@ -111,8 +114,6 @@ void MagProfile::start()
 
     internalPortal = get(CONFIG_INTERNAL_PORTAL, "").toLower() == "true";
 
-    configureKeyMap();
-
     QString userAgent = get(CONFIG_SUBMODEL, "MAG250");
     if(userAgent == "CUSTOM")
         userAgent = get("user_agent", userAgents.value("MAG250"));
@@ -135,33 +136,7 @@ void MagProfile::start()
 
 void MagProfile::configureKeyMap()
 {
-    BrowserPlugin* browser = profilePlugin->browser();
 
-    browser->clearKeyEvents();
-
-    browser->registerKeyEvent(RC_KEY_OK, 13, 13);
-    browser->registerKeyEvent(RC_KEY_LEFT, 37, 37);
-    browser->registerKeyEvent(RC_KEY_RIGHT, 39, 39);
-    browser->registerKeyEvent(RC_KEY_UP, 38, 38);
-    browser->registerKeyEvent(RC_KEY_DOWN, 40, 40);
-
-    browser->registerKeyEvent(RC_KEY_BACK, 8, 8);
-    browser->registerKeyEvent(RC_KEY_PAGE_UP, 33, 33);
-    browser->registerKeyEvent(RC_KEY_PAGE_DOWN, 34, 34);
-
-    browser->registerKeyEvent(RC_KEY_FAST_FORWARD, 70, 102, true);
-    browser->registerKeyEvent(RC_KEY_REWIND, 66, 98, true);
-    browser->registerKeyEvent(RC_KEY_STOP, 83, 83, true);
-    browser->registerKeyEvent(RC_KEY_PLAY_PAUSE, 82, 82, true);
-
-    browser->registerKeyEvent(RC_KEY_EXIT, 27, 27);
-    browser->registerKeyEvent(RC_KEY_MENU, 122, 122, false, true);
-    browser->registerKeyEvent(RC_KEY_REFRESH, 116, 116, false, true);
-
-    browser->registerKeyEvent(RC_KEY_RED, 112, 112, false, true);
-    browser->registerKeyEvent(RC_KEY_GREEN, 113, 113, false, true);
-    browser->registerKeyEvent(RC_KEY_YELLOW, 114, 114, false, true);
-    browser->registerKeyEvent(RC_KEY_BLUE, 115, 115, false, true);
 }
 
 QString MagProfile::portal()

@@ -95,7 +95,7 @@ void GStb::Continue()
 
 void GStb::Debug(const QString &str)
 {
-    STUB() << str;
+    DEBUG() << str;
 }
 
 void GStb::DeinitPlayer()
@@ -407,8 +407,9 @@ int GStb::GetPosPercent()
 int GStb::GetPosPercentEx()
 {
     STUB();
-    //CHECK_PLAYER(0);
-    return 0;
+    int pos = int(player()->position() * 10000 / player()->duration());
+    DEBUG() << "GetPosPercentEx:" << pos;
+    return pos;
 }
 
 int GStb::GetPosTime()
@@ -722,12 +723,12 @@ QString GStb::ListDir(const QString &dir)
     if(rootMatch.match(directoryPath).hasMatch())
     {
         qDebug() << "match root";
-        dirs.append(QString("SAMBA/"));
-        dirs.append(QString("UPnP/"));
+        dirs.append(QString("SAMBA"));
+        dirs.append(QString("UPnP"));
 
         for(int index = 1; index <= disks.length(); index++)
         {
-            dirs.append(QString("USB-00000000%1-%2/").arg(index).arg(index));
+            dirs.append(QString("USB-00000000%1-%2").arg(index).arg(index));
         }
     }
     // USB-X-Y dir (actually, it should be HDD)
@@ -1591,3 +1592,4 @@ void GStb::SetScreenSaverInitAttr(const QString &options)
 {
     STUB() << options;
 }
+

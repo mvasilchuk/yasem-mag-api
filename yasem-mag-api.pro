@@ -74,7 +74,8 @@ OTHER_FILES += \
     resources/mag/languages_utf8.txt \
     resources/mag/timezone_list.txt \
     LICENSE \
-    README.md
+    README.md \
+    resources/mag/keymap/default.ini
 
 include(../common.pri)
 DESTDIR = $$DEFAULT_PLUGIN_DIR

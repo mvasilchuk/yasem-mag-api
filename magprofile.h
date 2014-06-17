@@ -39,7 +39,6 @@ public:
     void initDefaults();
 
     bool isInternalPortal();
-    void configureKeyMap();
 
 protected:
     bool internalPortal;
@@ -47,6 +46,7 @@ protected:
     // Profile interface
 public:
     QString portal();
+    void configureKeyMap();
 };
 
 }

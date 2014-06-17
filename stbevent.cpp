@@ -15,9 +15,21 @@ StbEvent::StbEvent(MagProfile *profile)
 void StbEvent::sendEvent(int eventCode)
 {
     profile->getProfilePlugin()->browser()->evalJs(QString("javascript: stbEvent.onEvent(%1)").arg(eventCode));
+
+    this->eventCode = eventCode;
 }
 
 void StbEvent::onEvent(int eventCode)
 {
     STUB() << eventCode;
+}
+
+void StbEvent::initEvents()
+{
+
+}
+
+int StbEvent::getEventCode()
+{
+    return eventCode;
 }

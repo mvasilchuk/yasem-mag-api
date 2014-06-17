@@ -13,6 +13,25 @@ class StbEvent : public QObject
 public:
     explicit StbEvent(MagProfile *profile);
 
+    Q_PROPERTY(int event READ getEventCode)
+
+    /**
+     * The code of the last event.
+     * The following events are defined:
+     *   1 - The player reached the end of the media content or detected a discontinuity of the stream.
+     *   2 - Information on audio and video tracks of the media content is received.
+     *   4 - Video and/or audio playback has begun.
+     *   5 - Error when opening the content: content not found on the server or connection with the server was rejected.
+     *   6 - Detected DualMono AC-3 sound.
+     *   7 - Detected information about video content.
+     *   8 - Error occurred while loading external subtitles.
+     *   0x20 - HDMI connected.
+     *   0x21 - HDMI disconnected.
+     *   0x22 - Recording task has been finished successfully. See Appendix 13. JavaScript API for PVR subsystem.
+     *   0x23 - Recording task has been finished with error. See Appendix 13. JavaScript API for PVR subsystem.
+     *   0x81 - When playing RTP-stream the numbering of RTP-packets was broken.
+     * @type {Number}
+     */
     enum Events {
         STB_EVENT_NO_ERROR = 0,
         STB_EVENT_EOF = 1,
@@ -30,9 +49,12 @@ public slots:
 
     void sendEvent(int eventCode);
     void onEvent(int eventCode);
+    void initEvents();
 
 protected:
     MagProfile *profile;
+    int getEventCode();
+    int eventCode;
 };
 
 }
