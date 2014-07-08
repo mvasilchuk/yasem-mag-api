@@ -318,7 +318,7 @@ QString GStb::GetEnv(const QString &data)
     QJsonObject result;
     result.insert("result", elements);
     QString strResult  = QString(QJsonDocument(result).toJson(QJsonDocument::Compact));
-    STUB() << QString("GetEnv(%1): %2").arg(data, strResult);
+    DEBUG() << QString("GetEnv(%1): %2").arg(data, strResult);
     return strResult;
 }
 
@@ -651,7 +651,7 @@ bool GStb::IsFileExist(QString fileName)
 
 bool GStb::IsFolderExist(const QString &folderName)
 {
-    STUB() << folderName;
+    DEBUG() << "IsFolderExist:" <<  folderName;
     return QDir(folderName).exists();
 }
 
@@ -797,20 +797,19 @@ void GStb::LoadURL(const QString &str)
 QString GStb::LoadUserData(const QString &str)
 {
     QString data = profile->datasource()->get(DB_TAG_USER, str);
-    STUB() << str << data;
+    DEBUG() << str << data;
     return data;
 }
 
 void GStb::Pause()
 {
-    STUB();
     CHECK_PLAYER_VOID;
     player()->mediaPause();
 }
 
 void GStb::Play(const QString &playStr, const QString &proxyParmas)
 {
-    STUB() << playStr << proxyParmas;
+    DEBUG() << playStr << proxyParmas;
 
     QString urlString = playStr.trimmed();
 
@@ -914,7 +913,7 @@ void GStb::Rotate(qint16 angle)
 
 void GStb::SaveUserData(const QString &fileName, const QString &data)
 {
-    STUB() << fileName << data;
+    DEBUG() << "SaveUserData:" << fileName << data;
     profile->datasource()->set(DB_TAG_USER, fileName, data);
 }
 
@@ -941,6 +940,9 @@ void GStb::SetAdditionalCasParam(const QString &name, const QString &value)
 void GStb::SetAlphaLevel(qint32 alpha)
 {
     STUB() << alpha;
+    //StbPlugin* plugin = profile->getProfilePlugin();
+    //plugin->browser()->widget()->setStyleSheet("background:transparent");
+    //plugin->browser()->widget()->setAttribute(Qt::WA_TranslucentBackground);
 }
 
 void GStb::SetAspect(int aspect)
@@ -964,8 +966,7 @@ void GStb::SetAudioOperationalMode(int mode)
 
 void GStb::SetAudioPID(int pid)
 {
-    STUB() << pid;
-    CHECK_PLAYER_VOID;
+    DEBUG() << "SetAudioPID:" << pid;
     player()->audioPID(pid);
 }
 
@@ -1088,8 +1089,7 @@ void GStb::SetListFilesExt(const QString &exts)
 
 void GStb::SetLoop(int loop)
 {
-    STUB() << loop;
-    CHECK_PLAYER_VOID;
+    DEBUG() << "SetLoop:" << loop;
     player()->loop(loop);
 }
 
@@ -1118,7 +1118,6 @@ int GStb::SetMulticastProxyURL(const QString &val)
 void GStb::SetMute(int mute)
 {
     STUB() << mute;
-    CHECK_PLAYER_VOID;
     player()->mute(mute == 1);
 }
 
@@ -1314,7 +1313,7 @@ void GStb::SetVideoState(int state)
 void GStb::SetViewport(int xsize, int ysize, int x, int y)
 {
     CHECK_PLAYER_VOID;
-    STUB() << xsize << ysize << x << y;
+    DEBUG() << xsize << ysize << x << y;
 
     StbPlugin* plugin = profile->getProfilePlugin();
 
@@ -1324,8 +1323,7 @@ void GStb::SetViewport(int xsize, int ysize, int x, int y)
 
 void GStb::SetVolume(int volume)
 {
-    STUB() << volume;
-    CHECK_PLAYER_VOID;
+    DEBUG() << "SetVolume:" << volume;
     player()->volume(volume);
 }
 
@@ -1386,8 +1384,7 @@ void GStb::Step()
 
 void GStb::Stop()
 {
-    STUB();
-    CHECK_PLAYER_VOID;
+    DEBUG() << Q_FUNC_INFO;
     player()->mediaStop();
 }
 
@@ -1446,7 +1443,7 @@ QString GStb::GetHashVersion1(QString secret, QString key)
     STUB() << secret << key;
 
    //Length of the text, that will be hashed
-   int   text_length;
+   //int   text_length;
 
    //For secret word.
    QByteArray K;
@@ -1454,7 +1451,7 @@ QString GStb::GetHashVersion1(QString secret, QString key)
    int   K_lenght;
 
    K_lenght = secret.size();
-   text_length = key.size();
+   //text_length = key.size();
 
    //Need to do for XOR operation. Transforms QString to
    //unsigned char

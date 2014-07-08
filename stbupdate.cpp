@@ -18,7 +18,7 @@ int StbUpdate::GetFlashBankCount()
 int StbUpdate::getStatus()
 {
     STUB();
-    return -1;
+    return UpdateStatus::WRONG_STB_MODEL;
 }
 
 /**
@@ -28,4 +28,36 @@ int StbUpdate::getStatus()
 int StbUpdate::getActiveBank()
 {
     return 0;
+}
+
+void StbUpdate::startCheck(const QString &data)
+{
+    STUB();
+}
+
+int StbUpdate::getPercents()
+{
+    STUB();
+    return 100;
+}
+
+QString StbUpdate::getImageDateStr()
+{
+    QString stub_str = "Tue Apr 9 18:14:45 EEST 2013";
+    STUB() << stub_str;
+    return stub_str;
+}
+
+QString StbUpdate::getImageDescStr()
+{
+    QString stub_str = "0.2.16-pub-250";
+    STUB() << stub_str;
+    return stub_str;
+}
+
+QString StbUpdate::getImageVersionStr()
+{
+    QString stub_str = "216";
+    STUB() << stub_str;
+    return stub_str;
 }

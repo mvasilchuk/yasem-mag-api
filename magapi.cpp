@@ -70,6 +70,11 @@ QString MagApi::getStorageInfo()
     return QString(QJsonDocument(result).toJson(QJsonDocument::Compact));
 }
 
+QString MagApi::getIcon(const QSize &size = QSize())
+{
+    return "qrc:/mag/icons/aurahd/aura-hd-256.png";
+}
+
 Profile* MagApi::createProfile(const QString &id = "")
 {
     return new MagProfile(this, id);

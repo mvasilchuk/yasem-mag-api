@@ -14,4 +14,9 @@
     <qresource prefix="/defaults/keymaps/mag">
         <file alias="default.ini">resources/mag/keymap/default.ini</file>
     </qresource>
+    <qresource prefix="/mag/icons/aurahd">
+        <file alias="aura-hd-128.png">resources/mag/icons/aurahd/aura-hd-128.png</file>
+        <file alias="aura-hd-256.png">resources/mag/icons/aurahd/aura-hd-256.png</file>
+        <file alias="aura-hd-512.png">resources/mag/icons/aurahd/aura-hd-512.png</file>
+    </qresource>
 </RCC>

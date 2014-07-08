@@ -19,8 +19,8 @@ MOBILITY += systeminfo
 
 DEFINES += MAGAPI_LIBRARY
 
-INCLUDEPATH += ../yasem-core/
-DEPENDPATH += ../yasem-core/
+INCLUDEPATH += ../../yasem-core/
+DEPENDPATH += ../../yasem-core/
 
 SOURCES += magapi.cpp \
     gstb.cpp \
@@ -50,7 +50,7 @@ HEADERS += magapi.h\
     mag_macros.h \
     magprofile.h \
     stbevent.h \
-    ../yasem-core/mediasignalsender.h \
+    ../../yasem-core/mediasignalsender.h \
     stbstorage.h \
     NetworkThread.h
 
@@ -77,7 +77,7 @@ OTHER_FILES += \
     README.md \
     resources/mag/keymap/default.ini
 
-include(../common.pri)
+include(../../common.pri)
 DESTDIR = $$DEFAULT_PLUGIN_DIR
 
 RESOURCES += \

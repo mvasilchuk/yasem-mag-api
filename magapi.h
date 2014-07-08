@@ -38,6 +38,7 @@ public:
     virtual PLUGIN_ERROR_CODES deinitialize();
 
     virtual QString getStorageInfo();
+    QString getIcon(const QSize &size);
 
 protected:
 
