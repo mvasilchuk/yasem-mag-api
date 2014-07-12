@@ -13,8 +13,6 @@ CONFIG += c++11
 TARGET = yasem-mag-api
 TEMPLATE = lib
 
-QMAKE_CXXFLAGS += -pedantic -Wall -Wextra -rdynamic -ldl
-
 MOBILITY += systeminfo
 
 DEFINES += MAGAPI_LIBRARY
