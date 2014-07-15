@@ -1,8 +1,6 @@
 #ifndef GSTB_H
 #define GSTB_H
 
-
-#include "enums.h"
 #include "macros.h"
 
 #include <QObject>

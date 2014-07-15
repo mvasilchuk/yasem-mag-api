@@ -23,7 +23,7 @@ class GuiPlugin;
 class MediaPlayerPlugin;
 class DatasourcePlugin;
 
-class MAGAPISHARED_EXPORT MagApi: public QObject, public virtual Plugin, public StbPlugin
+class MAGAPISHARED_EXPORT MagApi: public QObject, public StbPlugin
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "com.mvas.yasem.MagApiPlugin/1.0" FILE "resources/metadata.json")
@@ -74,6 +74,11 @@ public:
     int webServerPort;
 
     // StbPlugin interface
+
+    // Plugin interface
+public:
+    void register_dependencies();
+    void register_roles();
 };
 }
 

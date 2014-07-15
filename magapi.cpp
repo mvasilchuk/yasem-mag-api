@@ -29,9 +29,9 @@ MagApi::MagApi()
 
 PLUGIN_ERROR_CODES MagApi::initialize()
 {
-   player(dynamic_cast<MediaPlayerPlugin*>(PluginManager::instance()->getByRole("mediaplayer")));
-   gui(dynamic_cast<GuiPlugin*>(PluginManager::instance()->getByRole("gui")));
-   browser(dynamic_cast<BrowserPlugin*>(PluginManager::instance()->getByRole("browser")));
+   player(dynamic_cast<MediaPlayerPlugin*>(PluginManager::instance()->getByRole(ROLE_MEDIA)));
+   gui(dynamic_cast<GuiPlugin*>(PluginManager::instance()->getByRole(ROLE_GUI)));
+   browser(dynamic_cast<BrowserPlugin*>(PluginManager::instance()->getByRole(ROLE_BROWSER)));
 
     return PLUGIN_ERROR_NO_ERROR;
 }
@@ -87,6 +87,7 @@ QString MagApi::getProfileClassId()
 
 void MagApi::resetObjects()
 {
+    QHash<QString, QObject*>& api = getApi();
     api.clear();
 
     MagProfile* profile = dynamic_cast<MagProfile*>(ProfileManager::instance()->getActiveProfile());
@@ -142,7 +143,8 @@ QUrl MagApi::handleUrl(QUrl &url) {
     else if(urlString.startsWith("/home/web"))
         urlString.replace(QString("/home/web"), QString("%1:%2").arg(webServerHost).arg(webServerPort));
 
-    //STUB_WITH_PARAMS(urlString);
+
+    STUB() << urlString;
 
     return QUrl(urlString);
 }
@@ -150,3 +152,16 @@ QUrl MagApi::handleUrl(QUrl &url) {
 
 
 
+
+
+void yasem::MagApi::register_dependencies()
+{
+    add_dependency(ROLE_DATASOURCE);
+    add_dependency(ROLE_BROWSER);
+    add_dependency(ROLE_MEDIA);
+}
+
+void yasem::MagApi::register_roles()
+{
+    register_role(ROLE_STB_API);
+}

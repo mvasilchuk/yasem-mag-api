@@ -1,5 +1,4 @@
 #include "netscape.h"
-#include "stbplugin.h"
 #include "magprofile.h"
 
 using namespace yasem;
