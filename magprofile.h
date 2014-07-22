@@ -33,6 +33,7 @@ signals:
 public slots:
 
 
+    void loadConfigOptions();
 public:
     void start();
     void stop();
@@ -42,11 +43,12 @@ public:
 
 protected:
     bool internalPortal;
-
-    // Profile interface
 public:
     QString portal();
     void configureKeyMap();
+
+    bool isUsingMulticastProxy();
+    QString getMulticastProxy();
 };
 
 }

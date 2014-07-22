@@ -5,6 +5,7 @@
 #include "mediaplayerplugin.h"
 #include "guiplugin.h"
 #include "enums.h"
+#include "mag_enums.h"
 #include "mag_macros.h"
 #include "core.h"
 #include "stbplugin.h"
@@ -56,7 +57,7 @@ QString GStb::listLocalFiles(const QString &dir)
             QStringList fileParts = file.fileName().split(".");
             if(fileParts.length() > 0 && !listFileExt.contains(QString(".") + fileParts.at(fileParts.length()-1)))
             {
-                //INFO(QString("Skipping file ").append(file.fileName()));
+                INFO() << "Skipping file " << file.fileName();
                 continue;
             }
 
@@ -227,8 +228,7 @@ int GStb::GetContrast()
 QString GStb::GetDeviceActiveBank()
 {
     STUB();
-    //CHECK_PLAYER("");
-    return "";
+    return profile->datasource()->get(DB_TAG_ENV, "DeviceActiveBank", "0");
 }
 
 QString GStb::GetDeviceImageDesc()
@@ -286,15 +286,16 @@ QString GStb::GetDeviceSerialNumber()
 
 QString GStb::GetDeviceVendor()
 {
-    QString vendor = "TeleTec";
+    QString vendor = profile->datasource()->get(DB_TAG_RDIR, "HardwareVersion", "TeleTec");
     STUB() << QString("GetDeviceVendor(): %1").arg(vendor);
     return vendor;
 }
 
 QString GStb::GetDeviceVersionHardware()
 {
-    STUB();
-    return "";
+    QString device_hardware =  profile->datasource()->get(DB_TAG_RDIR, "HardwareVersion", "1.7-BD-00");
+    STUB() << QString("GetDeviceVersionHardware(): %1").arg(device_hardware);
+    return device_hardware;
 }
 
 QString GStb::GetEnv(const QString &data)
@@ -448,38 +449,16 @@ int GStb::GetSaturation()
 
 QString GStb::GetSmbGroups()
 {
-    //FIXME: Fix SAMBA shares.
-    //Next code doesn't work because QFile/QDir only supports local files
     STUB();
-
-    QString smbPath;
-
-    #ifdef Q_OS_LINUX
-        smbPath = "smb:///";
-    #endif
-    #ifdef Q_OS_WIN32
-        smbPath = "";
-    #endif
-
     QJsonObject result;
     QJsonArray resultArray;
     QString errorMsg;
+    QList<SambaNode*> domains = Core::instance()->network()->samba()->domains();
 
-    NetworkThread thread;
-    thread.setCallback([&](){
-        QDir sambaDir(smbPath);
-        qDebug() << "Looking for SAMBA groups in " << sambaDir;
-        foreach(QString file, sambaDir.entryList(QDir::Files | QDir::Readable))
-        {
-            resultArray.append(file);
-        }
-        qDebug() << "Lookup finished. Found: " << resultArray;
-    });
-
-    thread.start();
-    thread.wait(5000);
-    thread.terminate();
-    thread.wait(100);
+    for(SambaNode* node: domains)
+    {
+        resultArray.append(node->name);
+    }
 
     result.insert("result", resultArray);
     result.insert("errMsg", errorMsg);
@@ -491,19 +470,28 @@ QString GStb::GetSmbServers(const QString &args)
 {
     STUB() << args;
 
+    QJsonObject data = QJsonDocument::fromJson(args.toUtf8()).object();
+
     QJsonObject result;
     QJsonArray resultArray;
     QString errorMsg;
 
+    QList<SambaNode*> hosts = Core::instance()->network()->samba()->hosts(data.value("group").toString());
+    for(SambaNode* host: hosts)
+        resultArray.append(host->name);
+
     result.insert("result", resultArray);
     result.insert("errMsg", errorMsg);
 
-    return QJsonDocument(result).toJson(QJsonDocument::Compact);
+    QString res = QJsonDocument(result).toJson(QJsonDocument::Compact);
+    DEBUG() << res;
+    return res;
 }
 
 QString GStb::GetSmbShares(const QString &args)
 {
     STUB() << args;
+    QJsonObject data = QJsonDocument::fromJson(args.toUtf8()).object();
 
     QJsonObject result;
     QJsonObject resultData;
@@ -511,9 +499,16 @@ QString GStb::GetSmbShares(const QString &args)
 
     QJsonArray sharesArray;
 
+    QString hostName = data.value("server").toString();
+    QList<SambaNode*> shares = Core::instance()->network()->samba()->shares(hostName);
+
+
+    for(SambaNode* share: shares)
+        sharesArray.append(share->name);
+
     resultData.insert("shares",sharesArray);
+    resultData.insert("serverIP", hostName);
     result.insert("result", resultData);
-    result.insert("serverIP", QString("127.0.0.1"));
     result.insert("errMsg", errorMsg);
 
     return QJsonDocument(result).toJson(QJsonDocument::Compact);
@@ -706,8 +701,19 @@ bool GStb::IsVirtualKeyboardActiveEx()
 QString GStb::ListDir(const QString &dir)
 {
     //TODO: Add UPnP, LAN & Favourites support
-    STUB() << dir;
-    QString directoryPath = dir;
+
+    QString directoryPath;
+
+    if(dir.startsWith("/ram/"))
+    {
+        directoryPath = QString("/tmp/yasem").append(dir);
+    }
+    else
+    {
+        directoryPath = dir;
+    }
+
+    STUB() << directoryPath;
 
     QJsonArray files;
     QJsonArray dirs;
@@ -723,12 +729,12 @@ QString GStb::ListDir(const QString &dir)
     if(rootMatch.match(directoryPath).hasMatch())
     {
         qDebug() << "match root";
-        dirs.append(QString("SAMBA"));
-        dirs.append(QString("UPnP"));
+        dirs.append(QString("SAMBA/"));
+        dirs.append(QString("UPnP/"));
 
         for(int index = 1; index <= disks.length(); index++)
         {
-            dirs.append(QString("USB-00000000%1-%2").arg(index).arg(index));
+            dirs.append(QString("USB-00000000%1-%2/").arg(index).arg(index));
         }
     }
     // USB-X-Y dir (actually, it should be HDD)
@@ -755,7 +761,8 @@ QString GStb::ListDir(const QString &dir)
 
 QString GStb::translateStbPathToLocal(const QString& path)
 {
-    QRegularExpression diskRegex("[/{0,2}]USB-\\d+-(\\d+)");
+    STUB() << path;
+    QRegularExpression diskRegex("[/{0,2}]USB-\\d+-(\\d+)(/)?");
     QRegularExpressionMatch diskRegexMatch = diskRegex.match(path);
     QList<DiskInfo*> disks = Core::instance()->disks();
 
@@ -769,7 +776,7 @@ QString GStb::translateStbPathToLocal(const QString& path)
     }
     else
     {
-        return "";
+        return path;
     }
 
 }
@@ -813,7 +820,9 @@ void GStb::Play(const QString &playStr, const QString &proxyParmas)
 
     QString urlString = playStr.trimmed();
 
-    QRegularExpression urlRegex("^(?<proto>auto|rtp|rtsp|rtpac3|rtsp_ac3|ptpmpeg4|rtpmpeg4_aac|mpegts|mpegps|file|mp4|mp4_mpa|fm|ffmpeg|ffrt|ffrt2|ffrt3)?\\s+(?<url>.*?)$");
+
+
+    QRegularExpression urlRegex("^(?<proto>auto|rtp|rtsp|rtpac3|rtsp_ac3|ptpmpeg4|rtpmpeg4_aac|mpegts|mpegps|file|mp4|mp4_mpa|fm|ffmpeg|ffrt|ffrt2|ffrt3)?(\\s+)?(?<url>.*?)$");
     QRegularExpressionMatch urlMatch = urlRegex.match(urlString);
 
 
@@ -829,13 +838,35 @@ void GStb::Play(const QString &playStr, const QString &proxyParmas)
     qDebug() << "matched proto:" << protocol << ", url:" << url;
 
 
-    CHECK_PLAYER_VOID;
-
     if(url.startsWith("//"))
     {
         url = url.replace("//", "/");
 
         url = translateStbPathToLocal(url);
+    }
+
+    //Transform multicast address
+    if((url.startsWith("udp://") || url.startsWith("rtp://")))
+    {
+        bool use_multicast = profile->isUsingMulticastProxy();
+        DEBUG() << "use_multicast" << use_multicast;
+        if(use_multicast)
+        {
+            QStringList url_data = url.split("://");
+            if(url_data.size() == 2)
+            {
+                QString proto = url_data.at(0);
+                QString tmp_url = url_data.at(1);
+                if(tmp_url.startsWith("@"))
+                        tmp_url = tmp_url.right(tmp_url.length() - 1);
+
+                QString proxy_url = profile->getMulticastProxy();
+                url = proxy_url.append("/").append(proto).append("/").append(tmp_url);
+            }
+            else
+                WARN() << "Incorrect multicast url" << url_data;
+        }
+
     }
 
 
@@ -886,12 +917,26 @@ QString GStb::RDir(const QString &name)
     {
         result = ((MagApi*)profile->getProfilePlugin())->getStorageInfo();
     }
+    else if(name.startsWith("mount"))
+    {
+        //mount cifs //IRONMAN/IPC$ /ram/mnt/smb username=guest,password=,iocharset=utf8
+
+        QStringList data = name.split(" ");
+        if(data.length() == 5)
+        {
+            QString path = data.at(2);
+            path = path.replace("\\", "/");
+            QString mount_point = QString("/tmp/yasem").append(data.at(3));
+            QString params;
+            result = QVariant(Core::instance()->network()->samba()->mount(path, mount_point, params)).toString();
+        }
+    }
     else
     {
         result = profile->datasource()->get(DB_TAG_RDIR, name);
     }
 
-    LOG() << QString("[\"%1\"] -> \"%2\"").arg(name, result);
+    DEBUG() << "RDir:" << QString("[\"%1\"] -> \"%2\"").arg(name, result);
     return result;
 }
 

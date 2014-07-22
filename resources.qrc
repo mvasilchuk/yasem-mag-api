@@ -19,4 +19,7 @@
         <file alias="aura-hd-256.png">resources/mag/icons/aurahd/aura-hd-256.png</file>
         <file alias="aura-hd-512.png">resources/mag/icons/aurahd/aura-hd-512.png</file>
     </qresource>
+    <qresource prefix="/mag">
+        <file alias="config-options.json">resources/mag/config-options.json</file>
+    </qresource>
 </RCC>

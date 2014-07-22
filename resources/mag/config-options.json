@@ -1,0 +1,145 @@
+{
+    "main": {
+        "title": "main options",
+        "options": [
+            {
+                "tag": "ENV",
+                "name": "portal1",
+                "type": "string",
+                "default": "http://",
+                "title": "Portal URL",
+                "comment": ""
+            },
+            {
+                "tag": "RDIR",
+                "name": "Model",
+                "type": "string",
+                "default": "MAG250",
+                "title": "STB Model",
+                "options": {
+                    "MAG100": "MAG 100",
+                    "MAG200": "MAG 200",
+                    "MAG245": "MAG 245",
+                    "MAG250": "MAG 250",
+                    "MAG254": "MAG 254",
+                    "MAG255": "MAG 255",
+                    "MAG260": "MAG 260",
+                    "MAG270": "MAG 270",
+                    "MAG275": "MAG 275"
+                }
+            },
+            {
+                "tag": "RDIR",
+                "name": "MACAddress",
+                "type": "string",
+                "default": "00:1A:79:00:00:00",
+                "title": "MAC address",
+                "comment": ""
+            },
+            {
+                "tag": "RDIR",
+                "name": "SerialNumber",
+                "type": "string",
+                "default": "012012N01212",
+                "title": "Serial number",
+                "comment": ""
+            },
+            {
+                "tag": "RDIR",
+                "name": "LAN_link",
+                "type": "bool",
+                "default": true,
+                "title": "LAN enabled",
+                "comment": ""
+            },
+            {
+                "tag": "ENV",
+                "name": "ethaddr",
+                "type": "string",
+                "default": "00:1A:79:00:00:01",
+                "title": "LAN IP Address",
+                "comment": ""
+            },
+            {
+                "tag": "RDIR",
+                "name": "WiFi_link",
+                "type": "bool",
+                "default": false,
+                "title": "Wi-Fi enabled",
+                "comment": ""
+            },
+            {
+                "tag": "RDIR",
+                "name": "IPAddress",
+                "type": "string",
+                "default": "192.168.0.100",
+                "title": "IP address",
+                "comment": ""
+            },
+            {
+                "tag": "RDIR",
+                "name": "gmode",
+                "type": "string",
+                "default": "1280",
+                "title": "Graphical mode",
+                "comment": ""
+            },
+            {
+                "tag": "RDIR",
+                "name": "vmode",
+                "type": "string",
+                "default": "720p",
+                "title": "Video mode",
+                "comment": ""
+            },
+            {
+                "tag": "ENV",
+                "name": "subtitles_on",
+                "type": "bool",
+                "default": true,
+                "title": "Subtitles enabled",
+                "comment": ""
+            },
+            {
+                "tag": "ENV",
+                "name": "timezone_conf",
+                "type": "string",
+                "default": "Europe/Kiev",
+                "title": "Timezone",
+                "comment": ""
+            },
+            {
+                "tag": "RDIR",
+                "name": "HardwareVersion",
+                "type": "string",
+                "default": "1.7-BD-00",
+                "title": "Hardware version",
+                "comment": ""
+            },
+            {
+                "tag": "RDIR",
+                "name": "ImageDate",
+                "type": "string",
+                "default": "Fri Oct 25 17:28:41 EEST 2013",
+                "title": "Image date",
+                "comment": ""
+            },
+            {
+                "tag": "RDIR",
+                "name": "ImageDescription",
+                "type": "string",
+                "default": "0.2.16-r2",
+                "title": "Image description",
+                "comment": ""
+            },
+            {
+                "tag": "RDIR",
+                "name": "ImageVersion",
+                "type": "string",
+                "default": "216",
+                "title": "Image version",
+                "comment": ""
+            }
+        ]
+    }
+}

@@ -32,7 +32,8 @@ SOURCES += magapi.cpp \
     stbdownloadmanager.cpp \
     magprofile.cpp \
     stbevent.cpp \
-    stbstorage.cpp
+    stbstorage.cpp \
+    ../../yasem-core/profileconfigparserimpl.cpp
 
 HEADERS += magapi.h\
     magapi_global.h \
@@ -50,7 +51,9 @@ HEADERS += magapi.h\
     stbevent.h \
     ../../yasem-core/mediasignalsender.h \
     stbstorage.h \
-    NetworkThread.h
+    NetworkThread.h \
+    mag_enums.h \
+    ../../yasem-core/profileconfigparserimpl.h
 
 
 
@@ -73,7 +76,10 @@ OTHER_FILES += \
     resources/mag/timezone_list.txt \
     LICENSE \
     README.md \
-    resources/mag/keymap/default.ini
+    resources/mag/keymap/default.ini \
+    resources/mag/config-options.json
+
+
 
 include(../../common.pri)
 DESTDIR = $$DEFAULT_PLUGIN_DIR
