@@ -32,6 +32,20 @@ class MAGAPISHARED_EXPORT MagApi: public QObject, public StbPlugin
     Q_CLASSINFO("author", "Maxim Vasilchuk")
     Q_CLASSINFO("description", "MAG API implementation for YASEM")
 public:
+    enum DeviceModel {
+        MAG_100,
+        MAG_200,
+        MAG_245,
+        MAG_250,
+        AURA_HD,
+        MAG_254,
+        MAG_255,
+        MAG_260,
+        MAG_270,
+        MAG_275
+    };
+
+
     MagApi();
 
     virtual PLUGIN_ERROR_CODES initialize();

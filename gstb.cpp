@@ -63,7 +63,7 @@ QString GStb::listLocalFiles(const QString &dir)
 
             QJsonObject obj;
             obj.insert("name", file.fileName() );
-            obj.insert("size", file.size());
+            obj.insert("size", QString::number(file.size()));
             files.append(QJsonValue::fromVariant(QJsonDocument(obj).toVariant()));
         }
     }
@@ -820,9 +820,7 @@ void GStb::Play(const QString &playStr, const QString &proxyParmas)
 
     QString urlString = playStr.trimmed();
 
-
-
-    QRegularExpression urlRegex("^(?<proto>auto|rtp|rtsp|rtpac3|rtsp_ac3|ptpmpeg4|rtpmpeg4_aac|mpegts|mpegps|file|mp4|mp4_mpa|fm|ffmpeg|ffrt|ffrt2|ffrt3)?(\\s+)?(?<url>.*?)$");
+    QRegularExpression urlRegex("^(?<proto>auto|rtp|rtsp_ac3|rtsp|rtpac3|rtpmpeg4_aac|ptpmpeg4|mpegts|mpegps|file|mp4_mpa|mp4|fm|ffmpeg|ffrt3|ffrt2|ffrt)?(\\s+)?(?<url>.*?)$");
     QRegularExpressionMatch urlMatch = urlRegex.match(urlString);
 
 

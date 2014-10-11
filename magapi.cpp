@@ -149,11 +149,6 @@ QUrl MagApi::handleUrl(QUrl &url) {
     return QUrl(urlString);
 }
 
-
-
-
-
-
 void yasem::MagApi::register_dependencies()
 {
     add_dependency(ROLE_DATASOURCE);
