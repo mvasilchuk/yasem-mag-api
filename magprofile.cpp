@@ -21,17 +21,6 @@ MagProfile::MagProfile(StbPlugin *profilePlugin, const QString &id = "") :
 {
     Q_ASSERT(profilePlugin);
 
-    submodelNames.insert(MAG_100, "MAG100");
-    submodelNames.insert(MAG_200, "MAG200");
-    submodelNames.insert(MAG_245, "MAG245");
-    submodelNames.insert(MAG_250, "MAG250");
-    submodelNames.insert(MAG_254, "MAG254");
-    submodelNames.insert(MAG_255, "MAG255");
-    submodelNames.insert(MAG_260, "MAG260");
-    submodelNames.insert(MAG_270, "MAG270");
-    submodelNames.insert(MAG_275, "MAG275");
-    submodelNames.insert(AURA_HD, "AuraHD");
-
     userAgents.insert("MAG250", "Mozilla/5.0 (QtEmbedded; U; Linux; C) AppleWebKit/533.3 (KHTML, like Gecko) MAG200 stbapp ver: 2 rev: 234 Safari/533.3");
 
     portalResolutions.insert("720", QSize(720, 576));
@@ -60,7 +49,7 @@ void MagProfile::loadConfigOptions()
     models.insert("MAG270", "MAG 270");
     models.insert("MAG275", "MAG 275");
     models.insert("AuraHD", "AuraHD");
-    main_group.options.append(ConfigOption(DB_TAG_RDIR, "Model",         tr("STB Model"),          "MAG250",       "options", "", models));
+    main_group.options.append(ConfigOption(DB_TAG_PROFILE, "Model",         tr("STB Model"),          "MAG250",       "options", "", models));
 
     QHash<QString, QString> gmodes;
     gmodes.insert("720", "720x576");

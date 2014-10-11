@@ -25,6 +25,21 @@ MagApi::MagApi()
 
     webServerHost = "http://127.0.0.1";
     webServerPort = Core::instance()->settings()->value("web-server/port", 9999).toInt();
+
+    QList<StbSubmodel> &submodels = getSubmodels();
+
+    setSubmodelDatasourceField("RDIR", "STB Model");
+
+    submodels.append(StbSubmodel(QString::number(MAG_100), "MAG100"));
+    submodels.append(StbSubmodel(QString::number(MAG_200), "MAG200"));
+    submodels.append(StbSubmodel(QString::number(MAG_245), "MAG245"));
+    submodels.append(StbSubmodel(QString::number(MAG_250), "MAG250"));
+    submodels.append(StbSubmodel(QString::number(MAG_254), "MAG254"));
+    submodels.append(StbSubmodel(QString::number(MAG_255), "MAG255"));
+    submodels.append(StbSubmodel(QString::number(MAG_260), "MAG260"));
+    submodels.append(StbSubmodel(QString::number(MAG_270), "MAG270"));
+    submodels.append(StbSubmodel(QString::number(MAG_275), "MAG275"));
+    submodels.append(StbSubmodel(QString::number(AURA_HD), "AuraHD"));
 }
 
 PLUGIN_ERROR_CODES MagApi::initialize()

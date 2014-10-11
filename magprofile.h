@@ -15,18 +15,6 @@ class MagProfile : public QObject, public Profile
 public:
     explicit MagProfile(StbPlugin *profilePlugin, const QString &id);
 
-    enum DeviceModel {
-        MAG_100,
-        MAG_200,
-        MAG_245,
-        MAG_250,
-        AURA_HD,
-        MAG_254,
-        MAG_255,
-        MAG_260,
-        MAG_270,
-        MAG_275
-    };
 
 signals:
 
