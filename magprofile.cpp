@@ -158,11 +158,16 @@ void MagProfile::start()
 
     internalPortal = get(CONFIG_INTERNAL_PORTAL, "").toLower() == "true";
 
-    QString userAgent = get(CONFIG_SUBMODEL, "MAG250");
-    if(userAgent == "CUSTOM")
-        userAgent = get("user_agent", userAgents.value("MAG250"));
+    QString submodel = get("Model", "MAG250");
+
+    qDebug() << "submodel" << submodel;
+
+    QString userAgent;
+
+    if(submodel == "CUSTOM")
+        submodel = get("user_agent", userAgents.value(submodel));
     else
-        userAgent = userAgents.value(userAgent);
+        userAgent = userAgents.value(submodel);
 
     profilePlugin->browser()->setUserAgent(userAgent);
 
@@ -286,3 +291,4 @@ bool MagProfile::isInternalPortal()
 {
     return internalPortal;
 }
+

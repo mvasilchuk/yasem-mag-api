@@ -27,6 +27,7 @@
 #include <QRegExp>
 #include <QRegularExpression>
 #include <QCryptographicHash>
+#include <QGraphicsOpacityEffect>
 
 using namespace yasem;
 
@@ -983,9 +984,6 @@ void GStb::SetAdditionalCasParam(const QString &name, const QString &value)
 void GStb::SetAlphaLevel(qint32 alpha)
 {
     STUB() << alpha;
-    //StbPlugin* plugin = profile->getProfilePlugin();
-    //plugin->browser()->widget()->setStyleSheet("background:transparent");
-    //plugin->browser()->widget()->setAttribute(Qt::WA_TranslucentBackground);
 }
 
 void GStb::SetAspect(int aspect)
@@ -1383,6 +1381,8 @@ void GStb::SetWebProxy(const QString &host, int port, const QString &user, const
 void GStb::SetWinAlphaLevel(int winNum, int alpha)
 {
     STUB() << winNum <<alpha;
+
+    profile->getProfilePlugin()->browser()->setOpacity(alpha);
 }
 
 void GStb::SetWinMode(int winNum, int mode)
