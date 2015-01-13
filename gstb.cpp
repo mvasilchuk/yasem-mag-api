@@ -1189,7 +1189,7 @@ void GStb::SetPIG(int state, float scale, int x, int y)
     }
     else
     {
-        player()->fullscreen(true);
+        player()->fullscreen(false);
         if(x >= 0 && y >= 0)
             player()->move(x, y);
     }
@@ -1479,7 +1479,7 @@ void GStb::WritePrefs(const QString &prefs)
 * \param secret The string that contains secret word
 * \return The hashed string
 *
-* @seed48 http://mahonen.tumblr.com/post/8637914737/hmac-hash-for-qt
+* @see http://mahonen.tumblr.com/post/8637914737/hmac-hash-for-qt
 */
 QString GStb::GetHashVersion1(QString secret, QString key)
 {

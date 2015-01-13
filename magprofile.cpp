@@ -53,7 +53,7 @@ void MagProfile::loadConfigOptions()
 
     QHash<QString, QString> gmodes;
     gmodes.insert("720", "720x576");
-    gmodes.insert("1280", "1280x1024");
+    gmodes.insert("1280", "1280x720");
     gmodes.insert("1920", "1920x1080");
     main_group.options.append(ConfigOption(DB_TAG_RDIR, "gmode",         tr("Graphical mode"),     "1280",         "options", "", gmodes));
 
