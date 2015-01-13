@@ -1186,6 +1186,7 @@ void GStb::SetPIG(int state, float scale, int x, int y)
     if(state == 1)
     {
         player()->fullscreen(true);
+        player()->raise();
     }
     else
     {
