@@ -48,7 +48,7 @@ PLUGIN_ERROR_CODES MagApi::initialize()
    gui(dynamic_cast<GuiPlugin*>(PluginManager::instance()->getByRole(ROLE_GUI)));
    browser(dynamic_cast<BrowserPlugin*>(PluginManager::instance()->getByRole(ROLE_BROWSER)));
 
-    return PLUGIN_ERROR_NO_ERROR;
+   return PLUGIN_ERROR_NO_ERROR;
 }
 
 PLUGIN_ERROR_CODES MagApi::deinitialize()

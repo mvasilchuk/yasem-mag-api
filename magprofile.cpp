@@ -180,7 +180,6 @@ void MagProfile::start()
     qDebug() << "Loading" << urlString;
     QUrl portalUrl = QUrl(urlString.replace("~", QDir::homePath()));
     profilePlugin->browser()->load(portalUrl);
-
 }
 
 void MagProfile::configureKeyMap()

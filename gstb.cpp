@@ -767,19 +767,21 @@ QString GStb::translateStbPathToLocal(const QString& path)
     QRegularExpressionMatch diskRegexMatch = diskRegex.match(path);
     QList<DiskInfo*> disks = Core::instance()->disks();
 
+    QString newPath = path;
+
     if(diskRegexMatch.hasMatch())
     {
         qDebug() << "match disk";
         int diskIndex = diskRegexMatch.captured(1).toInt() - 1; // Disk index starts from 1
-        QString newPath = path;
-        newPath = newPath.replace(diskRegex, disks.at(diskIndex)->mountPoint);
-        return newPath;
-    }
-    else
-    {
-        return path;
+        QString mountPoint = disks.at(diskIndex)->mountPoint;
+        if(!mountPoint.endsWith("/"))
+            mountPoint = mountPoint.append("/");
+
+        newPath = newPath.replace(diskRegex, mountPoint);
     }
 
+    qDebug() << "New path is " << newPath;
+    return newPath;
 }
 
 void GStb::LoadCASIniFile(const QString &iniFileName)
@@ -1186,7 +1188,6 @@ void GStb::SetPIG(int state, float scale, int x, int y)
     if(state == 1)
     {
         player()->fullscreen(true);
-        //player()->raise();
     }
     else
     {
