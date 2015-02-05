@@ -107,11 +107,7 @@ void MagProfile::start()
         event->sendEvent(StbEvent::STB_EVENT_GOT_VIDEO_INFO);
         event->sendEvent(StbEvent::STB_EVENT_PLAY_START);
     });
-    connect(&signalHandler, &MediaSignalSender::stopped,              this, [=]()
-    {
-        DEBUG() << "[MEDIA]: stopped";
-        event->sendEvent(StbEvent::STB_EVENT_EOF);
-    });
+
     connect(&signalHandler, &MediaSignalSender::speedChanged,         this, [=](qreal speed)
     {
         DEBUG() << "[MEDIA]: speedChanged" << speed;
@@ -138,13 +134,31 @@ void MagProfile::start()
     });
     connect(&signalHandler, &MediaSignalSender::brightnessChanged,    this, [=](bool)
     {
-
+        DEBUG() << "[MEDIA]: brightnessChanged";
     });
     connect(&signalHandler, &MediaSignalSender::contrastChanged,      this, [=](bool)
     {
+        DEBUG() << "[MEDIA]: contrastChanged";
     });
     connect(&signalHandler, &MediaSignalSender::saturationChanged,    this, [=](bool)
     {
+        DEBUG() << "[MEDIA]: saturationChanged";
+    });
+
+    connect(&signalHandler, &MediaSignalSender::statusChanged,              this, [=](MediaStatus status)
+    {
+        DEBUG() << "[MEDIA]: status changed:" << status;
+        switch(status)
+        {
+            case MediaStatus::EndOfMedia: {
+                event->sendEvent(StbEvent::STB_EVENT_EOF);
+                break;
+            }
+            default: {
+                WARN() << "status ignored";
+                break;
+            }
+        }
     });
 
     //QString defaultUrl = "http://dmichael.org.ua/mag250";

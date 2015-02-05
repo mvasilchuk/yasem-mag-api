@@ -158,9 +158,6 @@ QUrl MagApi::handleUrl(QUrl &url) {
     else if(urlString.startsWith("/home/web"))
         urlString.replace(QString("/home/web"), QString("%1:%2").arg(webServerHost).arg(webServerPort));
 
-
-    STUB() << urlString;
-
     return QUrl(urlString);
 }
 
