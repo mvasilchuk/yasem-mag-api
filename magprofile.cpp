@@ -130,7 +130,7 @@ void MagProfile::start()
     });
     connect(&signalHandler, &MediaSignalSender::positionChanged,      this, [=](qint64 pos)
     {
-        DEBUG() << "[MEDIA]: positionChanged" << pos;
+        //DEBUG() << "[MEDIA]: positionChanged" << pos;
     });
     connect(&signalHandler, &MediaSignalSender::brightnessChanged,    this, [=](bool)
     {

@@ -92,7 +92,7 @@ void GStb::CloseWebWindow()
  */
 void GStb::Continue()
 {
-    STUB();
+    player()->mediaContinue();
 }
 
 void GStb::Debug(const QString &str)
@@ -180,7 +180,7 @@ int GStb::GetAlphaLevel()
 int GStb::GetAspect()
 {
     STUB();
-    CHECK_PLAYER(ASPECT_RATIO_AUTO);
+    CHECK_PLAYER(0);
     return player()->aspectRatio();
 }
 
