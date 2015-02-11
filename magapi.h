@@ -22,6 +22,7 @@ class BrowserPlugin;
 class GuiPlugin;
 class MediaPlayerPlugin;
 class DatasourcePlugin;
+class AbstractWebPage;
 
 class MAGAPISHARED_EXPORT MagApi: public QObject, public StbPlugin
 {
@@ -76,12 +77,12 @@ public slots:
 
     // StbPlugin interface
 protected:
-    void resetObjects();
+    void resetObjects(AbstractWebPage* page);
     void applyFixes();
 
     // StbProfilePlugin interface
 public:
-    void init();
+    void init(AbstractWebPage* page);
     QUrl handleUrl(QUrl &url);
 
     QString webServerHost;

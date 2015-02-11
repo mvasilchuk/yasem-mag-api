@@ -7,12 +7,13 @@
 namespace yasem
 {
 class MagProfile;
+class AbstractWebPage;
 
 class StbWebWindow : public QObject
 {
     Q_OBJECT
 public:
-    explicit StbWebWindow(MagProfile *profile);
+    explicit StbWebWindow(MagProfile *profile, AbstractWebPage* m_page);
 
 
 signals:
@@ -23,6 +24,7 @@ public slots:
     QString windowId();
 protected:
     MagProfile *profile;
+    AbstractWebPage* m_page;
 };
 
 }

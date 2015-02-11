@@ -8,12 +8,13 @@
 namespace yasem
 {
 class MagProfile;
+class AbstractWebPage;
 
 class StbDownloadManager : public QObject
 {
     Q_OBJECT
 public:
-    explicit StbDownloadManager(MagProfile *profile);
+    explicit StbDownloadManager(MagProfile *profile, AbstractWebPage* page);
 
 signals:
 
@@ -33,6 +34,7 @@ public slots:
     QString GetQueueInfo();
 protected:
     MagProfile *profile;
+    AbstractWebPage* m_page;
 };
 
 }

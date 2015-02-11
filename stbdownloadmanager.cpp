@@ -1,15 +1,17 @@
 #include "stbdownloadmanager.h"
 #include "macros.h"
 #include "magprofile.h"
+#include "abstractwebpage.h"
 
 #include <QJsonArray>
 #include <QJsonObject>
 
 using namespace yasem;
 
-StbDownloadManager::StbDownloadManager(MagProfile *profile)
+StbDownloadManager::StbDownloadManager(MagProfile *profile, AbstractWebPage* page)
 {
     this->profile = profile;
+    this->m_page = page;
 }
 
 bool StbDownloadManager::AddJob(const QString &urlToDownload, const QString &filePath)

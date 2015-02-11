@@ -1,15 +1,17 @@
 #include "stbstorage.h"
+#include "abstractwebpage.h"
 
 using namespace yasem;
 
 #define STB_STORAGE_GROUP "stb-storage"
 
-StbStorage::StbStorage(MagProfile *profile)
+StbStorage::StbStorage(MagProfile *profile, AbstractWebPage* page)
 {
     //qDebug() << "logger: " << parent->getLogger();
     this->setObjectName("gSTB");
 
     this->profile = profile;
+    this->m_page = page;
 }
 
 void StbStorage::setItem(const QString &name, const QString &value)

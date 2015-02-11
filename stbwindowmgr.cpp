@@ -7,12 +7,14 @@
 #include "mag_macros.h"
 #include "magprofile.h"
 #include "profilemanager.h"
+#include "abstractwebpage.h"
 
 using namespace yasem;
 
-StbWindowMgr::StbWindowMgr(MagProfile *profile)
+StbWindowMgr::StbWindowMgr(MagProfile *profile, AbstractWebPage* page)
 {
     this->profile = profile;
+    this->m_page = page;
 
     Datasource* datasource = profile->datasource();
     localPortalUrl = datasource->get(DB_TAG_PROFILE, CONFIG_INNER_PORTAL_URL, "");
@@ -59,7 +61,7 @@ QString StbWindowMgr::transformInnerPortalPathToLocal(QString innerPortalPath)
 
 QString StbWindowMgr::openNewWindow(const QString &url, const QString &params, const QString &name)
 {
-    profile->getProfilePlugin()->browser()->evalJs(QString("window.open('%1', '%2', '%3')")
+    m_page->evalJs(QString("window.open('%1', '%2', '%3')")
                 .arg(transformInnerPortalPathToLocal(url))
                 .arg(name)
                 .arg(params));

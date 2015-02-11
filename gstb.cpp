@@ -181,7 +181,26 @@ int GStb::GetAspect()
 {
     STUB();
     CHECK_PLAYER(0);
-    return player()->aspectRatio();
+    ASPECT_RATIO ratio = player()->aspectRatio();
+
+    switch(ratio)
+    {
+        case ASPECT_RATIO_AUTO: {
+            return 0;
+        }
+        case ASPECT_RATIO_20_9: {
+            return 1;
+        }
+        case ASPECT_RATIO_16_9: {
+            return 2;
+        }
+        case ASPECT_RATIO_4_3: {
+            return 3;
+        }
+        default: {
+            return ASPECT_RATIO_16_9;
+        }
+    }
 }
 
 int GStb::GetAudioPID()
@@ -992,9 +1011,29 @@ void GStb::SetAspect(int aspect)
 {
     STUB() << aspect;
     //fixme
-    ASPECT_RATIO aspectRatio = ASPECT_RATIO_AUTO; // (int) aspect;
     CHECK_PLAYER_VOID;
-    player()->aspectRatio(aspectRatio);
+
+    ASPECT_RATIO ratio;
+    switch(aspect)
+    {
+        case 0: {
+            ratio = ASPECT_RATIO_AUTO; break;
+        }
+        case 1: {
+            ratio = ASPECT_RATIO_20_9; break;
+        }
+        case 2: {
+            ratio = ASPECT_RATIO_16_9; break;
+        }
+        case 3: {
+            ratio = ASPECT_RATIO_4_3; break;
+        }
+        default: {
+            ratio = ASPECT_RATIO_16_9; break;
+        }
+    }
+
+    player()->aspectRatio(ratio);
 }
 
 void GStb::SetAudioLangs(const QString &priLang, const QString &secLang)

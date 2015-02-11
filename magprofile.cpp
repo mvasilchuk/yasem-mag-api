@@ -96,6 +96,8 @@ void MagProfile::start()
 
     StbEvent* event = static_cast<StbEvent*>(profilePlugin->getStbApiList().find("stbEvent").value());
 
+    Q_ASSERT(event);
+
     connect(&signalHandler, &MediaSignalSender::paused,               this, [=](bool)
     {
         DEBUG() << "[MEDIA]: paused";

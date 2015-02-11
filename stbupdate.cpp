@@ -1,12 +1,14 @@
 #include "stbupdate.h"
 #include "macros.h"
 #include "magprofile.h"
+#include "abstractwebpage.h"
 
 using namespace yasem;
 
-StbUpdate::StbUpdate(MagProfile *profile)
+StbUpdate::StbUpdate(MagProfile *profile, AbstractWebPage* page)
 {
     this->profile = profile;
+    this->m_page = page;
 }
 
 int StbUpdate::GetFlashBankCount()

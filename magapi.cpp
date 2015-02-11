@@ -100,7 +100,7 @@ QString MagApi::getProfileClassId()
     return "mag";
 }
 
-void MagApi::resetObjects()
+void MagApi::resetObjects(AbstractWebPage* page)
 {
     QHash<QString, QObject*>& api = getApi();
     api.clear();
@@ -112,15 +112,15 @@ void MagApi::resetObjects()
     GStb* stb = new GStb(profile);
     api.insert("stb", stb);
     api.insert("gSTB", stb);
-    api.insert("stbDownloadManager", new StbDownloadManager(profile));
-    api.insert("stbWindowMgr", new StbWindowMgr(profile));
-    api.insert("pvrManager", new PvrManager(profile));
-    api.insert("stbUpdate", new StbUpdate(profile));
-    api.insert("stbWebWindow", new StbWebWindow(profile));
-    api.insert("timeShift", new TimeShift(profile));
+    api.insert("stbDownloadManager", new StbDownloadManager(profile, page));
+    api.insert("stbWindowMgr", new StbWindowMgr(profile, page));
+    api.insert("pvrManager", new PvrManager(profile, page));
+    api.insert("stbUpdate", new StbUpdate(profile, page));
+    api.insert("stbWebWindow", new StbWebWindow(profile, page));
+    api.insert("timeShift", new TimeShift(profile, page));
     api.insert("netscape", new Netscape(profile));
-    api.insert("stbEvent", new StbEvent(profile));
-    api.insert("stbStorage", new StbStorage(profile));
+    api.insert("stbEvent", new StbEvent(profile, page));
+    api.insert("stbStorage", new StbStorage(profile, page));
 
     /*
     connect(mediaPlayer, &QtAV::AVPlayer::paused,               &this->mediaSignalSender, &MediaSignalSender::paused);
@@ -143,9 +143,9 @@ void MagApi::applyFixes()
     //browser()->evalJs(fontFix);
 }
 
-void MagApi::init()
+void MagApi::init(AbstractWebPage* page)
 {
-    resetObjects();
+    resetObjects(page);
 }
 
 QUrl MagApi::handleUrl(QUrl &url) {

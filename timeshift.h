@@ -7,12 +7,13 @@
 namespace yasem
 {
 class MagProfile;
+class AbstractWebPage;
 
 class TimeShift : public QObject
 {
     Q_OBJECT
 public:
-    TimeShift(MagProfile *profile);
+    TimeShift(MagProfile *profile, AbstractWebPage* page);
 signals:
 
 public slots:
@@ -22,6 +23,7 @@ public slots:
     void SetMaxDuration(qint64 maxDuration);
 protected:
     MagProfile *profile;
+    AbstractWebPage* m_page;
 };
 
 }

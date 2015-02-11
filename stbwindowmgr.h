@@ -7,12 +7,13 @@ namespace yasem
 {
 class GuiPlugin;
 class MagProfile;
+class AbstractWebPage;
 
 class StbWindowMgr : public QObject
 {
     Q_OBJECT
 public:
-    explicit StbWindowMgr(MagProfile *profile);
+    explicit StbWindowMgr(MagProfile *profile, AbstractWebPage* page);
 
 signals:
 
@@ -37,6 +38,7 @@ protected:
     GuiPlugin* gui;
     MagProfile *profile;
     QString localPortalUrl;
+    AbstractWebPage* m_page;
 
     QString transformInnerPortalPathToLocal(QString innerPortalPath);
     QString openNewWindow(const QString &url, const QString &params, const QString &name);

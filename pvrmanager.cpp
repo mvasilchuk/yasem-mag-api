@@ -1,12 +1,14 @@
 #include "pvrmanager.h"
 #include "macros.h"
 #include "magprofile.h"
+#include "abstractwebpage.h"
 
 using namespace yasem;
 
-PvrManager::PvrManager(MagProfile *profile)
+PvrManager::PvrManager(MagProfile *profile, AbstractWebPage* page)
 {
     this->profile = profile;
+    this->m_page = page;
 }
 
 void PvrManager::SetMaxRecordingCnt(int count)
