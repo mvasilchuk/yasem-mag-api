@@ -211,38 +211,43 @@ int GStb::GetAudioPID()
 
 QString GStb::GetAudioPIDs()
 {
-    STUB();
-    //if(player())
-    //    return player()->audioPIDs();
-    return "";
+    QJsonArray resultArray;
+
+    QList<AudioLangInfo> languages = player()->getAudioLanguages();
+    for(AudioLangInfo info: languages)
+    {
+        QJsonObject obj;
+        obj.insert("pid", info.pid);
+
+        QJsonArray names;
+        names.append(info.code2);
+        names.append(info.code3);
+
+        obj.insert("lang", names);
+        resultArray.append(obj);
+    }
+    QString res = QJsonDocument(resultArray).toJson();
+    return res;
 }
 
 QString GStb::GetAudioPIDsEx()
 {
-    STUB();
-    //CHECK_PLAYER("");
-    return "";
+    return GetAudioPIDs();
 }
 
 int GStb::GetBrightness()
 {
-    STUB();
-    //CHECK_PLAYER(100);
-    return 100;
+    return player()->getBrightness();
 }
 
 int GStb::GetBufferLoad()
 {
-    STUB();
-    CHECK_PLAYER(100);
     return player()->bufferLoad();
 }
 
 int GStb::GetContrast()
 {
-    STUB();
-    //CHECK_PLAYER(100);
-    return 100;
+    return player()->getContrast();
 }
 
 QString GStb::GetDeviceActiveBank()
@@ -376,8 +381,28 @@ int GStb::GetMediaLenEx()
 QString GStb::GetMetadataInfo()
 {
     STUB();
-    //CHECK_PLAYER("");
-    return "";
+    MediaMetadata metadata = player()->getMetadata();
+
+    QJsonObject data;
+    data.insert("album",            metadata.album);
+    data.insert("album_artist",     metadata.album_artist);
+    data.insert("artist",           metadata.artist);
+    data.insert("comment",          metadata.comment);
+    data.insert("composer",         metadata.composer);
+    data.insert("copyright",        metadata.copyright);
+    data.insert("date",             metadata.date);
+    data.insert("disk",             metadata.disk);
+    data.insert("encoder",          metadata.encoder);
+    data.insert("encoded_by",       metadata.encoded_by);
+    data.insert("filename",         metadata.filename);
+    data.insert("genre",            metadata.genre);
+    data.insert("language",         metadata.language);
+    data.insert("performer",        metadata.performer);
+    data.insert("publisher",        metadata.publisher);
+    data.insert("title",            metadata.title);
+    data.insert("track",            metadata.track);
+
+    return QJsonDocument(data).toJson();
 }
 
 int GStb::GetMicVolume()
@@ -644,10 +669,6 @@ void GStb::IgnoreUpdates(bool ignore)
 void GStb::InitPlayer()
 {
     STUB();
-    //if(plugin->player())
-    //    plugin->player()->mediaReset();
-    //else
-    //    WARN(QString("Cannot init player - not found!"));
 }
 
 bool GStb::IsFileExist(QString fileName)
@@ -712,7 +733,7 @@ bool GStb::IsVirtualKeyboardActiveEx()
  *      "USB-<SN>-<INDEX>",
  *      ""
  * ]; var files = [{}];
- * where <SN> - drive serial number and <INDEX> - drive index starting from 1 (for each drive should be one row),
+ * where <SN> ia a drive serial number and <INDEX> is a drive index starting from 1 (for each drive should be one row),
  * as it returned by RDir("get_storage_info").
  *
  * \see @RDir
