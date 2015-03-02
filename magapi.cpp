@@ -70,8 +70,8 @@ QString MagApi::getStorageInfo()
         QJsonObject obj = QJsonObject();
         obj.insert("sn", sn);
         obj.insert("partitionNum", partitionNum);
-        obj.insert("vendor", QString());
-        obj.insert("model", disk->blockDevice.replace("/dev/", "").append(" "));
+        obj.insert("vendor", disk->vendor);
+        obj.insert("model", disk->model != "" ? disk->model : disk->blockDevice.replace("/dev/", "").append(" "));
         obj.insert("label", disk->mountPoint);
         obj.insert("mountPath", /*drive.absoluteFilePath()*/ QString("USB-%1-%2").arg(sn).arg(partitionNum));
         obj.insert("size", QString::number(disk->size));

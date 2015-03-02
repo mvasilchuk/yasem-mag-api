@@ -91,77 +91,83 @@ void MagProfile::start()
 {
     STUB();
 
-    MediaPlayerPlugin* player = profilePlugin->player();
-    MediaSignalSender& signalHandler = player->getSignalSender();
-
+    BrowserPlugin* browser = profilePlugin->browser();
+    if(!browser)
+    {
+        WARN() << "MagProfile::start() : browser not found!";
+        return;
+    }
     StbEvent* event = static_cast<StbEvent*>(profilePlugin->getStbApiList().find("stbEvent").value());
+    MediaPlayerPlugin* player = profilePlugin->player();
+    if(player)
+    {
+        MediaSignalSender& signalHandler = player->getSignalSender();
 
-    Q_ASSERT(event);
-
-    connect(&signalHandler, &MediaSignalSender::paused,               this, [=](bool)
-    {
-        DEBUG() << "[MEDIA]: paused";
-        event->sendEvent(StbEvent::STB_EVENT_NO_ERROR);
-    });
-    connect(&signalHandler, &MediaSignalSender::started,              this, [=]()
-    {
-        DEBUG() << "[MEDIA]: started";
-        event->sendEvent(StbEvent::STB_EVENT_GOT_VIDEO_INFO);
-        event->sendEvent(StbEvent::STB_EVENT_PLAY_START);
-    });
-
-    connect(&signalHandler, &MediaSignalSender::speedChanged,         this, [=](qreal speed)
-    {
-        DEBUG() << "[MEDIA]: speedChanged" << speed;
-    });
-    connect(&signalHandler, &MediaSignalSender::repeatChanged,        this, [=](int repeat)
-    {
-        DEBUG() << "[MEDIA]: repeatChanged" << repeat;
-    });
-    connect(&signalHandler, &MediaSignalSender::currentRepeatChanged, this, [=](int repeat)
-    {
-        DEBUG() << "[MEDIA]: currentRepeatChanged" << repeat;
-    });
-    connect(&signalHandler, &MediaSignalSender::startPositionChanged, this, [=](qint64 pos)
-    {
-        DEBUG() << "[MEDIA]: startPositionChanged" << pos;
-    });
-    connect(&signalHandler, &MediaSignalSender::stopPositionChanged,  this, [=](qint64 pos)
-    {
-        DEBUG() << "[MEDIA]: stopPositionChanged" << pos;
-    });
-    connect(&signalHandler, &MediaSignalSender::positionChanged,      this, [=](qint64 pos)
-    {
-        //DEBUG() << "[MEDIA]: positionChanged" << pos;
-    });
-    connect(&signalHandler, &MediaSignalSender::brightnessChanged,    this, [=](bool)
-    {
-        DEBUG() << "[MEDIA]: brightnessChanged";
-    });
-    connect(&signalHandler, &MediaSignalSender::contrastChanged,      this, [=](bool)
-    {
-        DEBUG() << "[MEDIA]: contrastChanged";
-    });
-    connect(&signalHandler, &MediaSignalSender::saturationChanged,    this, [=](bool)
-    {
-        DEBUG() << "[MEDIA]: saturationChanged";
-    });
-
-    connect(&signalHandler, &MediaSignalSender::statusChanged,              this, [=](MediaStatus status)
-    {
-        DEBUG() << "[MEDIA]: status changed:" << status;
-        switch(status)
+        connect(&signalHandler, &MediaSignalSender::paused,               this, [=](bool)
         {
-            case MediaStatus::EndOfMedia: {
-                event->sendEvent(StbEvent::STB_EVENT_EOF);
-                break;
+            DEBUG() << "[MEDIA]: paused";
+            event->sendEvent(StbEvent::STB_EVENT_NO_ERROR);
+        });
+        connect(&signalHandler, &MediaSignalSender::started,              this, [=]()
+        {
+            DEBUG() << "[MEDIA]: started";
+            event->sendEvent(StbEvent::STB_EVENT_GOT_VIDEO_INFO);
+            event->sendEvent(StbEvent::STB_EVENT_PLAY_START);
+        });
+
+        connect(&signalHandler, &MediaSignalSender::speedChanged,         this, [=](qreal speed)
+        {
+            DEBUG() << "[MEDIA]: speedChanged" << speed;
+        });
+        connect(&signalHandler, &MediaSignalSender::repeatChanged,        this, [=](int repeat)
+        {
+            DEBUG() << "[MEDIA]: repeatChanged" << repeat;
+        });
+        connect(&signalHandler, &MediaSignalSender::currentRepeatChanged, this, [=](int repeat)
+        {
+            DEBUG() << "[MEDIA]: currentRepeatChanged" << repeat;
+        });
+        connect(&signalHandler, &MediaSignalSender::startPositionChanged, this, [=](qint64 pos)
+        {
+            DEBUG() << "[MEDIA]: startPositionChanged" << pos;
+        });
+        connect(&signalHandler, &MediaSignalSender::stopPositionChanged,  this, [=](qint64 pos)
+        {
+            DEBUG() << "[MEDIA]: stopPositionChanged" << pos;
+        });
+        connect(&signalHandler, &MediaSignalSender::positionChanged,      this, [=](qint64 pos)
+        {
+            //DEBUG() << "[MEDIA]: positionChanged" << pos;
+        });
+        connect(&signalHandler, &MediaSignalSender::brightnessChanged,    this, [=](bool)
+        {
+            DEBUG() << "[MEDIA]: brightnessChanged";
+        });
+        connect(&signalHandler, &MediaSignalSender::contrastChanged,      this, [=](bool)
+        {
+            DEBUG() << "[MEDIA]: contrastChanged";
+        });
+        connect(&signalHandler, &MediaSignalSender::saturationChanged,    this, [=](bool)
+        {
+            DEBUG() << "[MEDIA]: saturationChanged";
+        });
+
+        connect(&signalHandler, &MediaSignalSender::statusChanged,              this, [=](MediaStatus status)
+        {
+            DEBUG() << "[MEDIA]: status changed:" << status;
+            switch(status)
+            {
+                case MediaStatus::EndOfMedia: {
+                    event->sendEvent(StbEvent::STB_EVENT_EOF);
+                    break;
+                }
+                default: {
+                    WARN() << "status ignored";
+                    break;
+                }
             }
-            default: {
-                WARN() << "status ignored";
-                break;
-            }
-        }
-    });
+        });
+    }
 
     //QString defaultUrl = "http://dmichael.org.ua/mag250";
     //QString defaultUrl = "http://tvportal1.global.net.ba";
@@ -185,17 +191,17 @@ void MagProfile::start()
     else
         userAgent = userAgents.value(submodel);
 
-    profilePlugin->browser()->setUserAgent(userAgent);
-
-    profilePlugin->browser()->stb(profilePlugin);
-
     QSize portalSize = portalResolutions.value(datasource()->get(DB_TAG_RDIR, "gmode", "1280"));
-    profilePlugin->browser()->setInnerSize(portalSize);
+
+
+    browser->setUserAgent(userAgent);
+    browser->stb(profilePlugin);
+    browser->setInnerSize(portalSize);
 
     QString urlString = portal();
     qDebug() << "Loading" << urlString;
     QUrl portalUrl = QUrl(urlString.replace("~", QDir::homePath()));
-    profilePlugin->browser()->load(portalUrl);
+    browser->load(portalUrl);
 }
 
 void MagProfile::configureKeyMap()
