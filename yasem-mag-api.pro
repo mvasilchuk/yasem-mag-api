@@ -5,20 +5,16 @@
 #-------------------------------------------------
 
 VERSION = 0.1.0
-
-QT      = core gui widgets
-
-CONFIG += c++11
-
 TARGET = yasem-mag-api
 TEMPLATE = lib
+
+include($${top_srcdir}/common.pri)
+
+QT      = core gui widgets
 
 MOBILITY += systeminfo
 
 DEFINES += MAGAPI_LIBRARY
-
-INCLUDEPATH += ../../yasem-core/
-DEPENDPATH += ../../yasem-core/
 
 SOURCES += \
     gstb.cpp \
@@ -33,12 +29,11 @@ SOURCES += \
     magprofile.cpp \
     stbevent.cpp \
     stbstorage.cpp \
-    ../../yasem-core/profileconfigparserimpl.cpp \
-    ../../yasem-core/plugin.cpp \
-    ../../yasem-core/stbpluginobject.cpp \
+    $${CORE_ROOT_DIR}/profileconfigparserimpl.cpp \
+    $${CORE_ROOT_DIR}/stbpluginobject.cpp \
     magapistbobject.cpp \
     magapiplugin.cpp \
-    ../../yasem-core/mediaplayerpluginobject.cpp
+    $${CORE_ROOT_DIR}/mediaplayerpluginobject.cpp
 
 HEADERS +=\
     magapi_global.h \
@@ -59,12 +54,10 @@ HEADERS +=\
     stbstorage.h \
     NetworkThread.h \
     mag_enums.h \
-    ../../yasem-core/abstractpluginobject.h \
-    ../../yasem-core/stbpluginobject.h \
-    ../../yasem-core/profileconfigparserimpl.h \
-    ../../yasem-core/plugin.h \
-    ../../yasem-core/browserpluginobject.h \
-    ../../yasem-core/mediaplayerpluginobject.h
+    $${CORE_ROOT_DIR}/stbpluginobject.h \
+    $${CORE_ROOT_DIR}/profileconfigparserimpl.h \
+    $${CORE_ROOT_DIR}/browserpluginobject.h \
+    $${CORE_ROOT_DIR}/mediaplayerpluginobject.h
 
 unix:!symbian {
     maemo5 {
@@ -87,11 +80,6 @@ OTHER_FILES += \
     README.md \
     resources/mag/keymap/default.ini \
     resources/mag/config-options.json
-
-
-
-include(../../common.pri)
-DESTDIR = $$DEFAULT_PLUGIN_DIR
 
 RESOURCES += \
     resources.qrc

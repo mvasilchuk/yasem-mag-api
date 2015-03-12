@@ -25,8 +25,8 @@
 
 using namespace yasem;
 
-MagApiStbObject::MagApiStbObject(Plugin* plugin, QObject* parent):
-    StbPluginObject(plugin, parent)
+MagApiStbObject::MagApiStbObject(Plugin* plugin):
+    StbPluginObject(plugin)
 {
     QFile res(QString(":/mag/fixes/fontfix.js"));
     res.open(QIODevice::ReadOnly|QIODevice::Text);

@@ -33,8 +33,8 @@ public:
         MAG_275
     };
 
-    MagApiStbObject(Plugin* plugin, QObject* parent = NULL);
-    ~MagApiStbObject();
+    MagApiStbObject(Plugin* plugin);
+    virtual ~MagApiStbObject();
 
     // StbPluginObject interface
 public slots:
