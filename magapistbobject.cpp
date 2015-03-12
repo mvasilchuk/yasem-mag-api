@@ -1,23 +1,32 @@
-#include "magapi.h"
-#include "pluginmanager.h"
+#include "magapistbobject.h"
 #include "customkeyevent.h"
-#include "datasourceplugin.h"
-#include "browserplugin.h"
-#include "mediaplayerplugin.h"
-#include "guiplugin.h"
-#include "core.h"
-#include "profilemanager.h"
+#include "gstb.h"
+#include "pvrmanager.h"
+#include "stbscreen.h"
+#include "stbwindowmgr.h"
+#include "stbupdate.h"
+#include "stbwebwindow.h"
+#include "timeshift.h"
+#include "netscape.h"
+#include "stbdownloadmanager.h"
 #include "magprofile.h"
+#include "pluginmanager.h"
+#include "profilemanager.h"
 #include "stbevent.h"
 #include "stbstorage.h"
+#include "mediaplayerpluginobject.h"
+#include "guipluginobject.h"
+#include "browserpluginobject.h"
 
+#include <QFile>
 #include <QFileInfoList>
 #include <QDir>
 #include <QJsonDocument>
 
 using namespace yasem;
 
-MagApi::MagApi()
+MagApiStbObject::MagApiStbObject(Plugin* plugin, QObject* parent):
+    StbPluginObject(plugin, parent)
 {
     QFile res(QString(":/mag/fixes/fontfix.js"));
     res.open(QIODevice::ReadOnly|QIODevice::Text);
@@ -42,22 +51,34 @@ MagApi::MagApi()
     submodels.append(StbSubmodel(QString::number(AURA_HD), "AuraHD"));
 }
 
-PLUGIN_ERROR_CODES MagApi::initialize()
+MagApiStbObject::~MagApiStbObject()
 {
-   player(dynamic_cast<MediaPlayerPlugin*>(PluginManager::instance()->getByRole(ROLE_MEDIA)));
-   gui(dynamic_cast<GuiPlugin*>(PluginManager::instance()->getByRole(ROLE_GUI)));
-   browser(dynamic_cast<BrowserPlugin*>(PluginManager::instance()->getByRole(ROLE_BROWSER)));
 
-   return PLUGIN_ERROR_NO_ERROR;
 }
 
-PLUGIN_ERROR_CODES MagApi::deinitialize()
+
+
+QString yasem::MagApiStbObject::getProfileClassId()
 {
-    STUB();
-    return PLUGIN_ERROR_NO_ERROR;
+    return "mag";
 }
 
-QString MagApi::getStorageInfo()
+Profile *yasem::MagApiStbObject::createProfile(const QString &id)
+{
+    return new MagProfile(this, id);
+}
+
+void yasem::MagApiStbObject::initObject(AbstractWebPage *page)
+{
+     resetObjects(page);
+}
+
+QString yasem::MagApiStbObject::getIcon(const QSize &size)
+{
+    return "qrc:/mag/icons/aurahd/aura-hd-256.png";
+}
+
+QString MagApiStbObject::getStorageInfo()
 {
     QList<DiskInfo*> disks = Core::instance()->disks();
     QJsonArray result = QJsonArray();
@@ -70,9 +91,18 @@ QString MagApi::getStorageInfo()
         QJsonObject obj = QJsonObject();
         obj.insert("sn", sn);
         obj.insert("partitionNum", partitionNum);
+
+        // To make it looks better in Stalker I swapped  label and vendor+model
+        // If you want to revert just comment this code
+        //*
+        obj.insert("vendor", disk->mountPoint + " ");
+        obj.insert("model", "");
+        obj.insert("label", disk->vendor + " " + disk->model);
+        /*/
         obj.insert("vendor", disk->vendor);
         obj.insert("model", disk->model != "" ? disk->model : disk->blockDevice.replace("/dev/", "").append(" "));
         obj.insert("label", disk->mountPoint);
+        //*/
         obj.insert("mountPath", /*drive.absoluteFilePath()*/ QString("USB-%1-%2").arg(sn).arg(partitionNum));
         obj.insert("size", QString::number(disk->size));
         obj.insert("freeSize", QString::number(disk->available));
@@ -85,22 +115,7 @@ QString MagApi::getStorageInfo()
     return QString(QJsonDocument(result).toJson(QJsonDocument::Compact));
 }
 
-QString MagApi::getIcon(const QSize &size = QSize())
-{
-    return "qrc:/mag/icons/aurahd/aura-hd-256.png";
-}
-
-Profile* MagApi::createProfile(const QString &id = "")
-{
-    return new MagProfile(this, id);
-}
-
-QString MagApi::getProfileClassId()
-{
-    return "mag";
-}
-
-void MagApi::resetObjects(AbstractWebPage* page)
+void MagApiStbObject::resetObjects(AbstractWebPage *page)
 {
     QHash<QString, QObject*>& api = getApi();
     api.clear();
@@ -109,7 +124,7 @@ void MagApi::resetObjects(AbstractWebPage* page)
 
     api.insert("screen", new StbScreen(profile));
 
-    GStb* stb = new GStb(profile);
+    GStb* stb = new GStb(profile, page);
     api.insert("stb", stb);
     api.insert("gSTB", stb);
     api.insert("stbDownloadManager", new StbDownloadManager(profile, page));
@@ -138,17 +153,13 @@ void MagApi::resetObjects(AbstractWebPage* page)
     */
 }
 
-void MagApi::applyFixes()
+void MagApiStbObject::applyFixes()
 {
     //browser()->evalJs(fontFix);
 }
 
-void MagApi::init(AbstractWebPage* page)
+QUrl MagApiStbObject::handleUrl(QUrl &url)
 {
-    resetObjects(page);
-}
-
-QUrl MagApi::handleUrl(QUrl &url) {
     QString urlString = url.toString();
 
     if(urlString.startsWith("http://home/web"))
@@ -161,14 +172,18 @@ QUrl MagApi::handleUrl(QUrl &url) {
     return QUrl(urlString);
 }
 
-void yasem::MagApi::register_dependencies()
+
+PluginObjectResult yasem::MagApiStbObject::init()
 {
-    add_dependency(ROLE_DATASOURCE);
-    add_dependency(ROLE_BROWSER);
-    add_dependency(ROLE_MEDIA);
+    StbPluginObject::init();// It's reqired to register profile class id
+
+    player(dynamic_cast<MediaPlayerPluginObject*>(PluginManager::instance()->getByRole(ROLE_MEDIA)));
+    gui(dynamic_cast<GuiPluginObject*>(PluginManager::instance()->getByRole(ROLE_GUI)));
+    browser(dynamic_cast<BrowserPluginObject*>(PluginManager::instance()->getByRole(ROLE_BROWSER)));
+    return PLUGIN_OBJECT_RESULT_OK;
 }
 
-void yasem::MagApi::register_roles()
+PluginObjectResult yasem::MagApiStbObject::deinit()
 {
-    register_role(ROLE_STB_API);
+    return PLUGIN_OBJECT_RESULT_OK;
 }

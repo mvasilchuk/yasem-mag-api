@@ -1,7 +1,7 @@
 #include "stbevent.h"
 #include "macros.h"
 #include "magprofile.h"
-#include "browserplugin.h"
+#include "browserpluginobject.h"
 #include "abstractwebpage.h"
 
 using namespace yasem;

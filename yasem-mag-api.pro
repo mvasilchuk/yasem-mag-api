@@ -20,7 +20,7 @@ DEFINES += MAGAPI_LIBRARY
 INCLUDEPATH += ../../yasem-core/
 DEPENDPATH += ../../yasem-core/
 
-SOURCES += magapi.cpp \
+SOURCES += \
     gstb.cpp \
     pvrmanager.cpp \
     stbscreen.cpp \
@@ -33,9 +33,14 @@ SOURCES += magapi.cpp \
     magprofile.cpp \
     stbevent.cpp \
     stbstorage.cpp \
-    ../../yasem-core/profileconfigparserimpl.cpp
+    ../../yasem-core/profileconfigparserimpl.cpp \
+    ../../yasem-core/plugin.cpp \
+    ../../yasem-core/stbpluginobject.cpp \
+    magapistbobject.cpp \
+    magapiplugin.cpp \
+    ../../yasem-core/mediaplayerpluginobject.cpp
 
-HEADERS += magapi.h\
+HEADERS +=\
     magapi_global.h \
     gstb.h \
     pvrmanager.h \
@@ -49,13 +54,17 @@ HEADERS += magapi.h\
     mag_macros.h \
     magprofile.h \
     stbevent.h \
-    ../../yasem-core/mediasignalsender.h \
+    magapiplugin.h \
+    magapistbobject.h \
     stbstorage.h \
     NetworkThread.h \
     mag_enums.h \
-    ../../yasem-core/profileconfigparserimpl.h
-
-
+    ../../yasem-core/abstractpluginobject.h \
+    ../../yasem-core/stbpluginobject.h \
+    ../../yasem-core/profileconfigparserimpl.h \
+    ../../yasem-core/plugin.h \
+    ../../yasem-core/browserpluginobject.h \
+    ../../yasem-core/mediaplayerpluginobject.h
 
 unix:!symbian {
     maemo5 {

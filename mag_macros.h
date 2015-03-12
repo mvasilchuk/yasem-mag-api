@@ -3,8 +3,8 @@
 
 #include "stbprofile.h"
 
-#define CHECK_PLAYER_VOID Q_ASSERT(profile->getProfilePlugin()->player());
-#define CHECK_PLAYER(value) Q_ASSERT(profile->getProfilePlugin()->player());
+#define CHECK_PLAYER_VOID if(!player()) return;
+#define CHECK_PLAYER(value) if(!player()) return value;
 
 #define CONFIG_INNER_PORTAL_URL "InnerPortal/URL"
 

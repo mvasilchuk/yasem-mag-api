@@ -1,9 +1,9 @@
 #include "macros.h"
 #include "stbwindowmgr.h"
 #include "pluginmanager.h"
-#include "browserplugin.h"
-#include "datasource.h"
-#include "stbplugin.h"
+#include "browserpluginobject.h"
+#include "datasourcepluginobject.h"
+#include "stbpluginobject.h"
 #include "mag_macros.h"
 #include "magprofile.h"
 #include "profilemanager.h"
@@ -16,7 +16,7 @@ StbWindowMgr::StbWindowMgr(MagProfile *profile, AbstractWebPage* page)
     this->profile = profile;
     this->m_page = page;
 
-    Datasource* datasource = profile->datasource();
+    DatasourcePluginObject* datasource = profile->datasource();
     localPortalUrl = datasource->get(DB_TAG_PROFILE, CONFIG_INNER_PORTAL_URL, "");
     //gui = dynamic_cast<GuiPlugin*>(PluginManager::instance()->getByRole("gui"));
 }

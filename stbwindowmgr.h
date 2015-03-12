@@ -5,7 +5,7 @@
 
 namespace yasem
 {
-class GuiPlugin;
+class GuiPluginObject;
 class MagProfile;
 class AbstractWebPage;
 
@@ -35,7 +35,7 @@ public slots:
     void openWebFace(const QString &url);
     void windowInit(const QString &params);
 protected:
-    GuiPlugin* gui;
+    GuiPluginObject* gui;
     MagProfile *profile;
     QString localPortalUrl;
     AbstractWebPage* m_page;

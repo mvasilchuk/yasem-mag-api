@@ -1,20 +1,19 @@
 #include "gstb.h"
-#include "stbplugin.h"
+#include "stbpluginobject.h"
 #include "datasourceplugin.h"
-#include "browserplugin.h"
-#include "mediaplayerplugin.h"
-#include "guiplugin.h"
+#include "browserpluginobject.h"
+#include "mediaplayerpluginobject.h"
+#include "guipluginobject.h"
 #include "enums.h"
 #include "mag_enums.h"
 #include "mag_macros.h"
 #include "core.h"
-#include "stbplugin.h"
-#include "magapi.h"
-#include "datasource.h"
+#include "datasourcepluginobject.h"
 #include "magprofile.h"
 #include "stbevent.h"
-#include "mediaplayerplugin.h"
+#include "mediaplayerpluginobject.h"
 #include "NetworkThread.h"
+#include "magapistbobject.h"
 
 #include <QStringList>
 #include <QDebug>
@@ -31,12 +30,12 @@
 
 using namespace yasem;
 
-GStb::GStb(MagProfile *profile)
+GStb::GStb(MagProfile *profile, AbstractWebPage* page):
+    m_profile(profile),
+    m_page(page)
 {
     //qDebug() << "logger: " << parent->getLogger();
     this->setObjectName("gSTB");
-
-    this->profile = profile;
 }
 
 QString GStb::listLocalFiles(const QString &dir)
@@ -77,9 +76,19 @@ QString GStb::listLocalFiles(const QString &dir)
     return result;
 }
 
-MediaPlayerPlugin *GStb::player()
+MediaPlayerPluginObject *GStb::player()
 {
-    return profile->getProfilePlugin()->player();
+    return profile()->getProfilePlugin()->player();
+}
+
+BrowserPluginObject *GStb::browser()
+{
+    return profile()->getProfilePlugin()->browser();
+}
+
+DatasourcePluginObject *GStb::datasource()
+{
+    return profile()->datasource();
 }
 
 void GStb::CloseWebWindow()
@@ -92,6 +101,7 @@ void GStb::CloseWebWindow()
  */
 void GStb::Continue()
 {
+    CHECK_PLAYER_VOID
     player()->mediaContinue();
 }
 
@@ -181,7 +191,7 @@ int GStb::GetAspect()
 {
     STUB();
     CHECK_PLAYER(0);
-    ASPECT_RATIO ratio = player()->aspectRatio();
+    AspectRatio ratio = player()->aspectRatio();
 
     switch(ratio)
     {
@@ -212,6 +222,7 @@ int GStb::GetAudioPID()
 QString GStb::GetAudioPIDs()
 {
     QJsonArray resultArray;
+    CHECK_PLAYER(QJsonDocument(resultArray).toJson())
 
     QList<AudioLangInfo> languages = player()->getAudioLanguages();
     for(AudioLangInfo info: languages)
@@ -232,40 +243,44 @@ QString GStb::GetAudioPIDs()
 
 QString GStb::GetAudioPIDsEx()
 {
+    CHECK_PLAYER("")
     return GetAudioPIDs();
 }
 
 int GStb::GetBrightness()
 {
+    CHECK_PLAYER(0)
     return player()->getBrightness();
 }
 
 int GStb::GetBufferLoad()
 {
+    CHECK_PLAYER(100)
     return player()->bufferLoad();
 }
 
 int GStb::GetContrast()
 {
+    CHECK_PLAYER(0)
     return player()->getContrast();
 }
 
 QString GStb::GetDeviceActiveBank()
 {
     STUB();
-    return profile->datasource()->get(DB_TAG_ENV, "DeviceActiveBank", "0");
+    return profile()->datasource()->get(DB_TAG_ENV, "DeviceActiveBank", "0");
 }
 
 QString GStb::GetDeviceImageDesc()
 {
-    QString description = profile->datasource()->get(DB_TAG_RDIR, "ImageDescription");
+    QString description = profile()->datasource()->get(DB_TAG_RDIR, "ImageDescription");
     LOG() << description;
     return description;
 }
 
 QString GStb::GetDeviceImageVersion()
 {
-    QString version = profile->datasource()->get(DB_TAG_RDIR, "ImageVersion");
+    QString version = profile()->datasource()->get(DB_TAG_RDIR, "ImageVersion");
     LOG() << QString("GetDeviceImageVersion(): %1").arg(version);
     return version;
 }
@@ -278,10 +293,10 @@ QString GStb::GetDeviceImageVersionCurrent()
 
 QString GStb::GetDeviceMacAddress()
 {
-    if(!profile->datasource())
+    if(!profile()->datasource())
         return "";
 
-    QString mac = profile->datasource()->get(DB_TAG_RDIR, "MACAddress");
+    QString mac = profile()->datasource()->get(DB_TAG_RDIR, "MACAddress");
     LOG() << QString("GetDeviceMacAddress(): %1").arg(mac);
     return mac;
 }
@@ -301,31 +316,31 @@ QString GStb::GetDeviceModelExt()
 
 QString GStb::GetDeviceSerialNumber()
 {
-    if(!profile->datasource())
+    if(!profile()->datasource())
         return "";
 
-    QString serial = profile->datasource()->get(DB_TAG_RDIR, "SerialNumber");
+    QString serial = profile()->datasource()->get(DB_TAG_RDIR, "SerialNumber");
     LOG() << QString("GetDeviceSerialNumber(): %1").arg(serial);
     return serial;
 }
 
 QString GStb::GetDeviceVendor()
 {
-    QString vendor = profile->datasource()->get(DB_TAG_RDIR, "HardwareVersion", "TeleTec");
+    QString vendor = profile()->datasource()->get(DB_TAG_RDIR, "HardwareVersion", "TeleTec");
     STUB() << QString("GetDeviceVendor(): %1").arg(vendor);
     return vendor;
 }
 
 QString GStb::GetDeviceVersionHardware()
 {
-    QString device_hardware =  profile->datasource()->get(DB_TAG_RDIR, "HardwareVersion", "1.7-BD-00");
+    QString device_hardware =  profile()->datasource()->get(DB_TAG_RDIR, "HardwareVersion", "1.7-BD-00");
     STUB() << QString("GetDeviceVersionHardware(): %1").arg(device_hardware);
     return device_hardware;
 }
 
 QString GStb::GetEnv(const QString &data)
 {
-    if(!profile->datasource())
+    if(!profile()->datasource())
         return "";
 
     QJsonObject obj = QJsonDocument::fromJson(QByteArray(data.toUtf8())).object();
@@ -336,7 +351,7 @@ QString GStb::GetEnv(const QString &data)
     {
         QString name = varList.at(index).toString();
 
-        QString value = profile->datasource()->get(DB_TAG_ENV, name);
+        QString value = profile()->datasource()->get(DB_TAG_ENV, name);
         elements.insert(name, value);
     }
 
@@ -381,7 +396,7 @@ int GStb::GetMediaLenEx()
 QString GStb::GetMetadataInfo()
 {
     STUB();
-    MediaMetadata metadata = player()->getMetadata();
+    MediaMetadata metadata = player()->getMediaMetadata();
 
     QJsonObject data;
     data.insert("album",            metadata.album);
@@ -453,6 +468,7 @@ int GStb::GetPosPercent()
 int GStb::GetPosPercentEx()
 {
     STUB();
+    CHECK_PLAYER(0)
     int pos = int(player()->position() * 10000 / player()->duration());
     DEBUG() << "GetPosPercentEx:" << pos;
     return pos;
@@ -461,6 +477,7 @@ int GStb::GetPosPercentEx()
 int GStb::GetPosTime()
 {
     STUB();
+    CHECK_PLAYER(0)
     int pos = player()->position() / 1000;
     DEBUG() << "position:" << pos;
     return pos;
@@ -469,6 +486,7 @@ int GStb::GetPosTime()
 int GStb::GetPosTimeEx()
 {
     STUB();
+    CHECK_PLAYER(0)
     int pos = player()->position();
     qDebug() << "position:" << pos;
     return pos;
@@ -824,6 +842,11 @@ QString GStb::translateStbPathToLocal(const QString& path)
     return newPath;
 }
 
+MagProfile *GStb::profile()
+{
+    return m_profile;
+}
+
 void GStb::LoadCASIniFile(const QString &iniFileName)
 {
     STUB() << iniFileName;
@@ -846,7 +869,7 @@ void GStb::LoadURL(const QString &str)
  */
 QString GStb::LoadUserData(const QString &str)
 {
-    QString data = profile->datasource()->get(DB_TAG_USER, str);
+    QString data = profile()->datasource()->get(DB_TAG_USER, str);
     DEBUG() << str << data;
     return data;
 }
@@ -859,7 +882,8 @@ void GStb::Pause()
 
 void GStb::Play(const QString &playStr, const QString &proxyParmas)
 {
-    DEBUG() << playStr << proxyParmas;
+    DEBUG() << "GStb::Play" << playStr << proxyParmas;
+    CHECK_PLAYER_VOID
 
     QString urlString = playStr.trimmed();
 
@@ -889,7 +913,7 @@ void GStb::Play(const QString &playStr, const QString &proxyParmas)
     //Transform multicast address
     if((url.startsWith("udp://") || url.startsWith("rtp://")))
     {
-        bool use_multicast = profile->isUsingMulticastProxy();
+        bool use_multicast = profile()->isUsingMulticastProxy();
         DEBUG() << "use_multicast" << use_multicast;
         if(use_multicast)
         {
@@ -901,7 +925,7 @@ void GStb::Play(const QString &playStr, const QString &proxyParmas)
                 if(tmp_url.startsWith("@"))
                         tmp_url = tmp_url.right(tmp_url.length() - 1);
 
-                QString proxy_url = profile->getMulticastProxy();
+                QString proxy_url = profile()->getMulticastProxy();
                 url = proxy_url.append("/").append(proto).append("/").append(tmp_url);
             }
             else
@@ -921,11 +945,11 @@ void GStb::PlaySolution(const QString &solution, const QString &url)
 
 QString GStb::RDir(const QString &name)
 {
-    Q_ASSERT(profile->datasource());
+    Q_ASSERT(profile()->datasource());
 
     if(name == "get_storage_info")
     {
-        return ((MagApi*)profile->getProfilePlugin())->getStorageInfo();
+        return ((MagApiStbObject*)profile()->getProfilePlugin())->getStorageInfo();
     }
 
     QString result;
@@ -933,9 +957,9 @@ QString GStb::RDir(const QString &name)
     {
        QStringList params = name.split(" ");
        if(params.at(0) == "getenv")
-            result = profile->datasource()->get(DB_TAG_ENV, params[1]);
+            result = datasource()->get(DB_TAG_ENV, params[1]);
        else if(params.at(0) == "setenv")
-           result = QVariant(profile->datasource()->set(DB_TAG_ENV, params.at(1), params.at(2))).toString();
+           result = QVariant(datasource()->set(DB_TAG_ENV, params.at(1), params.at(2))).toString();
     }
     else if(name.startsWith("tempfile"))
     {
@@ -956,7 +980,7 @@ QString GStb::RDir(const QString &name)
     }
     else if(name == "get_hdd_info")
     {
-        result = ((MagApi*)profile->getProfilePlugin())->getStorageInfo();
+        result = ((MagApiStbObject*)profile()->getProfilePlugin())->getStorageInfo();
     }
     else if(name.startsWith("mount"))
     {
@@ -974,7 +998,7 @@ QString GStb::RDir(const QString &name)
     }
     else
     {
-        result = profile->datasource()->get(DB_TAG_RDIR, name);
+        result = profile()->datasource()->get(DB_TAG_RDIR, name);
     }
 
     DEBUG() << "RDir:" << QString("[\"%1\"] -> \"%2\"").arg(name, result);
@@ -1000,7 +1024,7 @@ void GStb::Rotate(qint16 angle)
 void GStb::SaveUserData(const QString &fileName, const QString &data)
 {
     DEBUG() << "SaveUserData:" << fileName << data;
-    profile->datasource()->set(DB_TAG_USER, fileName, data);
+    datasource()->set(DB_TAG_USER, fileName, data);
 }
 
 void GStb::SendEventToPortal(const QString &args)
@@ -1031,10 +1055,9 @@ void GStb::SetAlphaLevel(qint32 alpha)
 void GStb::SetAspect(int aspect)
 {
     STUB() << aspect;
-    //fixme
     CHECK_PLAYER_VOID;
 
-    ASPECT_RATIO ratio;
+    AspectRatio ratio;
     switch(aspect)
     {
         case 0: {
@@ -1070,6 +1093,7 @@ void GStb::SetAudioOperationalMode(int mode)
 void GStb::SetAudioPID(int pid)
 {
     DEBUG() << "SetAudioPID:" << pid;
+    CHECK_PLAYER_VOID
     player()->audioPID(pid);
 }
 
@@ -1148,7 +1172,7 @@ void GStb::SetDRC(int high, int low)
  */
 bool GStb::SetEnv(const QString &data, const QString &value)
 {
-    if(!profile->datasource())
+    if(!profile()->datasource())
         return false;
 
     LOG() << QString("SetEnv(%1 = %2)").arg(data).arg(value);
@@ -1158,12 +1182,12 @@ bool GStb::SetEnv(const QString &data, const QString &value)
         QJsonObject obj = QJsonDocument::fromJson(QByteArray(data.toUtf8())).object();
         foreach(QString key, obj.keys())
         {
-            result = result && profile->datasource()->set(DB_TAG_ENV, key, obj.take(key).toString());
+            result = result && profile()->datasource()->set(DB_TAG_ENV, key, obj.take(key).toString());
         }
     }
     else
     {
-        result = profile->datasource()->set(DB_TAG_ENV, data, value);
+        result = profile()->datasource()->set(DB_TAG_ENV, data, value);
     }
 
     return result;
@@ -1193,6 +1217,7 @@ void GStb::SetListFilesExt(const QString &exts)
 void GStb::SetLoop(int loop)
 {
     DEBUG() << "SetLoop:" << loop;
+    CHECK_PLAYER_VOID
     player()->loop(loop);
 }
 
@@ -1221,6 +1246,7 @@ int GStb::SetMulticastProxyURL(const QString &val)
 void GStb::SetMute(int mute)
 {
     STUB() << mute;
+    CHECK_PLAYER_VOID
     player()->mute(mute == 1);
 }
 
@@ -1244,6 +1270,8 @@ void GStb::SetPCRModeEnabled(bool val)
 void GStb::SetPIG(int state, float scale, int x, int y)
 {
     STUB() << state << scale << x << y;
+
+    CHECK_PLAYER_VOID
 
     if(state == 1)
     {
@@ -1366,13 +1394,14 @@ void GStb::SetTeletextPID(unsigned int val)
  */
 void GStb::SetTopWin(int winNum)
 {
-
-    STUB() << winNum;
-    //return;
+    STUB() << "GStb::SetTopWin" << winNum;
+    CHECK_PLAYER_VOID
     if(winNum == WINDOW_BROWSER)
-        profile->getProfilePlugin()->browser()->raise();
+        browser()->raise();
     else
+    {
         player()->raise();
+    }
 }
 
 void GStb::SetTransparentColor(int color)
@@ -1415,18 +1444,17 @@ void GStb::SetVideoState(int state)
 */
 void GStb::SetViewport(int xsize, int ysize, int x, int y)
 {
-    CHECK_PLAYER_VOID;
-    DEBUG() << xsize << ysize << x << y;
+    DEBUG() << "GStb::SetViewport" << xsize << ysize << x << y;
+    CHECK_PLAYER_VOID
 
-    StbPlugin* plugin = profile->getProfilePlugin();
-
-    plugin->player()->fullscreen(false);
-    plugin->player()->setViewport(plugin->browser()->rect(), plugin->browser()->scale(), QRect(x, y, xsize, ysize));
+    player()->fullscreen(false);
+    player()->setViewport(QRect(x, y, xsize, ysize));
 }
 
 void GStb::SetVolume(int volume)
 {
     DEBUG() << "SetVolume:" << volume;
+    CHECK_PLAYER_VOID
     player()->volume(volume);
 }
 
@@ -1443,8 +1471,8 @@ void GStb::SetWebProxy(const QString &host, int port, const QString &user, const
 void GStb::SetWinAlphaLevel(int winNum, int alpha)
 {
     STUB() << winNum <<alpha;
-
-    profile->getProfilePlugin()->browser()->setOpacity(alpha);
+    CHECK_PLAYER_VOID
+    browser()->setOpacity(alpha);
 }
 
 void GStb::SetWinMode(int winNum, int mode)
@@ -1474,12 +1502,12 @@ void GStb::ShowVirtualKeyboard(bool show)
 
 void GStb::StandBy(bool standBy)
 {
-    STUB() << standBy;
+    STUB() << "GStb::StartLocalCfg" << standBy;
 }
 
 void GStb::StartLocalCfg()
 {
-    STUB();
+    STUB() << "GStb::StartLocalCfg";
 }
 
 void GStb::Step()
@@ -1489,7 +1517,8 @@ void GStb::Step()
 
 void GStb::Stop()
 {
-    DEBUG() << Q_FUNC_INFO;
+    DEBUG() << "GStb::Stop";
+    CHECK_PLAYER_VOID
     player()->mediaStop();
 }
 

@@ -8,14 +8,17 @@
 namespace yasem
 {
 class MagProfile;
-class MediaPlayerPlugin;
+class MediaPlayerPluginObject;
+class AbstractWebPage;
+class BrowserPluginObject;
+class DatasourcePluginObject;
 
 class GStb : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit GStb(MagProfile *profile);
+    explicit GStb(MagProfile *profile, AbstractWebPage* page);
 
 
 protected:
@@ -25,13 +28,20 @@ protected:
     };
 
     QStringList listFileExt;
-    MagProfile *profile;
+    MagProfile *m_profile;
+    AbstractWebPage* m_page;
     QString listLocalFiles(const QString &dir);
-    MediaPlayerPlugin* player();
+    MediaPlayerPluginObject* player();
+    BrowserPluginObject* browser();
+    DatasourcePluginObject* datasource();
+
 
     QString translateStbPathToLocal(const QString &path);
 
 signals:
+
+public:
+    MagProfile* profile();
 
 public slots:
 

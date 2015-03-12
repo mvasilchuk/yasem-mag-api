@@ -8,12 +8,12 @@
 
 namespace yasem
 {
-class StbPlugin;
+class StbPluginObject;
 class MagProfile : public QObject, public Profile
 {
     Q_OBJECT
 public:
-    explicit MagProfile(StbPlugin *profilePlugin, const QString &id);
+    explicit MagProfile(StbPluginObject *profilePlugin, const QString &id);
 
 
 signals:

@@ -10,7 +10,7 @@
 
 namespace yasem
 {
-class MediaPlayerPlugin;
+class MediaPlayerPluginObject;
 class AbstractWebPage;
 
 class StbStorage : public QObject

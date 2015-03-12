@@ -1,11 +1,11 @@
-#include "stbplugin.h"
-#include "browserplugin.h"
+#include "stbpluginobject.h"
+#include "browserpluginobject.h"
 #include "magprofile.h"
-#include "datasource.h"
+#include "datasourcepluginobject.h"
 #include "pluginmanager.h"
 #include "profilemanager.h"
 #include "mag_macros.h"
-#include "mediaplayerplugin.h"
+#include "mediaplayerpluginobject.h"
 #include "stbevent.h"
 #include "mag_enums.h"
 #include "profileconfigparserimpl.h"
@@ -16,7 +16,7 @@ static const QString CONFIG_INTERNAL_PORTAL = "internal_portal";
 
 using namespace yasem;
 
-MagProfile::MagProfile(StbPlugin *profilePlugin, const QString &id = "") :
+MagProfile::MagProfile(StbPluginObject *profilePlugin, const QString &id = "") :
     Profile(profilePlugin, id)
 {
     Q_ASSERT(profilePlugin);
@@ -91,68 +91,66 @@ void MagProfile::start()
 {
     STUB();
 
-    BrowserPlugin* browser = profilePlugin->browser();
+    BrowserPluginObject* browser = m_profile_plugin->browser();
     if(!browser)
     {
         WARN() << "MagProfile::start() : browser not found!";
         return;
     }
-    StbEvent* event = static_cast<StbEvent*>(profilePlugin->getStbApiList().find("stbEvent").value());
-    MediaPlayerPlugin* player = profilePlugin->player();
+    StbEvent* event = static_cast<StbEvent*>(m_profile_plugin->getStbApiList().find("stbEvent").value());
+    MediaPlayerPluginObject* player = m_profile_plugin->player();
     if(player)
     {
-        MediaSignalSender& signalHandler = player->getSignalSender();
-
-        connect(&signalHandler, &MediaSignalSender::paused,               this, [=](bool)
+        connect(player, &MediaPlayerPluginObject::paused,               this, [=](bool)
         {
             DEBUG() << "[MEDIA]: paused";
             event->sendEvent(StbEvent::STB_EVENT_NO_ERROR);
         });
-        connect(&signalHandler, &MediaSignalSender::started,              this, [=]()
+        connect(player, &MediaPlayerPluginObject::started,              this, [=]()
         {
             DEBUG() << "[MEDIA]: started";
             event->sendEvent(StbEvent::STB_EVENT_GOT_VIDEO_INFO);
             event->sendEvent(StbEvent::STB_EVENT_PLAY_START);
         });
 
-        connect(&signalHandler, &MediaSignalSender::speedChanged,         this, [=](qreal speed)
+        connect(player, &MediaPlayerPluginObject::speedChanged,         this, [=](qreal speed)
         {
             DEBUG() << "[MEDIA]: speedChanged" << speed;
         });
-        connect(&signalHandler, &MediaSignalSender::repeatChanged,        this, [=](int repeat)
+        connect(player, &MediaPlayerPluginObject::repeatChanged,        this, [=](int repeat)
         {
             DEBUG() << "[MEDIA]: repeatChanged" << repeat;
         });
-        connect(&signalHandler, &MediaSignalSender::currentRepeatChanged, this, [=](int repeat)
+        connect(player, &MediaPlayerPluginObject::currentRepeatChanged, this, [=](int repeat)
         {
             DEBUG() << "[MEDIA]: currentRepeatChanged" << repeat;
         });
-        connect(&signalHandler, &MediaSignalSender::startPositionChanged, this, [=](qint64 pos)
+        connect(player, &MediaPlayerPluginObject::startPositionChanged, this, [=](qint64 pos)
         {
             DEBUG() << "[MEDIA]: startPositionChanged" << pos;
         });
-        connect(&signalHandler, &MediaSignalSender::stopPositionChanged,  this, [=](qint64 pos)
+        connect(player, &MediaPlayerPluginObject::stopPositionChanged,  this, [=](qint64 pos)
         {
             DEBUG() << "[MEDIA]: stopPositionChanged" << pos;
         });
-        connect(&signalHandler, &MediaSignalSender::positionChanged,      this, [=](qint64 pos)
+        connect(player, &MediaPlayerPluginObject::positionChanged,      this, [=](qint64 pos)
         {
             //DEBUG() << "[MEDIA]: positionChanged" << pos;
         });
-        connect(&signalHandler, &MediaSignalSender::brightnessChanged,    this, [=](bool)
+        connect(player, &MediaPlayerPluginObject::brightnessChanged,    this, [=](bool)
         {
             DEBUG() << "[MEDIA]: brightnessChanged";
         });
-        connect(&signalHandler, &MediaSignalSender::contrastChanged,      this, [=](bool)
+        connect(player, &MediaPlayerPluginObject::contrastChanged,      this, [=](bool)
         {
             DEBUG() << "[MEDIA]: contrastChanged";
         });
-        connect(&signalHandler, &MediaSignalSender::saturationChanged,    this, [=](bool)
+        connect(player, &MediaPlayerPluginObject::saturationChanged,    this, [=](bool)
         {
             DEBUG() << "[MEDIA]: saturationChanged";
         });
 
-        connect(&signalHandler, &MediaSignalSender::statusChanged,              this, [=](MediaStatus status)
+        connect(player, &MediaPlayerPluginObject::statusChanged,              this, [=](MediaStatus status)
         {
             DEBUG() << "[MEDIA]: status changed:" << status;
             switch(status)
@@ -195,8 +193,8 @@ void MagProfile::start()
 
 
     browser->setUserAgent(userAgent);
-    browser->stb(profilePlugin);
-    browser->setInnerSize(portalSize);
+    browser->stb(m_profile_plugin);
+    browser->getActiveWebPage()->setVieportSize(portalSize);
 
     QString urlString = portal();
     qDebug() << "Loading" << urlString;
@@ -233,7 +231,7 @@ void MagProfile::initDefaults()
 {
     STUB();
 
-    Datasource* ds = datasource();
+    DatasourcePluginObject* ds = datasource();
 
     /*
         STB Model:MAG250

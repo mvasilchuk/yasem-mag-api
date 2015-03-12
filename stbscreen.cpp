@@ -6,7 +6,7 @@ using namespace yasem;
 
 StbScreen::StbScreen(MagProfile *profile)
 {
-    Datasource* ds = profile->datasource();
+    DatasourcePluginObject* ds = profile->datasource();
 
     QString gmode = ds->get(DB_TAG_RDIR, "gmode", "1280");
 
