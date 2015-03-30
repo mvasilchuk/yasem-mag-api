@@ -115,7 +115,7 @@ public slots:
     QString GetWepKey64ByPassPhrase(const QString &passPhrase);
     QString GetWifiGroups();
     bool GetWifiLinkStatus();
-    qint32 GetWinAlphaLevel();
+    qint32 GetWinAlphaLevel(int winNum);
     void HideVirtualKeyboard();
     void HideVirtualKeyboardEx();
     void IgnoreUpdates(bool ignore);

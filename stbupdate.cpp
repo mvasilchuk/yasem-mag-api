@@ -25,7 +25,8 @@ int StbUpdate::getStatus()
 
 /**
  * Returns memory bank number, which was used for current software loading.
- * @return 0 – first memory bank; 1 – second memory bank; -1 – memory bank is undefined (it could be possible if device was booted from network storage. For examples, NFS)
+ * @return 0 – first memory bank; 1 – second memory bank; -1 – memory bank is undefined
+ * (it could be possible if device was booted from network storage. For examples, NFS)
  */
 int StbUpdate::getActiveBank()
 {

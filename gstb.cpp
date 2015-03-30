@@ -26,7 +26,6 @@
 #include <QRegExp>
 #include <QRegularExpression>
 #include <QCryptographicHash>
-#include <QGraphicsOpacityEffect>
 
 using namespace yasem;
 
@@ -191,7 +190,7 @@ int GStb::GetAspect()
 {
     STUB();
     CHECK_PLAYER(0);
-    AspectRatio ratio = player()->aspectRatio();
+    AspectRatio ratio = player()->getAspectRatio();
 
     switch(ratio)
     {
@@ -216,7 +215,7 @@ int GStb::GetAspect()
 int GStb::GetAudioPID()
 {
     CHECK_PLAYER(0);
-    return player()->audioPID();
+    return player()->getAudioPID();
 }
 
 QString GStb::GetAudioPIDs()
@@ -379,7 +378,7 @@ int GStb::GetMediaLen()
 {
     STUB();
     CHECK_PLAYER(0);
-    int len = (int)(player()->duration() / 1000);
+    int len = (int)(player()->getDuration() / 1000);
     DEBUG() << "media length:" << len;
     return len;
 
@@ -390,7 +389,7 @@ int GStb::GetMediaLenEx()
     STUB();
     CHECK_PLAYER(0);
     //TODO: fixme
-    return (int)(player()->duration() / 1000);
+    return (int)(player()->getDuration() / 1000);
 }
 
 QString GStb::GetMetadataInfo()
@@ -431,7 +430,7 @@ bool GStb::GetMute()
 {
     STUB();
     CHECK_PLAYER(false);
-    return player()->mute();
+    return player()->isMute();
 }
 
 QString GStb::GetNetworkGateways()
@@ -455,21 +454,21 @@ QString GStb::GetNetworkWifiMac()
 bool GStb::GetPIG()
 {
     STUB();
-    return false;
+    return !player()->isFullscreen();
 }
 
 int GStb::GetPosPercent()
 {
     STUB();
     CHECK_PLAYER(0);
-    return (int)(((float)player()->position() * 100) / player()->duration());
+    return (int)(((float)player()->getPosition() * 100) / player()->getDuration());
 }
 
 int GStb::GetPosPercentEx()
 {
     STUB();
     CHECK_PLAYER(0)
-    int pos = int(player()->position() * 10000 / player()->duration());
+    int pos = int(player()->getPosition() * 10000 / player()->getDuration());
     DEBUG() << "GetPosPercentEx:" << pos;
     return pos;
 }
@@ -478,7 +477,7 @@ int GStb::GetPosTime()
 {
     STUB();
     CHECK_PLAYER(0)
-    int pos = player()->position() / 1000;
+    int pos = player()->getPosition() / 1000;
     DEBUG() << "position:" << pos;
     return pos;
 }
@@ -487,7 +486,7 @@ int GStb::GetPosTimeEx()
 {
     STUB();
     CHECK_PLAYER(0)
-    int pos = player()->position();
+    int pos = player()->getPosition();
     qDebug() << "position:" << pos;
     return pos;
 }
@@ -623,7 +622,7 @@ QString GStb::GetTeletextPIDs()
 qint64 GStb::GetTransparentColor()
 {
     STUB();
-    return 0;
+    return m_page->getChromaKey().rgb();
 }
 
 QString GStb::GetVideoInfo()
@@ -636,7 +635,7 @@ qint32 GStb::GetVolume()
 {
     STUB();
     CHECK_PLAYER(0);
-    return player()->volume();
+    return player()->getVolume();
 }
 
 QString GStb::GetWepKey128ByPassPhrase(const QString &passPhrase)
@@ -663,10 +662,14 @@ bool GStb::GetWifiLinkStatus()
     return Core::instance()->network()->isWifiConnected();
 }
 
-qint32 GStb::GetWinAlphaLevel()
+qint32 GStb::GetWinAlphaLevel(int winNum)
 {
     STUB();
-    return 0;
+    if(winNum == WINDOW_BROWSER)
+        return 255.0 * m_page->getOpacity();
+    else if(winNum == WINDOW_BROWSER)
+        return 255.0 * player()->getOpacity();
+    return 255;
 }
 
 void GStb::HideVirtualKeyboard()
@@ -1061,7 +1064,7 @@ void GStb::SetAspect(int aspect)
     switch(aspect)
     {
         case 0: {
-            ratio = ASPECT_RATIO_AUTO; break;
+            ratio = ASPECT_RATIO_16_9 /*ASPECT_RATIO_AUTO*/ ; break;
         }
         case 1: {
             ratio = ASPECT_RATIO_20_9; break;
@@ -1077,7 +1080,7 @@ void GStb::SetAspect(int aspect)
         }
     }
 
-    player()->aspectRatio(ratio);
+    player()->setAspectRatio(ratio);
 }
 
 void GStb::SetAudioLangs(const QString &priLang, const QString &secLang)
@@ -1094,7 +1097,7 @@ void GStb::SetAudioPID(int pid)
 {
     DEBUG() << "SetAudioPID:" << pid;
     CHECK_PLAYER_VOID
-    player()->audioPID(pid);
+    player()->setAudioPID(pid);
 }
 
 void GStb::SetAutoFrameRate(int mode)
@@ -1135,6 +1138,10 @@ void GStb::SetCheckSSLCertificate(int val)
 void GStb::SetChromaKey(qint64 key, qint64 mask)
 {
     STUB() << key << mask;
+    QColor chromakey = QColor::fromRgb(key);
+    chromakey.setAlpha(0);
+    m_page->setChromaKey(chromakey);
+    m_page->setChromaMask(QColor::fromRgb(mask));
 }
 
 void GStb::SetComponentMode(int mode)
@@ -1218,7 +1225,7 @@ void GStb::SetLoop(int loop)
 {
     DEBUG() << "SetLoop:" << loop;
     CHECK_PLAYER_VOID
-    player()->loop(loop);
+    player()->setLoop(loop);
 }
 
 void GStb::SetMicVolume(int volume)
@@ -1234,6 +1241,8 @@ void GStb::SetMicVolume(int volume)
 int GStb::SetMode(int mode)
 {
     STUB() << mode;
+    // API says it should be a video window, not browser. It's possible a mistake
+    m_page->setChromaKeyEnabled(mode == 1);
     return 0;
 }
 
@@ -1247,7 +1256,7 @@ void GStb::SetMute(int mute)
 {
     STUB() << mute;
     CHECK_PLAYER_VOID
-    player()->mute(mute == 1);
+    player()->setMute(mute == 1);
 }
 
 void GStb::SetObjectCacheCapacities(int val1, int val2, int val3)
@@ -1275,11 +1284,11 @@ void GStb::SetPIG(int state, float scale, int x, int y)
 
     if(state == 1)
     {
-        player()->fullscreen(true);
+        player()->setFullscreen(true);
     }
     else
     {
-        player()->fullscreen(false);
+        player()->setFullscreen(false);
         if(x >= 0 && y >= 0)
             player()->move(x, y);
     }
@@ -1305,7 +1314,7 @@ void GStb::SetPosTime(int time)
 {
     STUB() << time;
     CHECK_PLAYER_VOID;
-    player()->position(time * 1000);
+    player()->setPosition(time * 1000);
 }
 
 void GStb::SetPosTimeEx(int time)
@@ -1397,16 +1406,19 @@ void GStb::SetTopWin(int winNum)
     STUB() << "GStb::SetTopWin" << winNum;
     CHECK_PLAYER_VOID
     if(winNum == WINDOW_BROWSER)
-        browser()->raise();
+        browser()->setTopWidget(BrowserPluginObject::TOP_WIDGET_BROWSER);
     else
     {
-        player()->raise();
+        browser()->setTopWidget(BrowserPluginObject::TOP_WIDGET_PLAYER);
     }
 }
 
 void GStb::SetTransparentColor(int color)
 {
     STUB() << color;
+    QColor chromakey = QColor::fromRgb(color);
+    chromakey.setAlpha(0);
+    m_page->setChromaKey(chromakey);
 }
 
 void GStb::SetupRTSP(int type, int flags)
@@ -1447,7 +1459,7 @@ void GStb::SetViewport(int xsize, int ysize, int x, int y)
     DEBUG() << "GStb::SetViewport" << xsize << ysize << x << y;
     CHECK_PLAYER_VOID
 
-    player()->fullscreen(false);
+    player()->setFullscreen(false);
     player()->setViewport(QRect(x, y, xsize, ysize));
 }
 
@@ -1455,7 +1467,7 @@ void GStb::SetVolume(int volume)
 {
     DEBUG() << "SetVolume:" << volume;
     CHECK_PLAYER_VOID
-    player()->volume(volume);
+    player()->setVolume(volume);
 }
 
 void GStb::SetWebMode(bool val, const QString &str)
@@ -1472,12 +1484,19 @@ void GStb::SetWinAlphaLevel(int winNum, int alpha)
 {
     STUB() << winNum <<alpha;
     CHECK_PLAYER_VOID
-    browser()->setOpacity(alpha);
+    if(winNum == WINDOW_BROWSER)
+        m_page->setOpacity((float)alpha / 255.0);
+    else if(winNum == WINDOW_VIDEO)
+        player()->setOpacity((float)alpha / 255.0);
 }
 
 void GStb::SetWinMode(int winNum, int mode)
 {
     STUB() << winNum << mode;
+    if(winNum == WINDOW_BROWSER)
+    {
+        m_page->setChromaKeyEnabled(mode == 1);
+    }
 }
 
 void GStb::ShowSubtitle(int start, int end, const QString &text)

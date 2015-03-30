@@ -194,12 +194,13 @@ void MagProfile::start()
 
     browser->setUserAgent(userAgent);
     browser->stb(m_profile_plugin);
-    browser->getActiveWebPage()->setVieportSize(portalSize);
+    AbstractWebPage* page = browser->getActiveWebPage();
+    page->setPageViewportSize(portalSize);
 
     QString urlString = portal();
     qDebug() << "Loading" << urlString;
     QUrl portalUrl = QUrl(urlString.replace("~", QDir::homePath()));
-    browser->load(portalUrl);
+    page->load(portalUrl);
 }
 
 void MagProfile::configureKeyMap()

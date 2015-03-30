@@ -30,7 +30,6 @@ void StbWindowMgr::openWebFavorites(const QString &url, const QString &params = 
 void StbWindowMgr::openWebFavorites(const QString &url, int params)
 {
     openWebFavorites(url, QString(""));
-
 }
 
 void StbWindowMgr::openDownloadManager(const QString &url)

@@ -28,27 +28,7 @@ using namespace yasem;
 MagApiStbObject::MagApiStbObject(Plugin* plugin):
     StbPluginObject(plugin)
 {
-    QFile res(QString(":/mag/fixes/fontfix.js"));
-    res.open(QIODevice::ReadOnly|QIODevice::Text);
-    fontFix = res.readAll();
 
-    webServerHost = "http://127.0.0.1";
-    webServerPort = Core::instance()->settings()->value("web-server/port", 9999).toInt();
-
-    QList<StbSubmodel> &submodels = getSubmodels();
-
-    setSubmodelDatasourceField("RDIR", "STB Model");
-
-    submodels.append(StbSubmodel(QString::number(MAG_100), "MAG100"));
-    submodels.append(StbSubmodel(QString::number(MAG_200), "MAG200"));
-    submodels.append(StbSubmodel(QString::number(MAG_245), "MAG245"));
-    submodels.append(StbSubmodel(QString::number(MAG_250), "MAG250"));
-    submodels.append(StbSubmodel(QString::number(MAG_254), "MAG254"));
-    submodels.append(StbSubmodel(QString::number(MAG_255), "MAG255"));
-    submodels.append(StbSubmodel(QString::number(MAG_260), "MAG260"));
-    submodels.append(StbSubmodel(QString::number(MAG_270), "MAG270"));
-    submodels.append(StbSubmodel(QString::number(MAG_275), "MAG275"));
-    submodels.append(StbSubmodel(QString::number(AURA_HD), "AuraHD"));
 }
 
 MagApiStbObject::~MagApiStbObject()
@@ -96,7 +76,7 @@ QString MagApiStbObject::getStorageInfo()
         // If you want to revert just comment this code
         //*
         obj.insert("vendor", disk->mountPoint + " ");
-        obj.insert("model", "");
+        obj.insert("model", QString(""));
         obj.insert("label", disk->vendor + " " + disk->model);
         /*/
         obj.insert("vendor", disk->vendor);
@@ -180,6 +160,29 @@ PluginObjectResult yasem::MagApiStbObject::init()
     player(dynamic_cast<MediaPlayerPluginObject*>(PluginManager::instance()->getByRole(ROLE_MEDIA)));
     gui(dynamic_cast<GuiPluginObject*>(PluginManager::instance()->getByRole(ROLE_GUI)));
     browser(dynamic_cast<BrowserPluginObject*>(PluginManager::instance()->getByRole(ROLE_BROWSER)));
+
+    QFile res(QString(":/mag/fixes/fontfix.js"));
+    res.open(QIODevice::ReadOnly|QIODevice::Text);
+    fontFix = res.readAll();
+
+    webServerHost = "http://127.0.0.1";
+    webServerPort = Core::instance()->settings()->value("web-server/port", 9999).toInt();
+
+    QList<StbSubmodel> &submodels = getSubmodels();
+
+    setSubmodelDatasourceField("RDIR", "STB Model");
+
+    submodels.append(StbSubmodel(QString::number(MAG_100), "MAG100"));
+    submodels.append(StbSubmodel(QString::number(MAG_200), "MAG200"));
+    submodels.append(StbSubmodel(QString::number(MAG_245), "MAG245"));
+    submodels.append(StbSubmodel(QString::number(MAG_250), "MAG250"));
+    submodels.append(StbSubmodel(QString::number(MAG_254), "MAG254"));
+    submodels.append(StbSubmodel(QString::number(MAG_255), "MAG255"));
+    submodels.append(StbSubmodel(QString::number(MAG_260), "MAG260"));
+    submodels.append(StbSubmodel(QString::number(MAG_270), "MAG270"));
+    submodels.append(StbSubmodel(QString::number(MAG_275), "MAG275"));
+    submodels.append(StbSubmodel(QString::number(AURA_HD), "AuraHD"));
+
     return PLUGIN_OBJECT_RESULT_OK;
 }
 
@@ -187,3 +190,4 @@ PluginObjectResult yasem::MagApiStbObject::deinit()
 {
     return PLUGIN_OBJECT_RESULT_OK;
 }
+

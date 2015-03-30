@@ -24,5 +24,5 @@ void StbWebWindow::close()
 QString StbWebWindow::windowId()
 {
     STUB();
-    return "---------";
+    return "---- < TODO: WINDOW ID > -----";
 }
