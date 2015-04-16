@@ -1397,6 +1397,8 @@ void GStb::SetTeletextPID(unsigned int val)
     STUB() << val;
 }
 
+
+//TODO: Move top widget switching to a new manager class
 /**
  * Sets the preset window over others
  * @param winNum number of the window for which this function is used: 0 - graphic window; 1 - video window
@@ -1406,7 +1408,9 @@ void GStb::SetTopWin(int winNum)
     STUB() << "GStb::SetTopWin" << winNum;
     CHECK_PLAYER_VOID
     if(winNum == WINDOW_BROWSER)
+    {
         browser()->setTopWidget(BrowserPluginObject::TOP_WIDGET_BROWSER);
+    }
     else
     {
         browser()->setTopWidget(BrowserPluginObject::TOP_WIDGET_PLAYER);
