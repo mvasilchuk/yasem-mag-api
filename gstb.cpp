@@ -890,7 +890,7 @@ void GStb::Play(const QString &playStr, const QString &proxyParmas)
 
     QString urlString = playStr.trimmed();
 
-    QRegularExpression urlRegex("^(?<proto>auto|rtp|rtsp_ac3|rtsp|rtpac3|rtpmpeg4_aac|ptpmpeg4|mpegts|mpegps|file|mp4_mpa|mp4|fm|ffmpeg|ffrt3|ffrt2|ffrt)?(\\s+)?(?<url>.*?)$");
+    QRegularExpression urlRegex("^(?<proto>auto|rtp|rtsp_ac3|rtsp|rtpac3|rtpmpeg4_aac|ptpmpeg4|mpegts|mpegps|file|mp4_mpa|mp4|fm|ffmpeg|ffrt4|ffrt3|ffrt2|ffrt)?(\\s+)?(?<url>.*?)$");
     QRegularExpressionMatch urlMatch = urlRegex.match(urlString);
 
 
