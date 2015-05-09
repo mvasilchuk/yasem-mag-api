@@ -10,7 +10,7 @@ TEMPLATE = lib
 
 include($${top_srcdir}/common.pri)
 
-QT      = core gui widgets
+QT      = core gui widgets network
 
 MOBILITY += systeminfo
 

@@ -26,6 +26,7 @@
 #include <QRegExp>
 #include <QRegularExpression>
 #include <QCryptographicHash>
+#include <QHostInfo>
 
 using namespace yasem;
 
@@ -169,6 +170,12 @@ void GStb::ExtProtocolCommand(const QString &val1, const QString &val2, const QS
     STUB() << val1 << val2 << val3;
 }
 
+/**
+ * @brief GStb::ForceHDMItoDVI
+ * @param forceDVI
+ * 0	auto detect HDMI mode
+ * 1	force HDMI to DVI mode
+ */
 void GStb::ForceHDMItoDVI(int forceDVI)
 {
     STUB() << forceDVI;
@@ -186,6 +193,16 @@ int GStb::GetAlphaLevel()
     return 0;
 }
 
+/**
+ * @brief GStb::GetAspect
+ * @return
+ * 0	as it is (video is stretched for the whole screen)
+ * 1	Letter box mode (video is proportionally enlarged to the size of the screen along the larger edge)
+ * 2	Pan&Scan mode (video is proportionally enlarged to the screen size along the lesser edge)
+ * 3	combined mode (intermediate between Letter Box Box and Pan&Scan)
+ * 4	enlarged mode
+ * 5	optimal mode
+ */
 int GStb::GetAspect()
 {
     STUB();
@@ -240,10 +257,51 @@ QString GStb::GetAudioPIDs()
     return res;
 }
 
+/**
+ * @brief GStb::GetAudioPIDsEx
+ * @return
+list of the audio tracks found in the following format:
+[{pid:<PID1>, lang:[<lang1_1>, <lang2_1>], type:<type_1>}, ... , {pid:<PIDn>, lang:[<lang1_n>, <lang2_n>], type:<type_n>}]
+where:
+PIDn                PID of audio track with the number n
+lang1_n, lang2_n	first two descriptions of languages in audio track
+number n            3-symbol tags according to ISO 639
+type_n is audio codec type:
+
+Value	Description
+    0	Unknown
+    1	mp2a
+    2	mp3
+    3	AC3
+    4	AAC
+    5	PCM
+    6	OGG
+    7	DTS
+ *
+ */
 QString GStb::GetAudioPIDsEx()
 {
-    CHECK_PLAYER("")
-    return GetAudioPIDs();
+    QJsonArray resultArray;
+    CHECK_PLAYER(QJsonDocument(resultArray).toJson())
+
+    QList<AudioLangInfo> languages = player()->getAudioLanguages();
+    for(AudioLangInfo info: languages)
+    {
+        QJsonObject obj;
+        obj.insert("pid", info.pid);
+
+        QJsonArray names;
+        names.append(info.code2);
+        names.append(info.code3);
+
+        obj.insert("lang", names);
+
+        obj.insert("type", "Unknown");
+        resultArray.append(obj);
+    }
+    QString res = QJsonDocument(resultArray).toJson();
+
+    return res;
 }
 
 int GStb::GetBrightness()
@@ -286,8 +344,9 @@ QString GStb::GetDeviceImageVersion()
 
 QString GStb::GetDeviceImageVersionCurrent()
 {
-    STUB();
-    return "";
+    QString version = profile()->datasource()->get(DB_TAG_RDIR, "DeviceImageVersionCurrent", "0.2.16-250 Tue Apr 9 18:10:19 EEST 2013");
+    LOG() << QString("GetDeviceImageVersionCurrent(): %1").arg(version);
+    return version;
 }
 
 QString GStb::GetDeviceMacAddress()
@@ -357,6 +416,9 @@ QString GStb::GetEnv(const QString &data)
     //QString result = parent->getDataSource()->getValue(DB_TAG_ENV, name);
     QJsonObject result;
     result.insert("result", elements);
+    result.insert("errMsg", "");
+    result.insert("errCode", 0);
+
     QString strResult  = QString(QJsonDocument(result).toJson(QJsonDocument::Compact));
     DEBUG() << QString("GetEnv(%1): %2").arg(data, strResult);
     return strResult;
@@ -365,7 +427,7 @@ QString GStb::GetEnv(const QString &data)
 QString GStb::GetExtProtocolList()
 {
     STUB();
-    return "";
+    return "[]";
 }
 
 bool GStb::GetLanLinkStatus()
@@ -419,6 +481,12 @@ QString GStb::GetMetadataInfo()
     return QJsonDocument(data).toJson();
 }
 
+/**
+ * @brief GStb::GetMicVolume
+ *
+ * MAG 100 Only
+ * @return
+ */
 int GStb::GetMicVolume()
 {
     STUB();
@@ -442,7 +510,7 @@ QString GStb::GetNetworkGateways()
 QString GStb::GetNetworkNameServers()
 {
     STUB();
-    return "";
+    return "8.8.8.8\n8.8.4.4";
 }
 
 QString GStb::GetNetworkWifiMac()
@@ -524,6 +592,7 @@ QString GStb::GetSmbGroups()
 
     result.insert("result", resultArray);
     result.insert("errMsg", errorMsg);
+    result.insert("errCode", 0);
 
     return QJsonDocument(result).toJson(QJsonDocument::Compact);
 }
@@ -544,6 +613,7 @@ QString GStb::GetSmbServers(const QString &args)
 
     result.insert("result", resultArray);
     result.insert("errMsg", errorMsg);
+    result.insert("errCode", 0);
 
     QString res = QJsonDocument(result).toJson(QJsonDocument::Compact);
     DEBUG() << res;
@@ -572,25 +642,57 @@ QString GStb::GetSmbShares(const QString &args)
     resultData.insert("serverIP", hostName);
     result.insert("result", resultData);
     result.insert("errMsg", errorMsg);
+    result.insert("errCode", 0);
 
     return QJsonDocument(result).toJson(QJsonDocument::Compact);
 }
 
+/**
+ * @brief GStb::GetSpeed
+ * @return
+ *
+1	normal
+2	2x
+3	4x
+4	8x
+5	16x
+6	1/2
+7	1/4
+8	12x
+-1	reverse
+-2	reverse 2x
+-3	reverse 4x
+-4	reverse 8x
+-5	reverse 16x
+-8	reverse 12x
+ */
 qint32 GStb::GetSpeed()
 {
     STUB();
-    return 0;
+    return 1;
 }
 
 /**
  * Get all mount point info
  * @param param
  * @return
+result	holds result of operation
+errMsg	empty string in case of success or non-localized string that representing error condition otherwise
+errCode	0 in case of success or -1 in case of general error
  */
 QString GStb::GetStorageInfo(const QString &param)
 {
     STUB() << param;
-    return "{}";
+
+    QJsonObject result;
+    QString info = ((MagApiStbObject*)profile()->getProfilePlugin())->getStorageInfo();
+    QJsonArray storages( QJsonDocument::fromJson(info.toUtf8()).array());
+
+    result.insert("result", storages);
+    result.insert("errCode", 0);
+    result.insert("errMsg", "");
+
+    return QString(QJsonDocument(result).toJson(QJsonDocument::Compact));
 }
 
 qint16 GStb::GetSubtitlePID()
@@ -883,9 +985,24 @@ void GStb::Pause()
     player()->mediaPause();
 }
 
-void GStb::Play(const QString &playStr, const QString &proxyParmas)
+/**
+ * @brief GStb::Play
+ * @param playStr
+    format: solution URL [position:pnum] [atrack:anum] [vtrack:vnum] [strack:snum] [subURL:subtitleUrl]
+    Option	Description
+    solution	Media content type. Depends on the IPTV-device type (see Appendix 2 for the table of supported formats and the description of media content types).
+    URL	Address of the content to be started for playing. Depends on the type (see more detailed information in Appendix 2).
+    atrack:anum	Sets the number(PID) of audio track (optional parameter).
+    vtrack:vnum	Sets the number(PID) of audio track (optional parameter).
+    strack:snum	Sets the number(PID) of subtitle track (optional parameter).
+    subURL:subtitleURL	Sets the URL of external subtitles file. See gSTB.LoadExternalSubtitles (optional parameter).
+ * @param proxyParams
+    format: http://[username[:password]@]proxy_addr:proxy_port
+    Proxy server settings are affect only HTTP playback and valid till the next call of gSTB.Play.
+ */
+void GStb::Play(const QString &playStr, const QString &proxyParams)
 {
-    DEBUG() << "GStb::Play" << playStr << proxyParmas;
+    DEBUG() << "GStb::Play" << playStr << proxyParams;
     CHECK_PLAYER_VOID
 
     QString urlString = playStr.trimmed();
@@ -941,6 +1058,13 @@ void GStb::Play(const QString &playStr, const QString &proxyParmas)
     player()->mediaPlay(url);
 }
 
+/**
+ * @brief GStb::PlaySolution
+ * @param solution corresponds to the parameter solution from the function gSTB.Play
+ * @param url
+    address of the content to be started for playing
+    depends on the type
+ */
 void GStb::PlaySolution(const QString &solution, const QString &url)
 {
     STUB() << solution << url;
@@ -950,9 +1074,69 @@ QString GStb::RDir(const QString &name)
 {
     Q_ASSERT(profile()->datasource());
 
+    if(name == "SerialNumber")
+    {
+        return GetDeviceSerialNumber();
+    }
+    if(name == "MACAddress")
+    {
+        return GetDeviceMacAddress();
+    }
+    if(name == "IPAddress")
+    {
+        return datasource()->get(DB_TAG_RDIR, "IPAddress", "192.168.0.100");
+    }
+    if(name == "WiFi_ip")
+    {
+        //TODO: Should get Wi-Fi MAC
+        return datasource()->get(DB_TAG_RDIR, "IPAddress", "192.168.0.100");
+    }
+    if(name == "HardwareVersion")
+    {
+        return GetDeviceVersionHardware();
+    }
+    if(name == "Vendor")
+    {
+        return GetDeviceVendor();
+    }
+    if(name == "Model")
+    {
+        return GetDeviceModel();
+    }
+    if(name == "ImageVersion")
+    {
+        return GetDeviceImageVersion();
+    }
+    if(name == "ImageDescription")
+    {
+        return GetDeviceImageDesc();
+    }
+    if(name == "ImageDate")
+    {
+        return datasource()->get(DB_TAG_RDIR, "ImageDate", "Fri Oct 25 17:28:41 EEST 2013");
+    }
     if(name == "get_storage_info")
     {
         return ((MagApiStbObject*)profile()->getProfilePlugin())->getStorageInfo();
+    }
+    if(name.startsWith("ResolveIP"))
+    {
+        QStringList data = name.split(" ");
+        if(data.length() == 2)
+        {
+            QHostInfo info = QHostInfo::fromName(data.at(1));
+            return info.addresses().isEmpty()? "": info.addresses().first().toString();
+        }
+        return "";
+    }
+    if(name.startsWith("SHA1"))
+    {
+        QStringList data = name.split(" ");
+        if(data.length() == 2)
+        {
+            return QCryptographicHash::hash(data.at(1).toUtf8(), QCryptographicHash::Sha1);
+        }
+        return "";
     }
 
     QString result;
@@ -1055,6 +1239,16 @@ void GStb::SetAlphaLevel(qint32 alpha)
     STUB() << alpha;
 }
 
+/**
+ * @brief GStb::SetAspect
+ * @param aspect
+    0	as it is (video is stretched for the whole screen)
+    1	Letter box mode (video is proportionally enlarged to the size of the screen along the larger edge)
+    2	Pan&Scan mode (video is proportionally enlarged to the screen size along the lesser edge)
+    3	combined mode (intermediate between Letter Box Box and Pan&Scan)
+    4	enlarged mode
+    5	optimal mode
+ */
 void GStb::SetAspect(int aspect)
 {
     STUB() << aspect;
@@ -1259,14 +1453,21 @@ void GStb::SetMute(int mute)
     player()->setMute(mute == 1);
 }
 
-void GStb::SetObjectCacheCapacities(int val1, int val2, int val3)
+/**
+ * @brief GStb::SetObjectCacheCapacities
+ * Test only!
+ * @param cacheMinDeadCapacity
+ * @param cacheMaxDead
+ * @param totalCapacity
+*/
+void GStb::SetObjectCacheCapacities(int cacheMinDeadCapacity, int cacheMaxDead, int totalCapacity)
 {
-    STUB() << val1 << val2 << val3;
+    STUB() << cacheMinDeadCapacity << cacheMaxDead << totalCapacity;
 }
 
-void GStb::SetPCRModeEnabled(bool val)
+void GStb::SetPCRModeEnabled(bool enable)
 {
-    STUB() << val;
+    STUB() << enable;
 }
 
 /**
@@ -1295,9 +1496,9 @@ void GStb::SetPIG(int state, float scale, int x, int y)
     player()->resize();
 }
 
-void GStb::SetPixmapCacheSize(int val)
+void GStb::SetPixmapCacheSize(int sizeKb)
 {
-    STUB() << val;
+    STUB() << sizeKb;
 }
 
 void GStb::SetPosPercent(int prc)
@@ -1465,6 +1666,30 @@ void GStb::SetViewport(int xsize, int ysize, int x, int y)
 
     player()->setFullscreen(false);
     player()->setViewport(QRect(x, y, xsize, ysize));
+}
+
+/**
+ * @brief GStb::SetViewportEx
+    Set video plane position and size in pixels and clipping rectangle for input video. More flexible version of gSTB.SetViewport.
+    Clip rectangle specifies which sub-rectangle will be shown in specified video window rectangle (stretched to fill whole video window). If clip_xsize==0 or clip_ysize==0 then clip will be ignored.
+    If clip rectangle is ignored or has size equal to encoded video size then aspect ratio conversion will be performed inside specified video window rectangle according to the current aspect for fullscreen mode. This does not depend on specified video window size. At the same time gSTB.SetViewport function does aspect ratio conversion only in fullscreen mode.
+    Clip rectangle size and position should be in pixels of the encoded video. Width and height of encoded video can be retrieved via gSTB.GetVideoInfo. See pictureWidth and pictureHeight.
+ *
+ * @param xSize horizontal size of the video window (width)
+ * @param ySize vertical size of the video window (height)
+ * @param xPos left upper corner of the video window horizontal offset from the screen edge must not exceed the screen width in sum with xSize
+ * @param yPos left upper cornet of the video window vertical offset from the screen edge must not exceed the screen width in sum with ySize
+ * @param clipXSize clip rectangle horizontal size
+ * @param clipYSize clip rectangle vertical size
+ * @param clipXPos clip rectangle horizontal offset related to encoded video
+ * @param clipYPos clip rectangle vertical offset related to encoded video
+ * @param saveClip whether player should save clip region over the sequential playbacks:
+    true	use this clip only for current playback
+    false	use this clip till next call of STB_SetViewportEx, STB_SetViewport, STB_SetPIG
+ */
+void GStb::SetViewportEx(int xSize, int ySize, int xPos, int yPos, int clipXSize, int clipYSize, int clipXPos, int clipYPos, bool saveClip)
+{
+    STUB() << xSize << ySize << xPos << yPos << clipXSize << clipYSize << clipXPos << clipYPos << saveClip;
 }
 
 void GStb::SetVolume(int volume)
@@ -1745,5 +1970,166 @@ void GStb::SetSettingsInitAttr(const QString &options)
 void GStb::SetScreenSaverInitAttr(const QString &options)
 {
     STUB() << options;
+}
+
+void GStb::ClearStatistics()
+{
+    STUB();
+}
+
+/**
+ * @brief GStb::GetHDMIConnectionState
+ * @return
+    0	HDMI disconnected from TV.
+    1	HDMI connected to TV, but not in active state e.i. standby mode, TV is off
+    2	HDMI connected to TV in active state.
+ */
+int GStb::GetHDMIConnectionState()
+{
+    STUB() << 2;
+    return 2;
+}
+
+/**
+ * @brief GStb::GetHLSInfo
+ * @return
+    currentVariant	the number of currently active variant in variants array
+    variants	a list of bitrates for all variants and can be empty (available only for Apple HLS streams)
+*/
+QString GStb::GetHLSInfo()
+{
+    STUB();
+    QJsonObject result;
+    result.insert("currentVariant", 0);
+    result.insert("variants", QJsonArray());
+    return QString(QJsonDocument(result).toJson(QJsonDocument::Compact));
+}
+
+/**
+ * @brief GStb::SetLedIndicatorMode
+ * @param mode
+    0	off
+    1	normal
+    2	standby
+*/
+void GStb::SetLedIndicatorMode(int mode)
+{
+    STUB() << mode;
+}
+
+/**
+ * @brief GStb::SetLedIndicatorLevels
+ * @param baseLevel
+ * @param blinkLevel
+ */
+void GStb::SetLedIndicatorLevels(int baseLevel, int blinkLevel)
+{
+    STUB() << baseLevel << blinkLevel;
+}
+
+/**
+ * @brief GStb::GetLedIndicatorState
+ * @return
+    mode	current mode
+    levelBase	base LED level
+    levelBlink	level for blinking
+ */
+QString GStb::GetLedIndicatorState()
+{
+    QJsonObject result;
+    result.insert("mode", 0);
+    result.insert("levelBase", 0);
+    result.insert("levelBlink", 0);
+    return QString(QJsonDocument(result).toJson(QJsonDocument::Compact));
+}
+
+/**
+ * @brief GStb::GetStandByStatus
+ * Get the current working mode.
+ * @return
+    true - in standby mode
+ */
+bool GStb::GetStandByStatus()
+{
+    return false;
+}
+
+/**
+ * @brief GStb::GetStatistics
+ * @return
+    CCErrorCnt	continuity counter error count
+    RTPErrorCnt	RTP error count
+    VideoDecodingErrorCnt	video decoding error count
+*/
+QString GStb::GetStatistics()
+{
+    STUB();
+    QJsonObject result;
+    result.insert("CCErrorCnt", 0);
+    result.insert("RTPErrorCnt", 0);
+    result.insert("VideoDecodingErrorCnt", 0);
+    return QString(QJsonDocument(result).toJson(QJsonDocument::Compact));
+}
+
+/**
+ * @brief GStb::GetTopWin
+ * number of window which is in top position now
+ * @return
+    0	graphic window
+    1	video window
+ */
+int GStb::GetTopWin()
+{
+    STUB();
+    BrowserPluginObject::TopWidget top = browser()->getTopWidget();
+    if(top == BrowserPluginObject::TOP_WIDGET_BROWSER)
+        return 0;
+    else
+        return 1;
+}
+
+/**
+ * @brief GStb::GetWifiLinkStatusEx
+ * Return attributes for current WiFi connection if available.
+ * @return
+ */
+QString GStb::GetWifiLinkStatusEx()
+{
+    STUB();
+    QJsonObject result;
+    result.insert("Bit Rate", 0); // in Mb/s
+    result.insert("Frequency", 0.000000000000000); // in GHz
+    result.insert("Noise level", 0);
+    result.insert("Signal level", 0);
+    return QString(QJsonDocument(result).toJson(QJsonDocument::Compact));
+}
+
+bool GStb::IsFileUTF8Encoded(const QString &fileName)
+{
+    STUB() << fileName;
+    return true;
+}
+
+void GStb::ResetWebProxy()
+{
+    STUB();
+}
+
+/**
+ * @brief GStb::SetSyslogLevel
+ * Setup logging level via JS API.
+    This function just enables logging to syslog but does not start/configure syslogd.
+    syslogd should be configured (if needed) by operator who creates custom software images.
+ * @param level logging level which should be OR-ed value of the following levels
+    0	quiet level, logging disabled (default)
+    1	error level, e.i. "RTP counter error", "TS Continuity Counter error", "Video decoding error"
+    2	warning level
+    4	info level, e.i. "Starting playback", "External subtitles opening error", "Content opening error", "End of Stream"
+    8	debug level, e.i.: gSTB.Debug from JS API do not filter frequent error events.
+    By default logging is set to quiet mode.
+ */
+void GStb::SetSyslogLevel(int level)
+{
+    STUB() << level;
 }
 

@@ -1,4 +1,4 @@
-#ifndef GSTB_H
+﻿#ifndef GSTB_H
 #define GSTB_H
 
 #include "macros.h"
@@ -132,7 +132,7 @@ public slots:
     void LoadURL(const QString &str);
     QString LoadUserData(const QString &str);
     void Pause();
-    void Play(const QString &playStr, const QString &proxyParmas = "");
+    void Play(const QString &playStr, const QString &proxyParams = "");
     void PlaySolution(const QString &solution, const QString &url);
     QString RDir(const QString &name);
     QString ReadCFG();
@@ -171,10 +171,10 @@ public slots:
     int SetMode(int mode);
     int SetMulticastProxyURL(const QString &val);
     void SetMute(int mute);
-    void SetObjectCacheCapacities(int val1, int val2, int val3);
-    void SetPCRModeEnabled(bool val);
+    void SetObjectCacheCapacities(int cacheMinDeadCapacity, int cacheMaxDead, int totalCapacity);
+    void SetPCRModeEnabled(bool enable);
     void SetPIG(int state, float scale, int x, int y);
-    void SetPixmapCacheSize(int val);
+    void SetPixmapCacheSize(int sizeKb);
     void SetPosPercent(int prc);
     void SetPosPercentEx(int prc);
     void SetPosTime(int time);
@@ -202,6 +202,7 @@ public slots:
     void SetVideoControl(int mode);
     void SetVideoState(int state);
     void SetViewport(int xsize, int ysize, int x, int y);
+    void SetViewportEx( int xSize, int ySize, int xPos, int yPos, int clipXSize, int clipYSize, int clipXPos, int clipYPos, bool saveClip );
     void SetVolume(int volume);
     void SetWebMode(bool val, const QString &str);
     void SetWebProxy(const QString &host, int port = 3128, const QString &user = "", const QString &password = "", const QString &exclude = "");
@@ -229,6 +230,19 @@ public slots:
     QString GetInputLang();
     void SetSettingsInitAttr(const QString &options);
     void SetScreenSaverInitAttr(const QString &options);
+    void ClearStatistics();
+    int GetHDMIConnectionState();
+    QString GetHLSInfo();
+    void SetLedIndicatorMode(int mode);
+    void SetLedIndicatorLevels(int baseLevel, int blinkLevel);
+    QString GetLedIndicatorState();
+    bool GetStandByStatus();
+    QString GetStatistics();
+    int GetTopWin();
+    QString GetWifiLinkStatusEx();
+    bool IsFileUTF8Encoded(const QString &fileName);
+    void ResetWebProxy();
+    void SetSyslogLevel(int level);
 };
 
 }
