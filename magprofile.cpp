@@ -99,6 +99,7 @@ void MagProfile::start()
     }
     StbEvent* event = static_cast<StbEvent*>(m_profile_plugin->getStbApiList().find("stbEvent").value());
     MediaPlayerPluginObject* player = m_profile_plugin->player();
+    Q_ASSERT(player != NULL);
     if(player)
     {
         connect(player, &MediaPlayerPluginObject::paused,               this, [=](bool)
@@ -196,6 +197,12 @@ void MagProfile::start()
     browser->stb(m_profile_plugin);
     AbstractWebPage* page = browser->getActiveWebPage();
     page->setPageViewportSize(portalSize);
+
+    QString video_res = datasource()->get(DB_TAG_RDIR, "vmode", "720p");
+    if(video_res == "720p")
+        player->setVirtualViewport(QRect(0, 0, 1280, 720));
+    else
+        player->setVirtualViewport(QRect(0, 0, 1920, 1080));
 
     QString urlString = portal();
     qDebug() << "Loading" << urlString;
