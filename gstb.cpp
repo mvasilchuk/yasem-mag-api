@@ -529,14 +529,21 @@ int GStb::GetPosPercent()
 {
     STUB();
     CHECK_PLAYER(0);
-    return (int)(((float)player()->getPosition() * 100) / player()->getDuration());
+    int pos = 0;
+    qint64 duration = player()->getDuration();
+    if(duration > 0)
+        pos = int((float)player()->getPosition() * 100 / duration);
+    return pos;
 }
 
 int GStb::GetPosPercentEx()
 {
     STUB();
     CHECK_PLAYER(0)
-    int pos = int(player()->getPosition() * 10000 / player()->getDuration());
+    int pos = 0;
+    qint64 duration = player()->getDuration();
+    if(duration > 0)
+        pos = int(player()->getPosition() * 10000 / duration);
     DEBUG() << "GetPosPercentEx:" << pos;
     return pos;
 }
@@ -1007,7 +1014,8 @@ void GStb::Play(const QString &playStr, const QString &proxyParams)
 
     QString urlString = playStr.trimmed();
 
-    QRegularExpression urlRegex("^(?<proto>auto|rtp|rtsp_ac3|rtsp|rtpac3|rtpmpeg4_aac|ptpmpeg4|mpegts|mpegps|file|mp4_mpa|mp4|fm|ffmpeg|ffrt4|ffrt3|ffrt2|ffrt)?(\\s+)?(?<url>.*?)$");
+    QRegularExpression urlRegex("^((?<proto>auto|rtp|rtsp_ac3|rtsp|rtpac3|rtpmpeg4_aac|ptpmpeg4|mpegts|mpegps|file|mp4_mpa|mp4|fm|ffmpeg|ffrt4|ffrt3|ffrt2|ffrt)\\s+)?\
+(?<url>.*?)$");
     QRegularExpressionMatch urlMatch = urlRegex.match(urlString);
 
 
