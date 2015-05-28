@@ -60,11 +60,7 @@ QString StbWindowMgr::transformInnerPortalPathToLocal(QString innerPortalPath)
 
 QString StbWindowMgr::openNewWindow(const QString &url, const QString &params, const QString &name)
 {
-    m_page->evalJs(QString("window.open('%1', '%2', '%3')")
-                .arg(transformInnerPortalPathToLocal(url))
-                .arg(name)
-                .arg(params));
-
+    m_page->openWindow(transformInnerPortalPathToLocal(url), params, name);
     return "";
 }
 
