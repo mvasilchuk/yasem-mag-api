@@ -14,7 +14,10 @@
 #include "mediaplayerpluginobject.h"
 #include "NetworkThread.h"
 #include "magapistbobject.h"
+
+#ifdef CONFIG_QCA
 #include "remotecontrolhandler.h"
+#endif //CONFIG_QCA
 
 #include <QStringList>
 #include <QDebug>
