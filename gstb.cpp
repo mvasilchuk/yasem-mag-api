@@ -14,6 +14,7 @@
 #include "mediaplayerpluginobject.h"
 #include "NetworkThread.h"
 #include "magapistbobject.h"
+#include "remotecontrolhandler.h"
 
 #include <QStringList>
 #include <QDebug>
@@ -410,7 +411,12 @@ QString GStb::GetEnv(const QString &data)
         QString name = varList.at(index).toString();
 
         QString value = profile()->datasource()->get(DB_TAG_ENV, name);
-        elements.insert(name, value);
+        if(name == "portal1" && value.startsWith("file:///"))
+        {
+             elements.insert(name, "");
+        }// Fix for internal portals
+        else
+            elements.insert(name, value);
     }
 
     //QString result = parent->getDataSource()->getValue(DB_TAG_ENV, name);
@@ -1764,6 +1770,8 @@ void GStb::StandBy(bool standBy)
 void GStb::StartLocalCfg()
 {
     STUB() << "GStb::StartLocalCfg";
+    if(!m_system_settings.url.isEmpty())
+        m_page->load(m_system_settings.url);
 }
 
 void GStb::Step()
@@ -1969,6 +1977,20 @@ void GStb::SetUiLang(const QString &lang)
 void GStb::SetSettingsInitAttr(const QString &options)
 {
     STUB() << options;
+    QJsonObject obj = QJsonDocument::fromJson(options.toUtf8()).object();
+    if(obj.isEmpty())
+    {
+        WARN() << "Emptry JSON";
+        return;
+    }
+
+    if(obj.keys().contains("url") && obj.keys().contains("backgroundColor"))
+    {
+        m_system_settings.url = obj.value("url").toString();
+        m_system_settings.backgroundColor = obj.value("backgroundColor").toString();
+    }
+    else
+        WARN() << "Incorrect data";
 }
 
 /**
@@ -2139,5 +2161,29 @@ void GStb::ResetWebProxy()
 void GStb::SetSyslogLevel(int level)
 {
     STUB() << level;
+}
+
+void GStb::ConfigNetRc(const QString &deviceName, const QString &password)
+{
+    STUB() << deviceName << password;
+#ifdef CONFIG_QCA
+    profile()->getRemoteControl()->setParams(deviceName, password);
+#else
+    WARN() << "QCA library is missing. Remote control features disabled!";
+#endif //CONFIG_QCA
+
+}
+
+void GStb::SetNetRcStatus(bool enable)
+{
+    STUB() << enable;
+#ifdef CONFIG_QCA
+    if(enable)
+        profile()->getRemoteControl()->start();
+    else
+        profile()->getRemoteControl()->stop();
+#else
+    WARN() << "QCA library is missing. Remote control features disabled!";
+#endif //CONFIG_QCA
 }
 

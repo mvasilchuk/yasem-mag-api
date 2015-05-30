@@ -8,6 +8,8 @@ VERSION = 0.1.0
 TARGET = yasem-mag-api
 TEMPLATE = lib
 
+#CONFIG+=recheck
+
 include($${top_srcdir}/common.pri)
 
 QT      = core gui widgets network
@@ -83,3 +85,23 @@ OTHER_FILES += \
 
 RESOURCES += \
     resources.qrc
+
+!build_pass:qtCompileTest(qca)
+
+CONFIG(config_qca) {
+    win32: {
+        INCLUDEPATH += $${top_srcdir}/third_party/qca/include
+        INCLUDEPATH += $${top_srcdir}/third_party/qca-build
+        INCLUDEPATH += .
+        LIBS += -L $${top_srcdir}/third_party/qca-build/lib -lqca
+    } else {
+        LIBS += -lqca-qt5
+    }
+
+    HEADERS += remotecontrolhandler.h
+    SOURCES += remotecontrolhandler.cpp
+    DEFINES += CONFIG_QCA
+
+} else {
+    !build_pass:message("QCA library is missing. Wi-Fi/LAN remote control feature will be disabled")
+}

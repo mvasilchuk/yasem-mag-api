@@ -10,6 +10,10 @@
 #include "mag_enums.h"
 #include "profileconfigparserimpl.h"
 
+#ifdef CONFIG_QCA
+#include "remotecontrolhandler.h"
+#endif //CONFIG_QCA
+
 #include <QDir>
 
 static const QString CONFIG_INTERNAL_PORTAL = "internal_portal";
@@ -18,6 +22,9 @@ using namespace yasem;
 
 MagProfile::MagProfile(StbPluginObject *profilePlugin, const QString &id = "") :
     Profile(profilePlugin, id)
+#ifdef CONFIG_QCA
+    ,m_remote_control_handler(new RemoteControlHandler(this))
+#endif
 {
     Q_ASSERT(profilePlugin);
 
@@ -90,6 +97,7 @@ void MagProfile::loadConfigOptions()
 void MagProfile::start()
 {
     STUB();
+
 
     BrowserPluginObject* browser = m_profile_plugin->browser();
     if(!browser)
@@ -195,8 +203,8 @@ void MagProfile::start()
 
     browser->setUserAgent(userAgent);
     browser->stb(m_profile_plugin);
-    AbstractWebPage* page = browser->getActiveWebPage();
-    page->setPageViewportSize(portalSize);
+    setPage(browser->getActiveWebPage());
+    page()->setPageViewportSize(portalSize);
 
     QString video_res = datasource()->get(DB_TAG_RDIR, "vmode", "720p");
     if(video_res == "720p")
@@ -207,7 +215,8 @@ void MagProfile::start()
     QString urlString = portal();
     qDebug() << "Loading" << urlString;
     QUrl portalUrl = QUrl(urlString.replace("~", QDir::homePath()));
-    page->load(portalUrl);
+
+    page()->load(portalUrl);
 }
 
 void MagProfile::configureKeyMap()
@@ -232,7 +241,9 @@ QString MagProfile::portal()
 
 void MagProfile::stop()
 {
-
+#ifdef CONFIG_QCA
+    getRemoteControl()->stop();
+#endif
 }
 
 void MagProfile::initDefaults()
@@ -318,4 +329,5 @@ bool MagProfile::isInternalPortal()
 {
     return internalPortal;
 }
+
 

@@ -35,6 +35,12 @@ protected:
     BrowserPluginObject* browser();
     DatasourcePluginObject* datasource();
 
+    struct SystemSettingsCfg {
+        QString url;
+        QString backgroundColor;
+
+    } m_system_settings;
+
 
     QString translateStbPathToLocal(const QString &path);
 
@@ -243,6 +249,9 @@ public slots:
     bool IsFileUTF8Encoded(const QString &fileName);
     void ResetWebProxy();
     void SetSyslogLevel(int level);
+
+    void ConfigNetRc(const QString &deviceName, const QString &password);
+    void SetNetRcStatus(bool enable);
 };
 
 }

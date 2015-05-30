@@ -9,18 +9,16 @@
 namespace yasem
 {
 class StbPluginObject;
+class RemoteControlHandler;
 class MagProfile : public QObject, public Profile
 {
     Q_OBJECT
 public:
     explicit MagProfile(StbPluginObject *profilePlugin, const QString &id);
 
-
 signals:
 
 public slots:
-
-
     void loadConfigOptions();
 public:
     void start();
@@ -37,6 +35,13 @@ public:
 
     bool isUsingMulticastProxy();
     QString getMulticastProxy();
+
+#ifdef CONFIG_QCA
+public:
+    RemoteControlHandler* getRemoteControl() { return m_remote_control_handler; }
+protected:
+    RemoteControlHandler* m_remote_control_handler;
+#endif //#ifdef CONFIG_QCA
 };
 
 }
