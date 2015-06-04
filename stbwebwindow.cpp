@@ -15,10 +15,7 @@ StbWebWindow::StbWebWindow(MagProfile *profile, AbstractWebPage* page)
 void StbWebWindow::close()
 {
     STUB();
-
     m_page->close();
-
-    //parent->page()->close();
 }
 
 QString StbWebWindow::windowId()

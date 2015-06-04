@@ -1774,7 +1774,7 @@ void GStb::StartLocalCfg()
 {
     STUB() << "GStb::StartLocalCfg";
     if(!m_system_settings.url.isEmpty())
-        m_page->load(m_system_settings.url);
+        m_page->openWindow(translateStbPathToLocal(m_system_settings.url), "", "LocalCfg");
 }
 
 void GStb::Step()
