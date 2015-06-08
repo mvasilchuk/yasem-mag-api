@@ -164,6 +164,7 @@ void MagProfile::start()
             DEBUG() << "[MEDIA]: status changed:" << status;
             switch(status)
             {
+                case MediaStatus::NoMedia:
                 case MediaStatus::EndOfMedia: {
                     event->sendEvent(StbEvent::STB_EVENT_EOF);
                     break;
