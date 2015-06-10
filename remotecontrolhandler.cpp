@@ -20,11 +20,12 @@ RemoteControlHandler::RemoteControlHandler(MagProfile *profile)
       m_multicast_socket(new QUdpSocket(this)),
       m_udp_socket(new QUdpSocket(this))
 {
-
+    QCA::init();
 }
 
 RemoteControlHandler::~RemoteControlHandler()
 {
+    QCA::deinit();
     stop();
 }
 
@@ -84,8 +85,6 @@ void RemoteControlHandler::processPendingDatagrams()
         QHostAddress remote_address;
         quint16 remote_port;
         m_multicast_socket->readDatagram(datagram.data(), datagram.size(), &remote_address, &remote_port);
-        DEBUG() << "DATA:" << datagram.data();
-        DEBUG() << remote_address << remote_port;
 
         QJsonObject json = QJsonDocument::fromJson(datagram.data()).object();
 
@@ -105,7 +104,8 @@ void RemoteControlHandler::onGetMessageFromClient()
         QHostAddress remote_address;
         quint16 remote_port;
         m_udp_socket->readDatagram(datagram.data(), datagram.size(), &remote_address, &remote_port);
-        parseDataAndExec(aes_256_enc_dec(datagram, QCA::Decode));
+
+        parseDataAndExec(aes_256_enc_dec(datagram, QCA::Decode), remote_address, remote_port);
     }
 }
 
@@ -116,26 +116,40 @@ void RemoteControlHandler::sendDeviceInfo(const QHostAddress &host, int port)
     m_multicast_socket->writeDatagram(QJsonDocument(json).toJson(QJsonDocument::Compact), host, port);
 }
 
-void RemoteControlHandler::parseDataAndExec(const QByteArray &data)
+void RemoteControlHandler::sendPingResponse(const QHostAddress &host, int port)
+{
+    QJsonObject response;
+    response.insert("msgType", "pingResponse");
+    QByteArray data = QJsonDocument(response).toJson(QJsonDocument::Compact);
+    QByteArray encrypted = aes_256_enc_dec(data, QCA::Encode);
+    m_udp_socket->writeDatagram(encrypted, host, port);
+}
+
+void RemoteControlHandler::parseDataAndExec(const QByteArray &data, const QHostAddress& address, int port)
 {
     QJsonObject obj = QJsonDocument::fromJson(data).object();
     if(obj.contains("msgType"))
-        execRemoteAction(obj);
+        execRemoteAction(obj, address, port);
     else
         WARN() << "Incorrect data" << data;
 
 }
 
-void RemoteControlHandler::execRemoteAction(const QJsonObject &json)
+void RemoteControlHandler::execRemoteAction(const QJsonObject &json, const QHostAddress& address, int port)
 {
     QString msgType = json.value("msgType").toString();
-    if(msgType == "keyboardKey")
+    if(msgType == "keyboardKey" && json.value("action") == "press")
     {
         m_profile->page()->execKeyEvent(json.value("action").toString(), json.value("keycode").toInt(), { json.value("meta").toInt() }, json.value("unicode").toString());
     }
+    else if(msgType == "pingRequest")
+    {
+        sendPingResponse(address, port);
+
+    }
 }
 
-QByteArray RemoteControlHandler::aes_256_enc_dec(const QByteArray & strToEnrypt, QCA::Direction direction)
+QByteArray RemoteControlHandler::aes_256_enc_dec(QByteArray & strToEnrypt, QCA::Direction direction)
 {
     QCA::SecureArray secureData = strToEnrypt;
 

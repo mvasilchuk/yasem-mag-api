@@ -50,8 +50,9 @@ public slots:
     void processPendingDatagrams();
     void onGetMessageFromClient();
     void sendDeviceInfo(const QHostAddress &host, int port);
-    void parseDataAndExec(const QByteArray &data);
-    void execRemoteAction(const QJsonObject &json);
+    void sendPingResponse(const QHostAddress &host, int port);
+    void parseDataAndExec(const QByteArray &data, const QHostAddress& address, int port);
+    void execRemoteAction(const QJsonObject &json, const QHostAddress& address, int port);
 protected:
     MagProfile* m_profile;
     QString m_password;
@@ -60,7 +61,7 @@ protected:
     QUdpSocket* m_multicast_socket;
     QUdpSocket* m_udp_socket;
     QString m_ip;
-    QByteArray aes_256_enc_dec(const QByteArray &strToEnrypt, QCA::Direction direction);
+    QByteArray aes_256_enc_dec(QByteArray &strToEnrypt, QCA::Direction direction);
 };
 
 }
