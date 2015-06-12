@@ -158,7 +158,6 @@ PluginObjectResult yasem::MagApiStbObject::init()
     StbPluginObject::init();// It's reqired to register profile class id
 
     player(dynamic_cast<MediaPlayerPluginObject*>(PluginManager::instance()->getByRole(ROLE_MEDIA)));
-    gui(dynamic_cast<GuiPluginObject*>(PluginManager::instance()->getByRole(ROLE_GUI)));
     browser(dynamic_cast<BrowserPluginObject*>(PluginManager::instance()->getByRole(ROLE_BROWSER)));
 
     QFile res(QString(":/mag/fixes/fontfix.js"));

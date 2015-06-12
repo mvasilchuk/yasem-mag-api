@@ -366,7 +366,7 @@ QString GStb::GetDeviceMacAddress()
 QString GStb::GetDeviceModel()
 {
     QString model = "MAG250";
-    STUB() << QString("GetDeviceModel(): ").arg(model);
+    STUB() << QString("GetDeviceModel(): %1").arg(model);
     return model;
 }
 
