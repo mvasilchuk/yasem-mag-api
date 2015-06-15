@@ -21,12 +21,33 @@ RemoteControlHandler::RemoteControlHandler(MagProfile *profile)
       m_udp_socket(new QUdpSocket(this))
 {
     QCA::init();
+
+    m_key_remap_list.insert(Qt::Key_Backspace, Qt::BackButton);
+    m_key_remap_list.insert(Qt::Key_F11, Qt::Key_Menu);
+    m_key_remap_list.insert(Qt::Key_Minus, Qt::Key_VolumeDown);
+    m_key_remap_list.insert(Qt::Key_Plus, Qt::Key_VolumeUp);
+    m_key_remap_list.insert(Qt::Key_QuoteLeft, Qt::Key_VolumeMute);
+    m_key_remap_list.insert(Qt::Key_R, Qt::Key_MediaTogglePlayPause);
+    m_key_remap_list.insert(Qt::Key_S, Qt::Key_MediaStop);
+    m_key_remap_list.insert(Qt::Key_B, Qt::Key_MediaPrevious);
+    m_key_remap_list.insert(Qt::Key_F, Qt::Key_MediaNext);
+    m_key_remap_list.insert(Qt::Key_Y, Qt::Key_Info);
+    m_key_remap_list.insert(Qt::Key_F11, Qt::Key_Menu);
+    m_key_remap_list.insert(Qt::Key_F11, Qt::Key_Menu);
+    m_key_remap_list.insert(Qt::Key_F11, Qt::Key_Menu);
 }
 
 RemoteControlHandler::~RemoteControlHandler()
 {
     QCA::deinit();
     stop();
+}
+
+int RemoteControlHandler::remap(int key) const
+{
+    if(m_key_remap_list.contains(key))
+        return m_key_remap_list.value(key);
+    return key;
 }
 
 void RemoteControlHandler::setParams(const QString &deviceName, const QString &password)
@@ -140,12 +161,11 @@ void RemoteControlHandler::execRemoteAction(const QJsonObject &json, const QHost
     QString msgType = json.value("msgType").toString();
     if(msgType == "keyboardKey" && json.value("action") == "press")
     {
-        m_profile->page()->execKeyEvent(json.value("action").toString(), json.value("keycode").toInt(), { json.value("meta").toInt() }, json.value("unicode").toString());
+        m_profile->page()->execKeyEvent(json.value("action").toString(), remap(json.value("keycode").toInt()), { json.value("meta").toInt() }, json.value("unicode").toString());
     }
     else if(msgType == "pingRequest")
     {
         sendPingResponse(address, port);
-
     }
 }
 

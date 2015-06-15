@@ -41,6 +41,8 @@ public:
     explicit RemoteControlHandler(MagProfile *profile);
     virtual ~RemoteControlHandler();
 
+    int remap(int key) const;
+
 signals:
 
 public slots:
@@ -61,6 +63,9 @@ protected:
     QUdpSocket* m_multicast_socket;
     QUdpSocket* m_udp_socket;
     QString m_ip;
+
+    QHash<int, int> m_key_remap_list;
+
     QByteArray aes_256_enc_dec(QByteArray &strToEnrypt, QCA::Direction direction);
 };
 
