@@ -60,11 +60,11 @@ QString yasem::MagApiStbObject::getIcon(const QSize &size)
 
 QString MagApiStbObject::getStorageInfo()
 {
-    QList<DiskInfo*> disks = Core::instance()->disks();
+    QList<StorageInfo*> disks = Core::instance()->storages();
     QJsonArray result = QJsonArray();
 
     int partitionNum = 1;
-    foreach (DiskInfo* disk, disks) {
+    foreach (StorageInfo* disk, disks) {
 
         QString sn = QString("00000000%1").arg(partitionNum);
 

@@ -903,7 +903,7 @@ QString GStb::ListDir(const QString &dir)
     QRegularExpression rootMatch("^(/){1,2}media(/){1,2}$");
     QRegularExpression diskRegex("[/{0,2}]USB-\\d+-(\\d+)");
     QRegularExpressionMatch diskRegexMatch = diskRegex.match(directoryPath);
-    QList<DiskInfo*> disks = Core::instance()->disks();
+    QList<StorageInfo*> disks = Core::instance()->storages();
 
     // root dir
     if(rootMatch.match(directoryPath).hasMatch())
@@ -944,7 +944,7 @@ QString GStb::translateStbPathToLocal(const QString& path)
     STUB() << path;
     QRegularExpression diskRegex("[/{0,2}]USB-\\d+-(\\d+)(/)?");
     QRegularExpressionMatch diskRegexMatch = diskRegex.match(path);
-    QList<DiskInfo*> disks = Core::instance()->disks();
+    QList<StorageInfo*> disks = Core::instance()->storages();
 
     QString newPath = path;
 
