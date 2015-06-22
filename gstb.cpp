@@ -105,7 +105,7 @@ void GStb::CloseWebWindow()
  */
 void GStb::Continue()
 {
-    CHECK_PLAYER_VOID
+    CHECK_OR_RETURN_VOID(player());
     player()->mediaContinue();
 }
 
@@ -210,7 +210,7 @@ int GStb::GetAlphaLevel()
 int GStb::GetAspect()
 {
     STUB();
-    CHECK_PLAYER(0);
+    CHECK_OR_RETURN(player(), ASPECT_RATIO_AUTO);
     AspectRatio ratio = player()->getAspectRatio();
 
     switch(ratio)
@@ -235,15 +235,14 @@ int GStb::GetAspect()
 
 int GStb::GetAudioPID()
 {
-    CHECK_PLAYER(0);
+    CHECK_OR_RETURN(player(), 0);
     return player()->getAudioPID();
 }
 
 QString GStb::GetAudioPIDs()
 {
     QJsonArray resultArray;
-    CHECK_PLAYER(QJsonDocument(resultArray).toJson())
-
+    CHECK_OR_RETURN(player(), "[]");
     QList<AudioLangInfo> languages = player()->getAudioLanguages();
     for(AudioLangInfo info: languages)
     {
@@ -286,8 +285,7 @@ Value	Description
 QString GStb::GetAudioPIDsEx()
 {
     QJsonArray resultArray;
-    CHECK_PLAYER(QJsonDocument(resultArray).toJson())
-
+    CHECK_OR_RETURN(player(), "[]");
     QList<AudioLangInfo> languages = player()->getAudioLanguages();
     for(AudioLangInfo info: languages)
     {
@@ -310,19 +308,19 @@ QString GStb::GetAudioPIDsEx()
 
 int GStb::GetBrightness()
 {
-    CHECK_PLAYER(0)
+    CHECK_OR_RETURN(player(), 0);
     return player()->getBrightness();
 }
 
 int GStb::GetBufferLoad()
 {
-    CHECK_PLAYER(100)
+    CHECK_OR_RETURN(player(), 100);
     return player()->bufferLoad();
 }
 
 int GStb::GetContrast()
 {
-    CHECK_PLAYER(0)
+    CHECK_OR_RETURN(player(), 0);
     return player()->getContrast();
 }
 
@@ -448,7 +446,7 @@ bool GStb::GetLanLinkStatus()
 int GStb::GetMediaLen()
 {
     STUB();
-    CHECK_PLAYER(0);
+    CHECK_OR_RETURN(player(), 0);
     int len = (int)(player()->getDuration() / 1000);
     DEBUG() << "media length:" << len;
     return len;
@@ -458,7 +456,7 @@ int GStb::GetMediaLen()
 int GStb::GetMediaLenEx()
 {
     STUB();
-    CHECK_PLAYER(0);
+    CHECK_OR_RETURN(player(), 0);
     //TODO: fixme
     return (int)(player()->getDuration() / 1000);
 }
@@ -466,6 +464,7 @@ int GStb::GetMediaLenEx()
 QString GStb::GetMetadataInfo()
 {
     STUB();
+    CHECK_OR_RETURN(player(), "{}");
     MediaMetadata metadata = player()->getMediaMetadata();
 
     QJsonObject data;
@@ -499,14 +498,14 @@ QString GStb::GetMetadataInfo()
 int GStb::GetMicVolume()
 {
     STUB();
-    //CHECK_PLAYER(0);
+    CHECK_OR_RETURN(player(), 100);
     return 100;
 }
 
 bool GStb::GetMute()
 {
     STUB();
-    CHECK_PLAYER(false);
+    CHECK_OR_RETURN(player(), false);
     return player()->isMute();
 }
 
@@ -531,13 +530,14 @@ QString GStb::GetNetworkWifiMac()
 bool GStb::GetPIG()
 {
     STUB();
-    return !player()->isFullscreen();
+    CHECK_OR_RETURN(player(), false);
+    return !(player()->isFullscreen());
 }
 
 int GStb::GetPosPercent()
 {
     STUB();
-    CHECK_PLAYER(0);
+    CHECK_OR_RETURN(player(), 0);
     int pos = 0;
     qint64 duration = player()->getDuration();
     if(duration > 0)
@@ -548,7 +548,7 @@ int GStb::GetPosPercent()
 int GStb::GetPosPercentEx()
 {
     STUB();
-    CHECK_PLAYER(0)
+    CHECK_OR_RETURN(player(), 0);
     int pos = 0;
     qint64 duration = player()->getDuration();
     if(duration > 0)
