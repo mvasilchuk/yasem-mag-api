@@ -8,6 +8,7 @@
 #include "mediaplayerpluginobject.h"
 #include "stbevent.h"
 #include "mag_enums.h"
+#include "abstractwebpage.h"
 
 #ifdef CONFIG_QCA
 #include "remotecontrolhandler.h"

@@ -1,6 +1,7 @@
 #include "stbscreen.h"
 #include "magprofile.h"
 #include "mag_enums.h"
+#include "datasourcepluginobject.h"
 
 using namespace yasem;
 

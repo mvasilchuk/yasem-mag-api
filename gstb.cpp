@@ -14,6 +14,10 @@
 #include "mediaplayerpluginobject.h"
 #include "NetworkThread.h"
 #include "magapistbobject.h"
+#include "core-network.h"
+#include "samba.h"
+#include "sambanode.h"
+#include "abstractwebpage.h"
 
 #ifdef CONFIG_QCA
 #include "remotecontrolhandler.h"

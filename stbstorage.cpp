@@ -1,5 +1,6 @@
 #include "stbstorage.h"
 #include "abstractwebpage.h"
+#include "datasourcepluginobject.h"
 
 using namespace yasem;
 
