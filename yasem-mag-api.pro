@@ -31,11 +31,8 @@ SOURCES += \
     magprofile.cpp \
     stbevent.cpp \
     stbstorage.cpp \
-    $${CORE_ROOT_DIR}/profileconfigparserimpl.cpp \
-    $${CORE_ROOT_DIR}/stbpluginobject.cpp \
     magapistbobject.cpp \
-    magapiplugin.cpp \
-    $${CORE_ROOT_DIR}/mediaplayerpluginobject.cpp
+    magapiplugin.cpp
 
 HEADERS +=\
     magapi_global.h \
@@ -55,11 +52,7 @@ HEADERS +=\
     magapistbobject.h \
     stbstorage.h \
     NetworkThread.h \
-    mag_enums.h \
-    $${CORE_ROOT_DIR}/stbpluginobject.h \
-    $${CORE_ROOT_DIR}/profileconfigparserimpl.h \
-    $${CORE_ROOT_DIR}/browserpluginobject.h \
-    $${CORE_ROOT_DIR}/mediaplayerpluginobject.h
+    mag_enums.h
 
 unix:!symbian {
     maemo5 {
