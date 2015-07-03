@@ -5,7 +5,7 @@
 
 using namespace yasem;
 
-TimeShift::TimeShift(MagProfile *profile, AbstractWebPage* page)
+TimeShift::TimeShift(MagProfile *profile, SDK::AbstractWebPage* page)
 {
     this->profile = profile;
     this->m_page = page;

@@ -6,7 +6,7 @@ using namespace yasem;
 
 #define STB_STORAGE_GROUP "stb-storage"
 
-StbStorage::StbStorage(MagProfile *profile, AbstractWebPage* page)
+StbStorage::StbStorage(MagProfile *profile, SDK::AbstractWebPage* page)
 {
     //qDebug() << "logger: " << parent->getLogger();
     this->setObjectName("gSTB");

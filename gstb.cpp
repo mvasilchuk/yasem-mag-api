@@ -38,7 +38,7 @@
 
 using namespace yasem;
 
-GStb::GStb(MagProfile *profile, AbstractWebPage* page):
+GStb::GStb(MagProfile *profile, SDK::AbstractWebPage* page):
     m_profile(profile),
     m_page(page)
 {
@@ -84,17 +84,17 @@ QString GStb::listLocalFiles(const QString &dir)
     return result;
 }
 
-MediaPlayerPluginObject *GStb::player()
+SDK::MediaPlayerPluginObject *GStb::player()
 {
     return profile()->getProfilePlugin()->player();
 }
 
-BrowserPluginObject *GStb::browser()
+SDK::BrowserPluginObject *GStb::browser()
 {
     return profile()->getProfilePlugin()->browser();
 }
 
-DatasourcePluginObject *GStb::datasource()
+SDK::DatasourcePluginObject *GStb::datasource()
 {
     return profile()->datasource();
 }
@@ -214,25 +214,25 @@ int GStb::GetAlphaLevel()
 int GStb::GetAspect()
 {
     STUB();
-    CHECK_OR_RETURN(player(), ASPECT_RATIO_AUTO);
-    AspectRatio ratio = player()->getAspectRatio();
+    CHECK_OR_RETURN(player(), SDK::ASPECT_RATIO_AUTO);
+    SDK::AspectRatio ratio = player()->getAspectRatio();
 
     switch(ratio)
     {
-        case ASPECT_RATIO_AUTO: {
+        case SDK::ASPECT_RATIO_AUTO: {
             return 0;
         }
-        case ASPECT_RATIO_20_9: {
+        case SDK::ASPECT_RATIO_20_9: {
             return 1;
         }
-        case ASPECT_RATIO_16_9: {
+        case SDK::ASPECT_RATIO_16_9: {
             return 2;
         }
-        case ASPECT_RATIO_4_3: {
+        case SDK::ASPECT_RATIO_4_3: {
             return 3;
         }
         default: {
-            return ASPECT_RATIO_16_9;
+            return SDK::ASPECT_RATIO_16_9;
         }
     }
 }
@@ -444,7 +444,7 @@ QString GStb::GetExtProtocolList()
 bool GStb::GetLanLinkStatus()
 {
     STUB();
-    return Core::instance()->network()->isLanConnected();
+    return SDK::Core::instance()->network()->isLanConnected();
 }
 
 int GStb::GetMediaLen()
@@ -603,9 +603,9 @@ QString GStb::GetSmbGroups()
     QJsonObject result;
     QJsonArray resultArray;
     QString errorMsg;
-    QList<SambaNode*> domains = Core::instance()->network()->samba()->domains();
+    QList<SDK::SambaNode*> domains = SDK::Core::instance()->network()->samba()->domains();
 
-    for(SambaNode* node: domains)
+    for(SDK::SambaNode* node: domains)
     {
         resultArray.append(node->name);
     }
@@ -627,8 +627,8 @@ QString GStb::GetSmbServers(const QString &args)
     QJsonArray resultArray;
     QString errorMsg;
 
-    QList<SambaNode*> hosts = Core::instance()->network()->samba()->hosts(data.value("group").toString());
-    for(SambaNode* host: hosts)
+    QList<SDK::SambaNode*> hosts = SDK::Core::instance()->network()->samba()->hosts(data.value("group").toString());
+    for(SDK::SambaNode* host: hosts)
         resultArray.append(host->name);
 
     result.insert("result", resultArray);
@@ -652,10 +652,10 @@ QString GStb::GetSmbShares(const QString &args)
     QJsonArray sharesArray;
 
     QString hostName = data.value("server").toString();
-    QList<SambaNode*> shares = Core::instance()->network()->samba()->shares(hostName);
+    QList<SDK::SambaNode*> shares = SDK::Core::instance()->network()->samba()->shares(hostName);
 
 
-    for(SambaNode* share: shares)
+    for(SDK::SambaNode* share: shares)
         sharesArray.append(share->name);
 
     resultData.insert("shares",sharesArray);
@@ -781,7 +781,7 @@ QString GStb::GetWifiGroups()
 bool GStb::GetWifiLinkStatus()
 {
     STUB();
-    return Core::instance()->network()->isWifiConnected();
+    return SDK::Core::instance()->network()->isWifiConnected();
 }
 
 qint32 GStb::GetWinAlphaLevel(int winNum)
@@ -842,8 +842,8 @@ bool GStb::IsInternalPortalActive()
 
 bool GStb::IsPlaying()
 {
-    CHECK_PLAYER(StoppedState);
-    bool state = player()->state() == PlayingState;
+    CHECK_PLAYER(SDK::StoppedState);
+    bool state = player()->state() == SDK::PlayingState;
     LOG() << "IsPlaying(): " << state;
     return state;
 }
@@ -907,7 +907,7 @@ QString GStb::ListDir(const QString &dir)
     QRegularExpression rootMatch("^(/){1,2}media(/){1,2}$");
     QRegularExpression diskRegex("[/{0,2}]USB-\\d+-(\\d+)");
     QRegularExpressionMatch diskRegexMatch = diskRegex.match(directoryPath);
-    QList<StorageInfo*> disks = Core::instance()->storages();
+    QList<SDK::StorageInfo*> disks = SDK::Core::instance()->storages();
 
     // root dir
     if(rootMatch.match(directoryPath).hasMatch())
@@ -948,7 +948,7 @@ QString GStb::translateStbPathToLocal(const QString& path)
     STUB() << path;
     QRegularExpression diskRegex("[/{0,2}]USB-\\d+-(\\d+)(/)?");
     QRegularExpressionMatch diskRegexMatch = diskRegex.match(path);
-    QList<StorageInfo*> disks = Core::instance()->storages();
+    QList<SDK::StorageInfo*> disks = SDK::Core::instance()->storages();
 
     QString newPath = path;
 
@@ -1201,7 +1201,7 @@ QString GStb::RDir(const QString &name)
             path = path.replace("\\", "/");
             QString mount_point = QString("/tmp/yasem").append(data.at(3));
             QString params;
-            result = QVariant(Core::instance()->network()->samba()->mount(path, mount_point, params)).toString();
+            result = QVariant(SDK::Core::instance()->network()->samba()->mount(path, mount_point, params)).toString();
         }
     }
     else
@@ -1275,23 +1275,23 @@ void GStb::SetAspect(int aspect)
     STUB() << aspect;
     CHECK_PLAYER_VOID;
 
-    AspectRatio ratio;
+    SDK::AspectRatio ratio;
     switch(aspect)
     {
         case 0: {
-            ratio = ASPECT_RATIO_16_9 /*ASPECT_RATIO_AUTO*/ ; break;
+            ratio = SDK::ASPECT_RATIO_16_9 /*ASPECT_RATIO_AUTO*/ ; break;
         }
         case 1: {
-            ratio = ASPECT_RATIO_20_9; break;
+            ratio = SDK::ASPECT_RATIO_20_9; break;
         }
         case 2: {
-            ratio = ASPECT_RATIO_16_9; break;
+            ratio = SDK::ASPECT_RATIO_16_9; break;
         }
         case 3: {
-            ratio = ASPECT_RATIO_4_3; break;
+            ratio = SDK::ASPECT_RATIO_4_3; break;
         }
         default: {
-            ratio = ASPECT_RATIO_16_9; break;
+            ratio = SDK::ASPECT_RATIO_16_9; break;
         }
     }
 
@@ -1631,11 +1631,11 @@ void GStb::SetTopWin(int winNum)
     CHECK_PLAYER_VOID
     if(winNum == WINDOW_BROWSER)
     {
-        browser()->setTopWidget(BrowserPluginObject::TOP_WIDGET_BROWSER);
+        browser()->setTopWidget(SDK::BrowserPluginObject::TOP_WIDGET_BROWSER);
     }
     else
     {
-        browser()->setTopWidget(BrowserPluginObject::TOP_WIDGET_PLAYER);
+        browser()->setTopWidget(SDK::BrowserPluginObject::TOP_WIDGET_PLAYER);
     }
 }
 
@@ -2118,8 +2118,8 @@ QString GStb::GetStatistics()
 int GStb::GetTopWin()
 {
     STUB();
-    BrowserPluginObject::TopWidget top = browser()->getTopWidget();
-    if(top == BrowserPluginObject::TOP_WIDGET_BROWSER)
+    SDK::BrowserPluginObject::TopWidget top = browser()->getTopWidget();
+    if(top == SDK::BrowserPluginObject::TOP_WIDGET_BROWSER)
         return 0;
     else
         return 1;

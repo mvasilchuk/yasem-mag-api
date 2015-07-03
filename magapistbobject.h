@@ -5,7 +5,11 @@
 
 namespace yasem
 {
+
+namespace SDK {
 class Plugin;
+}
+
 class StbScreen;
 class StbDownloadManager;
 class GStb;
@@ -17,7 +21,7 @@ class StbWebWindow;
 class TimeShift;
 class Netscape;
 
-class MagApiStbObject: public StbPluginObject
+class MagApiStbObject: public SDK::StbPluginObject
 {
 public:
     enum DeviceModel {
@@ -33,17 +37,17 @@ public:
         MAG_275
     };
 
-    MagApiStbObject(Plugin* plugin);
+    MagApiStbObject(SDK::Plugin* plugin);
     virtual ~MagApiStbObject();
 
     // StbPluginObject interface
 public slots:
     QString getProfileClassId();
-    Profile *createProfile(const QString &id);
-    void initObject(AbstractWebPage *page);
+    SDK::Profile *createProfile(const QString &id);
+    void initObject(SDK::AbstractWebPage *page);
     QString getIcon(const QSize &size);
     QString getStorageInfo();
-    void resetObjects(AbstractWebPage* page);
+    void resetObjects(SDK::AbstractWebPage* page);
     void applyFixes();
     QUrl handleUrl(QUrl &url);
 
@@ -65,8 +69,8 @@ protected:
 
     // AbstractPluginObject interface
 public:
-    PluginObjectResult init();
-    PluginObjectResult deinit();
+    SDK::PluginObjectResult init();
+    SDK::PluginObjectResult deinit();
 };
 
 }

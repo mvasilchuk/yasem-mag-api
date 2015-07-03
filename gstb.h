@@ -8,17 +8,20 @@
 namespace yasem
 {
 class MagProfile;
+
+namespace SDK {
 class MediaPlayerPluginObject;
 class AbstractWebPage;
 class BrowserPluginObject;
 class DatasourcePluginObject;
+}
 
 class GStb : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit GStb(MagProfile *profile, AbstractWebPage* page);
+    explicit GStb(MagProfile *profile, SDK::AbstractWebPage* page);
 
 
 protected:
@@ -29,11 +32,11 @@ protected:
 
     QStringList listFileExt;
     MagProfile *m_profile;
-    AbstractWebPage* m_page;
+    SDK::AbstractWebPage* m_page;
     QString listLocalFiles(const QString &dir);
-    MediaPlayerPluginObject* player();
-    BrowserPluginObject* browser();
-    DatasourcePluginObject* datasource();
+    SDK::MediaPlayerPluginObject* player();
+    SDK::BrowserPluginObject* browser();
+    SDK::DatasourcePluginObject* datasource();
 
     struct SystemSettingsCfg {
         QString url;

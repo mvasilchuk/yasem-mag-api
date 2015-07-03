@@ -25,8 +25,8 @@
 
 using namespace yasem;
 
-MagApiStbObject::MagApiStbObject(Plugin* plugin):
-    StbPluginObject(plugin)
+MagApiStbObject::MagApiStbObject(SDK::Plugin* plugin):
+    SDK::StbPluginObject(plugin)
 {
 
 }
@@ -43,12 +43,12 @@ QString yasem::MagApiStbObject::getProfileClassId()
     return "mag";
 }
 
-Profile *yasem::MagApiStbObject::createProfile(const QString &id)
+SDK::Profile *yasem::MagApiStbObject::createProfile(const QString &id)
 {
     return new MagProfile(this, id);
 }
 
-void yasem::MagApiStbObject::initObject(AbstractWebPage *page)
+void yasem::MagApiStbObject::initObject(SDK::AbstractWebPage *page)
 {
      resetObjects(page);
 }
@@ -60,11 +60,11 @@ QString yasem::MagApiStbObject::getIcon(const QSize &size)
 
 QString MagApiStbObject::getStorageInfo()
 {
-    QList<StorageInfo*> disks = Core::instance()->storages();
+    QList<SDK::StorageInfo*> disks = SDK::Core::instance()->storages();
     QJsonArray result = QJsonArray();
 
     int partitionNum = 1;
-    foreach (StorageInfo* disk, disks) {
+    foreach (SDK::StorageInfo* disk, disks) {
 
         QString sn = QString("00000000%1").arg(partitionNum);
 
@@ -95,12 +95,12 @@ QString MagApiStbObject::getStorageInfo()
     return QString(QJsonDocument(result).toJson(QJsonDocument::Compact));
 }
 
-void MagApiStbObject::resetObjects(AbstractWebPage *page)
+void MagApiStbObject::resetObjects(SDK::AbstractWebPage *page)
 {
     QHash<QString, QObject*>& api = getApi();
     api.clear();
 
-    MagProfile* profile = dynamic_cast<MagProfile*>(ProfileManager::instance()->getActiveProfile());
+    MagProfile* profile = dynamic_cast<MagProfile*>(SDK::ProfileManager::instance()->getActiveProfile());
 
     api.insert("screen", new StbScreen(profile));
 
@@ -153,40 +153,40 @@ QUrl MagApiStbObject::handleUrl(QUrl &url)
 }
 
 
-PluginObjectResult yasem::MagApiStbObject::init()
+SDK::PluginObjectResult MagApiStbObject::init()
 {
     StbPluginObject::init();// It's reqired to register profile class id
 
-    player(dynamic_cast<MediaPlayerPluginObject*>(PluginManager::instance()->getByRole(ROLE_MEDIA)));
-    browser(dynamic_cast<BrowserPluginObject*>(PluginManager::instance()->getByRole(ROLE_BROWSER)));
+    player(__get_plugin<SDK::MediaPlayerPluginObject*>(SDK::ROLE_MEDIA));
+    browser(__get_plugin<SDK::BrowserPluginObject*>(SDK::ROLE_BROWSER));
 
     QFile res(QString(":/mag/fixes/fontfix.js"));
     res.open(QIODevice::ReadOnly|QIODevice::Text);
     fontFix = res.readAll();
 
     webServerHost = "http://127.0.0.1";
-    webServerPort = Core::instance()->settings()->value("web-server/port", 9999).toInt();
+    webServerPort = SDK::Core::instance()->settings()->value("web-server/port", 9999).toInt();
 
-    QList<StbSubmodel> &submodels = getSubmodels();
+    QList<SDK::StbSubmodel> &submodels = getSubmodels();
 
     setSubmodelDatasourceField("RDIR", "STB Model");
 
-    submodels.append(StbSubmodel(QString::number(MAG_100), "MAG100"));
-    submodels.append(StbSubmodel(QString::number(MAG_200), "MAG200"));
-    submodels.append(StbSubmodel(QString::number(MAG_245), "MAG245"));
-    submodels.append(StbSubmodel(QString::number(MAG_250), "MAG250"));
-    submodels.append(StbSubmodel(QString::number(MAG_254), "MAG254"));
-    submodels.append(StbSubmodel(QString::number(MAG_255), "MAG255"));
-    submodels.append(StbSubmodel(QString::number(MAG_260), "MAG260"));
-    submodels.append(StbSubmodel(QString::number(MAG_270), "MAG270"));
-    submodels.append(StbSubmodel(QString::number(MAG_275), "MAG275"));
-    submodels.append(StbSubmodel(QString::number(AURA_HD), "AuraHD"));
+    submodels.append(SDK::StbSubmodel(QString::number(MAG_100), "MAG100"));
+    submodels.append(SDK::StbSubmodel(QString::number(MAG_200), "MAG200"));
+    submodels.append(SDK::StbSubmodel(QString::number(MAG_245), "MAG245"));
+    submodels.append(SDK::StbSubmodel(QString::number(MAG_250), "MAG250"));
+    submodels.append(SDK::StbSubmodel(QString::number(MAG_254), "MAG254"));
+    submodels.append(SDK::StbSubmodel(QString::number(MAG_255), "MAG255"));
+    submodels.append(SDK::StbSubmodel(QString::number(MAG_260), "MAG260"));
+    submodels.append(SDK::StbSubmodel(QString::number(MAG_270), "MAG270"));
+    submodels.append(SDK::StbSubmodel(QString::number(MAG_275), "MAG275"));
+    submodels.append(SDK::StbSubmodel(QString::number(AURA_HD), "AuraHD"));
 
-    return PLUGIN_OBJECT_RESULT_OK;
+    return SDK::PLUGIN_OBJECT_RESULT_OK;
 }
 
-PluginObjectResult yasem::MagApiStbObject::deinit()
+SDK::PluginObjectResult MagApiStbObject::deinit()
 {
-    return PLUGIN_OBJECT_RESULT_OK;
+    return SDK::PLUGIN_OBJECT_RESULT_OK;
 }
 

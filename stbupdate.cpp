@@ -5,7 +5,7 @@
 
 using namespace yasem;
 
-StbUpdate::StbUpdate(MagProfile *profile, AbstractWebPage* page)
+StbUpdate::StbUpdate(MagProfile *profile, SDK::AbstractWebPage* page)
 {
     this->profile = profile;
     this->m_page = page;

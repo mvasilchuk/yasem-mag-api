@@ -6,13 +6,16 @@
 namespace yasem
 {
 class MagProfile;
+
+namespace SDK {
 class AbstractWebPage;
+}
 
 class StbEvent : public QObject
 {
     Q_OBJECT
 public:
-    explicit StbEvent(MagProfile *profile, AbstractWebPage* page);
+    explicit StbEvent(MagProfile *profile, SDK::AbstractWebPage* page);
 
     Q_PROPERTY(int event READ getEventCode)
 
@@ -56,7 +59,7 @@ protected:
     MagProfile *profile;
     int getEventCode();
     int eventCode;
-    AbstractWebPage* m_page;
+    SDK::AbstractWebPage* m_page;
 };
 
 }

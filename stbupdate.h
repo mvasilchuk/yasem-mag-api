@@ -6,13 +6,16 @@
 namespace yasem
 {
 class MagProfile;
+
+namespace SDK {
 class AbstractWebPage;
+}
 
 class StbUpdate : public QObject
 {
     Q_OBJECT
 public:
-    explicit StbUpdate(MagProfile *profile, AbstractWebPage* page);
+    explicit StbUpdate(MagProfile *profile, SDK::AbstractWebPage* page);
 
     enum UpdateStatus {
         UNDEFINED = -1,
@@ -59,7 +62,7 @@ public slots:
     QString getImageVersionStr();
 protected:
     MagProfile* profile;
-    AbstractWebPage* m_page;
+    SDK::AbstractWebPage* m_page;
 
 };
 

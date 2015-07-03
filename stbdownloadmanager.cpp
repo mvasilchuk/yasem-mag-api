@@ -8,7 +8,7 @@
 
 using namespace yasem;
 
-StbDownloadManager::StbDownloadManager(MagProfile *profile, AbstractWebPage* page)
+StbDownloadManager::StbDownloadManager(MagProfile *profile, SDK::AbstractWebPage* page)
 {
     this->profile = profile;
     this->m_page = page;

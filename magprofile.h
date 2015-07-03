@@ -6,15 +6,18 @@
 
 #include <QObject>
 
-namespace yasem
-{
+namespace yasem {
+
+namespace SDK {
 class StbPluginObject;
+}
+
 class RemoteControlHandler;
-class MagProfile : public QObject, public Profile
+class MagProfile : public QObject, public SDK::Profile
 {
     Q_OBJECT
 public:
-    explicit MagProfile(StbPluginObject *profilePlugin, const QString &id);
+    explicit MagProfile(SDK::StbPluginObject *profilePlugin, const QString &id);
 
 signals:
 

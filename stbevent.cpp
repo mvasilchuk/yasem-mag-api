@@ -6,7 +6,7 @@
 
 using namespace yasem;
 
-StbEvent::StbEvent(MagProfile *profile, AbstractWebPage* page)
+StbEvent::StbEvent(MagProfile *profile, SDK::AbstractWebPage* page)
 {
     this->setObjectName("StbEvent");
     this->m_page = page;

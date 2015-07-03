@@ -11,13 +11,13 @@
 
 using namespace yasem;
 
-StbWindowMgr::StbWindowMgr(MagProfile *profile, AbstractWebPage* page)
+StbWindowMgr::StbWindowMgr(MagProfile *profile, SDK::AbstractWebPage* page)
 {
     this->profile = profile;
     this->m_page = page;
 
-    DatasourcePluginObject* datasource = profile->datasource();
-    localPortalUrl = datasource->get(DB_TAG_PROFILE, CONFIG_INNER_PORTAL_URL, "");
+    SDK::DatasourcePluginObject* datasource = profile->datasource();
+    localPortalUrl = datasource->get(SDK::DB_TAG_PROFILE, CONFIG_INNER_PORTAL_URL, "");
     //gui = dynamic_cast<GuiPlugin*>(PluginManager::instance()->getByRole("gui"));
 }
 
@@ -41,7 +41,7 @@ void StbWindowMgr::openDownloadManager(const QString &url)
 QString StbWindowMgr::transformInnerPortalPathToLocal(QString innerPortalPath)
 {
     STUB();
-    bool isInternalPortal = static_cast<MagProfile*>(ProfileManager::instance()->getActiveProfile())->isInternalPortal();
+    bool isInternalPortal = static_cast<MagProfile*>(SDK::ProfileManager::instance()->getActiveProfile())->isInternalPortal();
     QString result;
 
     if(innerPortalPath.startsWith("/home/web/"))
