@@ -1806,7 +1806,14 @@ void GStb::Stop()
 QString GStb::Version()
 {
     STUB();
-    return "";
+    QString js_api_ver = "328";
+    QString stb_api_ver = "134";
+    QString player_engine_ver = "0x566";
+
+    return QString("JS API version: %1; STB API version: %2; Player Engine version: %3")
+            .arg(js_api_ver)
+            .arg(stb_api_ver)
+            .arg(player_engine_ver);
 }
 
 /**
