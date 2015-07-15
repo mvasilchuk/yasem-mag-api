@@ -9,14 +9,14 @@ namespace yasem
 class MagProfile;
 
 namespace SDK {
-class AbstractWebPage;
+class WebPage;
 }
 
 class TimeShift : public QObject
 {
     Q_OBJECT
 public:
-    TimeShift(MagProfile *profile, SDK::AbstractWebPage* page);
+    TimeShift(MagProfile *profile, SDK::WebPage* page);
 signals:
 
 public slots:
@@ -26,7 +26,7 @@ public slots:
     void SetMaxDuration(qint64 maxDuration);
 protected:
     MagProfile *profile;
-    SDK::AbstractWebPage* m_page;
+    SDK::WebPage* m_page;
 };
 
 }

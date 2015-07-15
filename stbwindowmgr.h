@@ -6,8 +6,8 @@
 namespace yasem {
 
 namespace SDK {
-class GuiPluginObject;
-class AbstractWebPage;
+class GUI;
+class WebPage;
 }
 
 class MagProfile;
@@ -16,7 +16,7 @@ class StbWindowMgr : public QObject
 {
     Q_OBJECT
 public:
-    explicit StbWindowMgr(MagProfile *profile, SDK::AbstractWebPage* page);
+    explicit StbWindowMgr(MagProfile *profile, SDK::WebPage* page);
 
 signals:
 
@@ -38,10 +38,10 @@ public slots:
     void openWebFace(const QString &url);
     void windowInit(const QString &params);
 protected:
-    SDK::GuiPluginObject* gui;
+    SDK::GUI* gui;
     MagProfile *profile;
     QString localPortalUrl;
-    SDK::AbstractWebPage* m_page;
+    SDK::WebPage* m_page;
 
     QString transformInnerPortalPathToLocal(QString innerPortalPath);
     QString openNewWindow(const QString &url, const QString &params, const QString &name);

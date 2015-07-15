@@ -10,14 +10,14 @@ namespace yasem
 class MagProfile;
 
 namespace SDK {
-class AbstractWebPage;
+class WebPage;
 }
 
 class StbDownloadManager : public QObject
 {
     Q_OBJECT
 public:
-    explicit StbDownloadManager(MagProfile *profile, SDK::AbstractWebPage* page);
+    explicit StbDownloadManager(MagProfile *profile, SDK::WebPage* page);
 
 signals:
 
@@ -37,7 +37,7 @@ public slots:
     QString GetQueueInfo();
 protected:
     MagProfile *profile;
-    SDK::AbstractWebPage* m_page;
+    SDK::WebPage* m_page;
 };
 
 }

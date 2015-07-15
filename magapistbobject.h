@@ -44,10 +44,10 @@ public:
 public slots:
     QString getProfileClassId();
     SDK::Profile *createProfile(const QString &id);
-    void initObject(SDK::AbstractWebPage *page);
+    void initObject(SDK::WebPage *page);
     QString getIcon(const QSize &size);
     QString getStorageInfo();
-    void resetObjects(SDK::AbstractWebPage* page);
+    void resetObjects(SDK::WebPage* page);
     void applyFixes();
     QUrl handleUrl(QUrl &url);
 

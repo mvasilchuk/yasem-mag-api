@@ -1,11 +1,11 @@
 #include "stbupdate.h"
 #include "macros.h"
 #include "magprofile.h"
-#include "abstractwebpage.h"
+#include "webpage.h"
 
 using namespace yasem;
 
-StbUpdate::StbUpdate(MagProfile *profile, SDK::AbstractWebPage* page)
+StbUpdate::StbUpdate(MagProfile *profile, SDK::WebPage* page)
 {
     this->profile = profile;
     this->m_page = page;

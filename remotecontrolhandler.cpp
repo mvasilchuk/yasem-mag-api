@@ -1,6 +1,6 @@
 #include "remotecontrolhandler.h"
 #include "macros.h"
-#include "abstractwebpage.h"
+#include "webpage.h"
 #include "magprofile.h"
 
 #include <QHostAddress>

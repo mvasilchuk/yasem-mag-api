@@ -1,14 +1,14 @@
 #include "stbpluginobject.h"
-#include "browserpluginobject.h"
+#include "browser.h"
 #include "magprofile.h"
 #include "datasourcepluginobject.h"
 #include "pluginmanager.h"
 #include "profilemanager.h"
 #include "mag_macros.h"
-#include "mediaplayerpluginobject.h"
+#include "mediaplayer.h"
 #include "stbevent.h"
 #include "mag_enums.h"
-#include "abstractwebpage.h"
+#include "webpage.h"
 
 #ifdef CONFIG_QCA
 #include "remotecontrolhandler.h"
@@ -99,71 +99,74 @@ void MagProfile::start()
     STUB();
 
 
-    SDK::BrowserPluginObject* browser = m_profile_plugin->browser();
+    SDK::Browser* browser = m_profile_plugin->browser();
     if(!browser)
     {
         WARN() << "MagProfile::start() : browser not found!";
         return;
     }
     StbEvent* event = static_cast<StbEvent*>(m_profile_plugin->getStbApiList().find("stbEvent").value());
-    SDK::MediaPlayerPluginObject* player = m_profile_plugin->player();
+    SDK::MediaPlayer* player = m_profile_plugin->player();
     Q_ASSERT(player != NULL);
     if(player)
     {
-        connect(player, &SDK::MediaPlayerPluginObject::paused,               this, [=](bool)
+        connect(player, &SDK::MediaPlayer::paused,               this, [=](bool)
         {
             DEBUG() << "[MEDIA]: paused";
             event->sendEvent(StbEvent::STB_EVENT_NO_ERROR);
         });
-        connect(player, &SDK::MediaPlayerPluginObject::started,              this, [=]()
+        connect(player, &SDK::MediaPlayer::started,              this, [=]()
         {
             DEBUG() << "[MEDIA]: started";
-            event->sendEvent(StbEvent::STB_EVENT_GOT_VIDEO_INFO);
             event->sendEvent(StbEvent::STB_EVENT_PLAY_START);
         });
 
-        connect(player, &SDK::MediaPlayerPluginObject::speedChanged,         this, [=](qreal speed)
+        connect(player, &SDK::MediaPlayer::speedChanged,         this, [=](qreal speed)
         {
             DEBUG() << "[MEDIA]: speedChanged" << speed;
         });
-        connect(player, &SDK::MediaPlayerPluginObject::repeatChanged,        this, [=](int repeat)
+        connect(player, &SDK::MediaPlayer::repeatChanged,        this, [=](int repeat)
         {
             DEBUG() << "[MEDIA]: repeatChanged" << repeat;
         });
-        connect(player, &SDK::MediaPlayerPluginObject::currentRepeatChanged, this, [=](int repeat)
+        connect(player, &SDK::MediaPlayer::currentRepeatChanged, this, [=](int repeat)
         {
             DEBUG() << "[MEDIA]: currentRepeatChanged" << repeat;
         });
-        connect(player, &SDK::MediaPlayerPluginObject::startPositionChanged, this, [=](qint64 pos)
+        connect(player, &SDK::MediaPlayer::startPositionChanged, this, [=](qint64 pos)
         {
             DEBUG() << "[MEDIA]: startPositionChanged" << pos;
         });
-        connect(player, &SDK::MediaPlayerPluginObject::stopPositionChanged,  this, [=](qint64 pos)
+        connect(player, &SDK::MediaPlayer::stopPositionChanged,  this, [=](qint64 pos)
         {
             DEBUG() << "[MEDIA]: stopPositionChanged" << pos;
         });
-        connect(player, &SDK::MediaPlayerPluginObject::positionChanged,      this, [=](qint64 pos)
+        connect(player, &SDK::MediaPlayer::positionChanged,      this, [=](qint64 pos)
         {
             //DEBUG() << "[MEDIA]: positionChanged" << pos;
         });
-        connect(player, &SDK::MediaPlayerPluginObject::brightnessChanged,    this, [=](bool)
+        connect(player, &SDK::MediaPlayer::brightnessChanged,    this, [=](bool)
         {
             DEBUG() << "[MEDIA]: brightnessChanged";
         });
-        connect(player, &SDK::MediaPlayerPluginObject::contrastChanged,      this, [=](bool)
+        connect(player, &SDK::MediaPlayer::contrastChanged,      this, [=](bool)
         {
             DEBUG() << "[MEDIA]: contrastChanged";
         });
-        connect(player, &SDK::MediaPlayerPluginObject::saturationChanged,    this, [=](bool)
+        connect(player, &SDK::MediaPlayer::saturationChanged,    this, [=](bool)
         {
             DEBUG() << "[MEDIA]: saturationChanged";
         });
 
-        connect(player, &SDK::MediaPlayerPluginObject::statusChanged,              this, [=](SDK::MediaStatus status)
+        connect(player, &SDK::MediaPlayer::statusChanged,              this, [=](SDK::MediaStatus status)
         {
             DEBUG() << "[MEDIA]: status changed:" << status;
             switch(status)
             {
+                case SDK::VideoInfoReceived: {
+                    event->sendEvent(StbEvent::STB_EVENT_GOT_VIDEO_INFO);
+                    break;
+                }
                 case SDK::MediaStatus::NoMedia:
                 case SDK::MediaStatus::EndOfMedia: {
                     event->sendEvent(StbEvent::STB_EVENT_EOF);

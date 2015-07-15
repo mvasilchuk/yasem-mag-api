@@ -8,14 +8,14 @@ namespace yasem
 class MagProfile;
 
 namespace SDK {
-class AbstractWebPage;
+class WebPage;
 }
 
 class PvrManager : public QObject
 {
     Q_OBJECT
 public:
-    explicit PvrManager(MagProfile *profile, SDK::AbstractWebPage* page);
+    explicit PvrManager(MagProfile *profile, SDK::WebPage* page);
     MagProfile *profile;
     QString GetTaskByID(const QString &id);
 signals:
@@ -25,7 +25,7 @@ public slots:
     QString GetAllTasks();
 
 protected:
-    SDK::AbstractWebPage* m_page;
+    SDK::WebPage* m_page;
 
 };
 }

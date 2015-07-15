@@ -9,14 +9,14 @@ namespace yasem
 class MagProfile;
 
 namespace SDK {
-class AbstractWebPage;
+class WebPage;
 }
 
 class StbWebWindow : public QObject
 {
     Q_OBJECT
 public:
-    explicit StbWebWindow(MagProfile *profile, SDK::AbstractWebPage* m_page);
+    explicit StbWebWindow(MagProfile *profile, SDK::WebPage* m_page);
 
 
 signals:
@@ -27,7 +27,7 @@ public slots:
     QString windowId();
 protected:
     MagProfile *profile;
-    SDK::AbstractWebPage* m_page;
+    SDK::WebPage* m_page;
 };
 
 }

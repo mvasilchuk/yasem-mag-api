@@ -1,9 +1,9 @@
 #include "gstb.h"
 #include "stbpluginobject.h"
 #include "datasourceplugin.h"
-#include "browserpluginobject.h"
-#include "mediaplayerpluginobject.h"
-#include "guipluginobject.h"
+#include "browser.h"
+#include "mediaplayer.h"
+#include "gui.h"
 #include "enums.h"
 #include "mag_enums.h"
 #include "mag_macros.h"
@@ -11,13 +11,13 @@
 #include "datasourcepluginobject.h"
 #include "magprofile.h"
 #include "stbevent.h"
-#include "mediaplayerpluginobject.h"
+#include "mediaplayer.h"
 #include "NetworkThread.h"
 #include "magapistbobject.h"
 #include "core-network.h"
 #include "samba.h"
 #include "sambanode.h"
-#include "abstractwebpage.h"
+#include "webpage.h"
 
 #ifdef CONFIG_QCA
 #include "remotecontrolhandler.h"
@@ -38,7 +38,7 @@
 
 using namespace yasem;
 
-GStb::GStb(MagProfile *profile, SDK::AbstractWebPage* page):
+GStb::GStb(MagProfile *profile, SDK::WebPage* page):
     m_profile(profile),
     m_page(page)
 {
@@ -84,12 +84,12 @@ QString GStb::listLocalFiles(const QString &dir)
     return result;
 }
 
-SDK::MediaPlayerPluginObject *GStb::player()
+SDK::MediaPlayer *GStb::player()
 {
     return profile()->getProfilePlugin()->player();
 }
 
-SDK::BrowserPluginObject *GStb::browser()
+SDK::Browser *GStb::browser()
 {
     return profile()->getProfilePlugin()->browser();
 }
@@ -1275,25 +1275,55 @@ void GStb::SetAspect(int aspect)
     STUB() << aspect;
     CHECK_PLAYER_VOID;
 
+    int aspL = aspect & 0x7;
+    int aspH = (aspect >> 4) & 0x7;
+
+    DEBUG() << "aspL" << aspL << ", aspH" << aspH;
+
     SDK::AspectRatio ratio;
-    switch(aspect)
+    if(player()->isFullscreen())
     {
-        case 0: {
-            ratio = SDK::ASPECT_RATIO_16_9 /*ASPECT_RATIO_AUTO*/ ; break;
-        }
-        case 1: {
-            ratio = SDK::ASPECT_RATIO_20_9; break;
-        }
-        case 2: {
-            ratio = SDK::ASPECT_RATIO_16_9; break;
-        }
-        case 3: {
-            ratio = SDK::ASPECT_RATIO_4_3; break;
-        }
-        default: {
-            ratio = SDK::ASPECT_RATIO_16_9; break;
+        switch(aspH)
+        {
+            case 0: {
+                ratio = SDK::ASPECT_RATIO_16_9 /*ASPECT_RATIO_AUTO*/ ; break;
+            }
+            case 1: {
+                ratio = SDK::ASPECT_RATIO_20_9; break;
+            }
+            case 2: {
+                ratio = SDK::ASPECT_RATIO_16_9; break;
+            }
+            case 3: {
+                ratio = SDK::ASPECT_RATIO_4_3; break;
+            }
+            default: {
+                ratio = SDK::ASPECT_RATIO_16_9; break;
+            }
         }
     }
+    else
+    {
+        switch(aspL)
+        {
+            case 0: {
+                ratio = SDK::ASPECT_RATIO_16_9 /*ASPECT_RATIO_AUTO*/ ; break;
+            }
+            case 1: {
+                ratio = SDK::ASPECT_RATIO_20_9; break;
+            }
+            case 2: {
+                ratio = SDK::ASPECT_RATIO_16_9; break;
+            }
+            case 3: {
+                ratio = SDK::ASPECT_RATIO_4_3; break;
+            }
+            default: {
+                ratio = SDK::ASPECT_RATIO_16_9; break;
+            }
+        }
+    }
+
 
     player()->setAspectRatio(ratio);
 }
@@ -1631,11 +1661,11 @@ void GStb::SetTopWin(int winNum)
     CHECK_PLAYER_VOID
     if(winNum == WINDOW_BROWSER)
     {
-        browser()->setTopWidget(SDK::BrowserPluginObject::TOP_WIDGET_BROWSER);
+        browser()->setTopWidget(SDK::Browser::TOP_WIDGET_BROWSER);
     }
     else
     {
-        browser()->setTopWidget(SDK::BrowserPluginObject::TOP_WIDGET_PLAYER);
+        browser()->setTopWidget(SDK::Browser::TOP_WIDGET_PLAYER);
     }
 }
 
@@ -2125,8 +2155,8 @@ QString GStb::GetStatistics()
 int GStb::GetTopWin()
 {
     STUB();
-    SDK::BrowserPluginObject::TopWidget top = browser()->getTopWidget();
-    if(top == SDK::BrowserPluginObject::TOP_WIDGET_BROWSER)
+    SDK::Browser::TopWidget top = browser()->getTopWidget();
+    if(top == SDK::Browser::TOP_WIDGET_BROWSER)
         return 0;
     else
         return 1;

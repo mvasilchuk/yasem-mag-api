@@ -1,11 +1,11 @@
 #include "timeshift.h"
 #include "macros.h"
 #include "magprofile.h"
-#include "abstractwebpage.h"
+#include "webpage.h"
 
 using namespace yasem;
 
-TimeShift::TimeShift(MagProfile *profile, SDK::AbstractWebPage* page)
+TimeShift::TimeShift(MagProfile *profile, SDK::WebPage* page)
 {
     this->profile = profile;
     this->m_page = page;

@@ -82,7 +82,7 @@ RESOURCES += \
 !build_pass:qtCompileTest(qca)
 
 CONFIG(config_qca) {
-    win32: {
+    exists($${top_srcdir}/third_party/qca):exists($${top_srcdir}/third_party/qca-build) {
         INCLUDEPATH += $${top_srcdir}/third_party/qca/include
         INCLUDEPATH += $${top_srcdir}/third_party/qca-build
         INCLUDEPATH += .
@@ -98,3 +98,4 @@ CONFIG(config_qca) {
 } else {
     !build_pass:message("QCA library is missing. Wi-Fi/LAN remote control feature will be disabled")
 }
+

@@ -10,9 +10,9 @@ namespace yasem
 class MagProfile;
 
 namespace SDK {
-class MediaPlayerPluginObject;
-class AbstractWebPage;
-class BrowserPluginObject;
+class MediaPlayer;
+class WebPage;
+class Browser;
 class DatasourcePluginObject;
 }
 
@@ -21,7 +21,7 @@ class GStb : public QObject
     Q_OBJECT
 
 public:
-    explicit GStb(MagProfile *profile, SDK::AbstractWebPage* page);
+    explicit GStb(MagProfile *profile, SDK::WebPage* page);
 
 
 protected:
@@ -32,10 +32,10 @@ protected:
 
     QStringList listFileExt;
     MagProfile *m_profile;
-    SDK::AbstractWebPage* m_page;
+    SDK::WebPage* m_page;
     QString listLocalFiles(const QString &dir);
-    SDK::MediaPlayerPluginObject* player();
-    SDK::BrowserPluginObject* browser();
+    SDK::MediaPlayer* player();
+    SDK::Browser* browser();
     SDK::DatasourcePluginObject* datasource();
 
     struct SystemSettingsCfg {

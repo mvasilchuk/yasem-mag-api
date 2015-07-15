@@ -1,12 +1,12 @@
 #include "stbstorage.h"
-#include "abstractwebpage.h"
+#include "webpage.h"
 #include "datasourcepluginobject.h"
 
 using namespace yasem;
 
 #define STB_STORAGE_GROUP "stb-storage"
 
-StbStorage::StbStorage(MagProfile *profile, SDK::AbstractWebPage* page)
+StbStorage::StbStorage(MagProfile *profile, SDK::WebPage* page)
 {
     //qDebug() << "logger: " << parent->getLogger();
     this->setObjectName("gSTB");

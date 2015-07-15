@@ -1,12 +1,12 @@
 #include "stbevent.h"
 #include "macros.h"
 #include "magprofile.h"
-#include "browserpluginobject.h"
-#include "abstractwebpage.h"
+#include "browser.h"
+#include "webpage.h"
 
 using namespace yasem;
 
-StbEvent::StbEvent(MagProfile *profile, SDK::AbstractWebPage* page)
+StbEvent::StbEvent(MagProfile *profile, SDK::WebPage* page)
 {
     this->setObjectName("StbEvent");
     this->m_page = page;

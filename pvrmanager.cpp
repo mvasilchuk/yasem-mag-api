@@ -1,11 +1,11 @@
 #include "pvrmanager.h"
 #include "macros.h"
 #include "magprofile.h"
-#include "abstractwebpage.h"
+#include "webpage.h"
 
 using namespace yasem;
 
-PvrManager::PvrManager(MagProfile *profile, SDK::AbstractWebPage* page)
+PvrManager::PvrManager(MagProfile *profile, SDK::WebPage* page)
 {
     this->profile = profile;
     this->m_page = page;

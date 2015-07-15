@@ -12,8 +12,8 @@ namespace yasem
 {
 
 namespace SDK {
-class MediaPlayerPluginObject;
-class AbstractWebPage;
+class MediaPlayer;
+class WebPage;
 
 }
 
@@ -21,7 +21,7 @@ class StbStorage : public QObject
 {
     Q_OBJECT
 public:
-    explicit StbStorage(MagProfile *profile, SDK::AbstractWebPage* page);
+    explicit StbStorage(MagProfile *profile, SDK::WebPage* page);
 
 signals:
 
@@ -32,7 +32,7 @@ public slots:
     QString getItem(const QString &name);
 protected:
     MagProfile *profile;
-    SDK::AbstractWebPage* m_page;
+    SDK::WebPage* m_page;
 };
 
 }

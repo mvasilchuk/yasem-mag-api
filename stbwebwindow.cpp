@@ -1,12 +1,12 @@
 #include "stbwebwindow.h"
 #include "macros.h"
 #include "magprofile.h"
-#include "browserpluginobject.h"
-#include "abstractwebpage.h"
+#include "browser.h"
+#include "webpage.h"
 
 using namespace yasem;
 
-StbWebWindow::StbWebWindow(MagProfile *profile, SDK::AbstractWebPage* page)
+StbWebWindow::StbWebWindow(MagProfile *profile, SDK::WebPage* page)
 {
     this->profile = profile;
     this->m_page = page;

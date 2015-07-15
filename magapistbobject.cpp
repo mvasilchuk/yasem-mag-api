@@ -14,9 +14,9 @@
 #include "profilemanager.h"
 #include "stbevent.h"
 #include "stbstorage.h"
-#include "mediaplayerpluginobject.h"
-#include "guipluginobject.h"
-#include "browserpluginobject.h"
+#include "mediaplayer.h"
+#include "gui.h"
+#include "browser.h"
 
 #include <QFile>
 #include <QFileInfoList>
@@ -48,7 +48,7 @@ SDK::Profile *yasem::MagApiStbObject::createProfile(const QString &id)
     return new MagProfile(this, id);
 }
 
-void yasem::MagApiStbObject::initObject(SDK::AbstractWebPage *page)
+void yasem::MagApiStbObject::initObject(SDK::WebPage *page)
 {
      resetObjects(page);
 }
@@ -95,7 +95,7 @@ QString MagApiStbObject::getStorageInfo()
     return QString(QJsonDocument(result).toJson(QJsonDocument::Compact));
 }
 
-void MagApiStbObject::resetObjects(SDK::AbstractWebPage *page)
+void MagApiStbObject::resetObjects(SDK::WebPage *page)
 {
     QHash<QString, QObject*>& api = getApi();
     api.clear();
@@ -157,8 +157,8 @@ SDK::PluginObjectResult MagApiStbObject::init()
 {
     StbPluginObject::init();// It's reqired to register profile class id
 
-    player(__get_plugin<SDK::MediaPlayerPluginObject*>(SDK::ROLE_MEDIA));
-    browser(__get_plugin<SDK::BrowserPluginObject*>(SDK::ROLE_BROWSER));
+    player(__get_plugin<SDK::MediaPlayer*>(SDK::ROLE_MEDIA));
+    browser(__get_plugin<SDK::Browser*>(SDK::ROLE_BROWSER));
 
     QFile res(QString(":/mag/fixes/fontfix.js"));
     res.open(QIODevice::ReadOnly|QIODevice::Text);

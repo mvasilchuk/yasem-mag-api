@@ -1,14 +1,14 @@
 #include "stbdownloadmanager.h"
 #include "macros.h"
 #include "magprofile.h"
-#include "abstractwebpage.h"
+#include "webpage.h"
 
 #include <QJsonArray>
 #include <QJsonObject>
 
 using namespace yasem;
 
-StbDownloadManager::StbDownloadManager(MagProfile *profile, SDK::AbstractWebPage* page)
+StbDownloadManager::StbDownloadManager(MagProfile *profile, SDK::WebPage* page)
 {
     this->profile = profile;
     this->m_page = page;
