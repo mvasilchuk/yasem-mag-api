@@ -25,6 +25,7 @@ public slots:
     void close();
 
     QString windowId();
+    void messageSend(int windowId, const QString& message, const QString& data);
 protected:
     MagProfile *profile;
     SDK::WebPage* m_page;

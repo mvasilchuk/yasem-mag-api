@@ -23,3 +23,16 @@ QString StbWebWindow::windowId()
     STUB();
     return "---- < TODO: WINDOW ID > -----";
 }
+
+/**
+ * @brief StbWebWindow::messageSend
+ * @param windowId
+ * @param message
+ * @param data
+ * Send message "message" with data "data" to window ID "windowId".
+ * Message can be handled using callback stbEvent.onMessage(data) which should be defined in target window.
+ */
+void StbWebWindow::messageSend(int windowId, const QString &message, const QString &data)
+{
+    STUB() << windowId << message << data;
+}
