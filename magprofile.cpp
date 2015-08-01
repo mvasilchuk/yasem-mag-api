@@ -163,6 +163,10 @@ void MagProfile::start()
             DEBUG() << "[MEDIA]: status changed:" << status;
             switch(status)
             {
+                case SDK::MediaInfoReceived: {
+                    event->sendEvent(StbEvent::STB_EVENT_GOT_INFO);
+                    break;
+                }
                 case SDK::VideoInfoReceived: {
                     event->sendEvent(StbEvent::STB_EVENT_GOT_VIDEO_INFO);
                     break;

@@ -20,13 +20,20 @@ public:
 signals:
 
 public slots:
-    void SetSlidingMode(bool enable);
-
+    void SetSlidingMode(bool enabled);
     void SetTimeShiftFolder(const QString &folderName);
     void SetMaxDuration(qint64 maxDuration);
+    void EnterTimeShift();
+    void ExitTimeShift();
+    void ExitTimeShiftAndSave (const QString& path, const QString& name);
+    void ExitTimeShiftAndSaveDuration (const QString& path, const QString& name, qint64 duration );
 protected:
-    MagProfile *profile;
+    MagProfile *m_profile;
     SDK::WebPage* m_page;
+    bool m_sliding_mode;
+    QString m_timeshift_folder;
+    qint64 m_max_duration;
+    bool m_entered_timeshift;
 };
 
 }

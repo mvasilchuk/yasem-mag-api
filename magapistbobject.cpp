@@ -86,6 +86,7 @@ QString MagApiStbObject::getStorageInfo()
         obj.insert("mountPath", /*drive.absoluteFilePath()*/ QString("USB-%1-%2").arg(sn).arg(partitionNum));
         obj.insert("size", QString::number(disk->size));
         obj.insert("freeSize", QString::number(disk->available));
+        obj.insert("isReadOnly", disk->writable ? 0 : 1);
         partitionNum++;
 
         qDebug() << "partition" << obj;

@@ -171,6 +171,25 @@ void GStb::EnableVKButton(bool enable)
 void GStb::ExecAction(const QString &str)
 {
     STUB() << str;
+    if(str.startsWith("make_dir"))
+    {
+        QStringList args = str.split(" ");
+        if(args.length() != 2)
+        {
+            WARN() << "Incorrect command size" << args.length();
+            return;
+        }
+
+        QString path = translateStbPathToLocal(args.at(1));
+        DEBUG() << "Making directory " << path;
+        QDir dir(path);
+        if(!dir.exists())
+        {
+            bool ok = dir.mkdir(path);
+            if(!ok)
+                WARN() << "Cannot create directory" << path;
+        }
+    }
 }
 
 void GStb::ExtProtocolCommand(const QString &val1, const QString &val2, const QString &val3)
@@ -946,7 +965,7 @@ QString GStb::ListDir(const QString &dir)
 QString GStb::translateStbPathToLocal(const QString& path)
 {
     STUB() << path;
-    QRegularExpression diskRegex("[/{0,2}]USB-\\d+-(\\d+)(/)?");
+    QRegularExpression diskRegex("/{0,2}USB-\\d+-(\\d+)(/)?");
     QRegularExpressionMatch diskRegexMatch = diskRegex.match(path);
     QList<SDK::StorageInfo*> disks = SDK::Core::instance()->storages();
 
@@ -1026,6 +1045,12 @@ void GStb::Play(const QString &playStr, const QString &proxyParams)
     CHECK_PLAYER_VOID
 
     QString urlString = playStr.trimmed();
+
+    if(urlString.startsWith("extTimeShift"))
+    {
+        DEBUG() << "Need to enable timeshift!";
+        urlString = urlString.replace("extTimeShift ", "");
+    }
 
     QRegularExpression urlRegex("^((?<proto>auto|rtp|rtsp_ac3|rtsp|rtpac3|rtpmpeg4_aac|ptpmpeg4|mpegts|mpegps|file|mp4_mpa|mp4|fm|ffmpeg|ffrt4|ffrt3|ffrt2|ffrt)\\s+)?\
 (?<url>.*?)$");
