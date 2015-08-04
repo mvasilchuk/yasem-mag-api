@@ -40,10 +40,15 @@ MagProfile::MagProfile(SDK::StbPluginObject *profilePlugin, const QString &id = 
     loadConfigOptions();
 }
 
+MagProfile::~MagProfile()
+{
+    STUB();
+}
+
 void MagProfile::loadConfigOptions()
 {
     SDK::ProfileConfigGroup &main_group = profileConfiguration.groups.first(); //Main group is created by default in profile
-    main_group.options.append(SDK::ConfigOption(DB_TAG_ENV, "portal1", tr("Portal URL"), "http://", "string"));
+    main_group.m_options.append(SDK::ConfigOption(DB_TAG_ENV, "portal1", tr("Portal URL"), "http://", "string"));
 
     QHash<QString, QString> models;
     models.insert("MAG100", "MAG 100");
@@ -56,41 +61,41 @@ void MagProfile::loadConfigOptions()
     models.insert("MAG270", "MAG 270");
     models.insert("MAG275", "MAG 275");
     models.insert("AuraHD", "AuraHD");
-    main_group.options.append(SDK::ConfigOption(SDK::DB_TAG_PROFILE, "Model",         tr("STB Model"),          "MAG250",       "options", "", models));
+    main_group.m_options.append(SDK::ConfigOption(SDK::DB_TAG_PROFILE, "Model",         tr("STB Model"),          "MAG250",       "options", "", models));
 
     QHash<QString, QString> gmodes;
     gmodes.insert("720", "720x576");
     gmodes.insert("1280", "1280x720");
     gmodes.insert("1920", "1920x1080");
-    main_group.options.append(SDK::ConfigOption(DB_TAG_RDIR, "gmode",         tr("Graphical mode"),     "1280",         "options", "", gmodes));
+    main_group.m_options.append(SDK::ConfigOption(DB_TAG_RDIR, "gmode",         tr("Graphical mode"),     "1280",         "options", "", gmodes));
 
     QHash<QString, QString> vmodes;
     vmodes.insert("720p", "720p (HD)");
     vmodes.insert("1080p", "1080p (FullHD)");
-    main_group.options.append(SDK::ConfigOption(DB_TAG_RDIR, "vmode",         tr("Video mode"),         "720p",         "options", "", vmodes));
-    main_group.options.append(SDK::ConfigOption(DB_TAG_ENV,  "subtitles_on",  tr("Subtitles enabled"),  "true",         "bool",   ""));
-    main_group.options.append(SDK::ConfigOption(DB_TAG_ENV,  "timezone_conf", tr("Timezone"),           "Europe/Kiev",  "string", ""));
+    main_group.m_options.append(SDK::ConfigOption(DB_TAG_RDIR, "vmode",         tr("Video mode"),         "720p",         "options", "", vmodes));
+    main_group.m_options.append(SDK::ConfigOption(DB_TAG_ENV,  "subtitles_on",  tr("Subtitles enabled"),  "true",         "bool",   ""));
+    main_group.m_options.append(SDK::ConfigOption(DB_TAG_ENV,  "timezone_conf", tr("Timezone"),           "Europe/Kiev",  "string", ""));
 
     SDK::ProfileConfigGroup network(tr("Network"));
-    network.options.append(SDK::ConfigOption(DB_TAG_RDIR,  "MACAddress",   tr("MAC address"),     "00:1A:79:00:00:00",  "string"));
-    network.options.append(SDK::ConfigOption(DB_TAG_RDIR,  "SerialNumber", tr("Serial number"),   "012012N01212",       "string"));
-    network.options.append(SDK::ConfigOption(DB_TAG_RDIR,  "LAN_link",     tr("LAN enabled"),     "true",               "bool"));
-    network.options.append(SDK::ConfigOption(DB_TAG_ENV,   "ethaddr",      tr("LAN MAC Address"), "00:1A:79:00:00:01",  "string"));
-    network.options.append(SDK::ConfigOption(DB_TAG_RDIR,  "WiFi_link",    tr("Wi-Fi enabled"),   "false",              "bool"));
-    network.options.append(SDK::ConfigOption(DB_TAG_RDIR,  "IPAddress",    tr("Wi-Fi address"),   "192.168.0.100",      "string"));
+    network.m_options.append(SDK::ConfigOption(DB_TAG_RDIR,  "MACAddress",   tr("MAC address"),     "00:1A:79:00:00:00",  "string"));
+    network.m_options.append(SDK::ConfigOption(DB_TAG_RDIR,  "SerialNumber", tr("Serial number"),   "012012N01212",       "string"));
+    network.m_options.append(SDK::ConfigOption(DB_TAG_RDIR,  "LAN_link",     tr("LAN enabled"),     "true",               "bool"));
+    network.m_options.append(SDK::ConfigOption(DB_TAG_ENV,   "ethaddr",      tr("LAN MAC Address"), "00:1A:79:00:00:01",  "string"));
+    network.m_options.append(SDK::ConfigOption(DB_TAG_RDIR,  "WiFi_link",    tr("Wi-Fi enabled"),   "false",              "bool"));
+    network.m_options.append(SDK::ConfigOption(DB_TAG_RDIR,  "IPAddress",    tr("Wi-Fi address"),   "192.168.0.100",      "string"));
 
-    network.options.append(SDK::ConfigOption(DB_TAG_ENV,  "mc_proxy_enabled",    tr("Multicast proxy enabled"),      "false",                    "bool"));
-    network.options.append(SDK::ConfigOption(DB_TAG_ENV,  "mc_proxy_url",        tr("Multicast proxy URL"),          "http://0.0.0.0:1234",      "string"));
+    network.m_options.append(SDK::ConfigOption(DB_TAG_ENV,  "mc_proxy_enabled",    tr("Multicast proxy enabled"),      "false",                    "bool"));
+    network.m_options.append(SDK::ConfigOption(DB_TAG_ENV,  "mc_proxy_url",        tr("Multicast proxy URL"),          "http://0.0.0.0:1234",      "string"));
     profileConfiguration.groups.append(network);
 
     SDK::ProfileConfigGroup hardware(tr("Hardware"));
-    hardware.options.append(SDK::ConfigOption(DB_TAG_RDIR, "HardwareVersion", tr("Hardware version"), "1.7-BD-00", "string"));
+    hardware.m_options.append(SDK::ConfigOption(DB_TAG_RDIR, "HardwareVersion", tr("Hardware version"), "1.7-BD-00", "string"));
     profileConfiguration.groups.append(hardware);
 
     SDK::ProfileConfigGroup firmware_description(tr("Firmware"));
-    firmware_description.options.append(SDK::ConfigOption(DB_TAG_RDIR, "ImageDate",        tr("Image date"),         "Fri Oct 25 17:28:41 EEST 2013", "string"));
-    firmware_description.options.append(SDK::ConfigOption(DB_TAG_RDIR, "ImageDescription", tr("Image description"),  "0.2.16-r2",                     "string"));
-    firmware_description.options.append(SDK::ConfigOption(DB_TAG_RDIR, "ImageVersion",     tr("Image version"),      "216",                           "string"));
+    firmware_description.m_options.append(SDK::ConfigOption(DB_TAG_RDIR, "ImageDate",        tr("Image date"),         "Fri Oct 25 17:28:41 EEST 2013", "string"));
+    firmware_description.m_options.append(SDK::ConfigOption(DB_TAG_RDIR, "ImageDescription", tr("Image description"),  "0.2.16-r2",                     "string"));
+    firmware_description.m_options.append(SDK::ConfigOption(DB_TAG_RDIR, "ImageVersion",     tr("Image version"),      "216",                           "string"));
     profileConfiguration.groups.append(firmware_description);
 }
 

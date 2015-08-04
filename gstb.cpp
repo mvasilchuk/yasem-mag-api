@@ -270,11 +270,11 @@ QString GStb::GetAudioPIDs()
     for(AudioLangInfo info: languages)
     {
         QJsonObject obj;
-        obj.insert("pid", info.pid);
+        obj.insert("pid", info.m_pid);
 
         QJsonArray names;
-        names.append(info.code2);
-        names.append(info.code3);
+        names.append(info.m_code2);
+        names.append(info.m_code3);
 
         obj.insert("lang", names);
         resultArray.append(obj);
@@ -313,11 +313,11 @@ QString GStb::GetAudioPIDsEx()
     for(AudioLangInfo info: languages)
     {
         QJsonObject obj;
-        obj.insert("pid", info.pid);
+        obj.insert("pid", info.m_pid);
 
         QJsonArray names;
-        names.append(info.code2);
-        names.append(info.code3);
+        names.append(info.m_code2);
+        names.append(info.m_code3);
 
         obj.insert("lang", names);
 

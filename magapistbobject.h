@@ -52,16 +52,6 @@ public slots:
     QUrl handleUrl(QUrl &url);
 
 protected:
-    StbScreen *screen;
-    StbDownloadManager *stbDownloadManager;
-    GStb *gStb;
-    GStb *stb;
-    StbWindowMgr* stbWindowMgr;
-    PvrManager* pvrManager;
-    StbUpdate* stbUpdate;
-    StbWebWindow* stbWebWindow;
-    TimeShift* timeShift;
-    Netscape* netscape;
     QString fontFix;
 
     QString webServerHost;

@@ -26,16 +26,13 @@ class Security: public QObject {
     Q_OBJECT
 
 public:
-    CPrivilegeManager* PrivilegeManager;
+    CPrivilegeManager* m_privilege_manager;
     Q_PROPERTY(CPrivilegeManager* PrivilegeManager READ getPrivilegeManager)
-    Security(){
-        PrivilegeManager = new CPrivilegeManager();
-    }
+    Security();
 
-    CPrivilegeManager* getPrivilegeManager()
-    {
-        return PrivilegeManager;
-    }
+    virtual ~Security();
+
+    CPrivilegeManager* getPrivilegeManager();
 
 };
 
@@ -45,20 +42,18 @@ class Netscape : public QObject
 public:
 
 protected:
-    Security* security;
+    Security* m_security;
     MagProfile *profile;
 public:
     explicit Netscape(MagProfile *profile);
+    virtual ~Netscape();
     Q_PROPERTY(Security* security READ getSecurity)
 
 signals:
 
 public slots:
 
-    Security* getSecurity()
-    {
-        return security;
-    }
+    Security* getSecurity();
 };
 
 }

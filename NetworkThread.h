@@ -8,19 +8,19 @@ namespace yasem
 class NetworkThread: public QThread
 {
 public:
-    std::function< void () > callback;
+    std::function< void () > m_callback;
 
     void setCallback(std::function< void () > callback)
     {
-        this->callback = callback;
+        this->m_callback = callback;
     }
 
     // QThread interface
 protected:
     void run()
     {
-        Q_ASSERT(callback);
-        callback();
+        Q_ASSERT(m_callback);
+        m_callback();
     }
 };
 }

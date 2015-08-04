@@ -33,7 +33,7 @@ MagApiStbObject::MagApiStbObject(SDK::Plugin* plugin):
 
 MagApiStbObject::~MagApiStbObject()
 {
-
+    STUB();
 }
 
 
@@ -99,12 +99,13 @@ QString MagApiStbObject::getStorageInfo()
 void MagApiStbObject::resetObjects(SDK::WebPage *page)
 {
     QHash<QString, QObject*>& api = getApi();
-    api.clear();
 
     MagProfile* profile = dynamic_cast<MagProfile*>(SDK::ProfileManager::instance()->getActiveProfile());
 
-    api.insert("screen", new StbScreen(profile));
+    cleanApi();
+    api.insert("screen", QPointer<QObject>(new StbScreen(profile)));
 
+    // TODO: Move to smart pointer
     GStb* stb = new GStb(profile, page);
     api.insert("stb", stb);
     api.insert("gSTB", stb);
@@ -168,7 +169,7 @@ SDK::PluginObjectResult MagApiStbObject::init()
     webServerHost = "http://127.0.0.1";
     webServerPort = SDK::Core::instance()->settings()->value("web-server/port", 9999).toInt();
 
-    QList<SDK::StbSubmodel> &submodels = getSubmodels();
+    QList<SDK::StbSubmodel>& submodels = getSubmodels();
 
     setSubmodelDatasourceField("RDIR", "STB Model");
 
