@@ -110,7 +110,6 @@ void MagProfile::start()
         WARN() << "MagProfile::start() : browser not found!";
         return;
     }
-    StbEvent* event = static_cast<StbEvent*>(m_profile_plugin->getStbApiList().find("stbEvent").value());
     SDK::MediaPlayer* player = m_profile_plugin->player();
     Q_ASSERT(player != NULL);
     if(player)
@@ -118,11 +117,13 @@ void MagProfile::start()
         connect(player, &SDK::MediaPlayer::paused,               this, [=](bool)
         {
             DEBUG() << "[MEDIA]: paused";
+            StbEvent* event = static_cast<StbEvent*>(m_profile_plugin->getApi().value("stbEvent"));
             event->sendEvent(StbEvent::STB_EVENT_NO_ERROR);
         });
         connect(player, &SDK::MediaPlayer::started,              this, [=]()
         {
             DEBUG() << "[MEDIA]: started";
+            StbEvent* event = static_cast<StbEvent*>(m_profile_plugin->getApi().value("stbEvent"));
             event->sendEvent(StbEvent::STB_EVENT_PLAY_START);
         });
 
@@ -166,6 +167,8 @@ void MagProfile::start()
         connect(player, &SDK::MediaPlayer::statusChanged,              this, [=](SDK::MediaStatus status)
         {
             DEBUG() << "[MEDIA]: status changed:" << status;
+            StbEvent* event = static_cast<StbEvent*>(m_profile_plugin->getApi().value("stbEvent"));
+            Q_ASSERT(event);
             switch(status)
             {
                 case SDK::MediaInfoReceived: {
