@@ -103,6 +103,8 @@ void MagApiStbObject::resetObjects(SDK::WebPage *page)
     cleanApi();
     api.insert("screen", QPointer<QObject>(new StbScreen(profile.data())));
 
+    Q_ASSERT(page);
+
     // TODO: Move to smart pointer
     GStb* stb = new GStb(profile.data(), page);
     api.insert("stb", stb);

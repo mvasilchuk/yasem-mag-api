@@ -6,11 +6,13 @@
 
 using namespace yasem;
 
-StbEvent::StbEvent(MagProfile *profile, SDK::WebPage* page)
+StbEvent::StbEvent(MagProfile *profile, SDK::WebPage* page):\
+    m_profile(profile),
+    m_event_code(STB_EVENT_NO_ERROR),
+    m_page(page)
 {
     this->setObjectName("StbEvent");
-    this->m_page = page;
-    this->m_profile = profile;
+    Q_ASSERT(page);
 }
 
 /**
@@ -20,7 +22,14 @@ StbEvent::StbEvent(MagProfile *profile, SDK::WebPage* page)
 void StbEvent::sendEvent(int eventCode)
 {
     STUB() << eventCode << ", name:" << getEventName((Events)eventCode);
-    m_page->evalJs(QString("javascript: stbEvent.onEvent(%1)").arg(eventCode));
+    if(m_page)
+    {
+        Q_ASSERT(m_page);
+        m_page->evalJs(QString("javascript: stbEvent.onEvent(%1)").arg(eventCode));
+    }
+    else {
+        FIXME() << "WebPage is missing! This is a bug!";
+    }
 
     this->m_event_code = eventCode;
 }

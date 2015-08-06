@@ -52,7 +52,8 @@ HEADERS +=\
     magapistbobject.h \
     stbstorage.h \
     NetworkThread.h \
-    mag_enums.h
+    mag_enums.h \
+    $${SDK_DIR}/mediaplayer.h
 
 unix:!symbian {
     maemo5 {
