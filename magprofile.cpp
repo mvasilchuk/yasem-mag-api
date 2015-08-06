@@ -1,7 +1,6 @@
 #include "stbpluginobject.h"
 #include "browser.h"
 #include "magprofile.h"
-#include "datasourcepluginobject.h"
 #include "pluginmanager.h"
 #include "profilemanager.h"
 #include "mag_macros.h"
@@ -9,6 +8,7 @@
 #include "stbevent.h"
 #include "mag_enums.h"
 #include "webpage.h"
+#include "datasource.h"
 
 #ifdef CONFIG_QCA
 #include "remotecontrolhandler.h"
@@ -20,7 +20,7 @@ static const QString CONFIG_INTERNAL_PORTAL = "internal_portal";
 
 using namespace yasem;
 
-MagProfile::MagProfile(SDK::StbPluginObject *profilePlugin, const QString &id = "") :
+MagProfile::MagProfile(SDK::StbPluginObject* profilePlugin, const QString &id = "") :
     SDK::Profile(profilePlugin, id)
 #ifdef CONFIG_QCA
     ,m_remote_control_handler(new RemoteControlHandler(this))
@@ -42,7 +42,7 @@ MagProfile::MagProfile(SDK::StbPluginObject *profilePlugin, const QString &id = 
 
 MagProfile::~MagProfile()
 {
-    STUB();
+    STUB() << m_name << m_id;
 }
 
 void MagProfile::loadConfigOptions()
@@ -213,7 +213,6 @@ void MagProfile::start()
 
     QSize portalSize = portalResolutions.value(datasource()->get(DB_TAG_RDIR, "gmode", "1280"));
 
-
     browser->setUserAgent(userAgent);
     browser->stb(m_profile_plugin);
     setPage(browser->getActiveWebPage());
@@ -263,7 +262,7 @@ void MagProfile::initDefaults()
 {
     STUB();
 
-    SDK::DatasourcePluginObject* ds = datasource();
+    SDK::Datasource* ds = datasource();
 
     /*
         STB Model:MAG250

@@ -16,7 +16,7 @@ class StbWebWindow : public QObject
 {
     Q_OBJECT
 public:
-    explicit StbWebWindow(MagProfile *profile, SDK::WebPage* m_page);
+    explicit StbWebWindow(MagProfile *m_profile, SDK::WebPage* m_page);
 
 
 signals:
@@ -27,7 +27,7 @@ public slots:
     QString windowId();
     void messageSend(int windowId, const QString& message, const QString& data);
 protected:
-    MagProfile *profile;
+    MagProfile *m_profile;
     SDK::WebPage* m_page;
 };
 

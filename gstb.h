@@ -13,7 +13,7 @@ namespace SDK {
 class MediaPlayer;
 class WebPage;
 class Browser;
-class DatasourcePluginObject;
+class Datasource;
 }
 
 class GStb : public QObject
@@ -36,7 +36,7 @@ protected:
     QString listLocalFiles(const QString &dir);
     SDK::MediaPlayer* player();
     SDK::Browser* browser();
-    SDK::DatasourcePluginObject* datasource();
+    SDK::Datasource* datasource();
 
     struct SystemSettingsCfg {
         QString url;

@@ -8,7 +8,7 @@ using namespace yasem;
 
 StbWebWindow::StbWebWindow(MagProfile *profile, SDK::WebPage* page)
 {
-    this->profile = profile;
+    this->m_profile = profile;
     this->m_page = page;
 }
 

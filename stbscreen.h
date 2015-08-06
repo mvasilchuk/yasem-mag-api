@@ -11,7 +11,7 @@ class StbScreen : public QObject
 {
     Q_OBJECT
 public:
-    explicit StbScreen(MagProfile *profile);
+    explicit StbScreen(MagProfile *m_profile);
     Q_PROPERTY(int width READ getWidth USER true)
     Q_PROPERTY(int height READ getHeight USER true)
     Q_PROPERTY(int innerWidth READ getWidth USER true)
@@ -28,7 +28,7 @@ protected:
     int getHeight() {return height;}
     int getColorDepth() {return colorDepth;}
 
-     MagProfile* profile;
+     MagProfile* m_profile;
 signals:
 
 };

@@ -43,7 +43,7 @@ public:
     // StbPluginObject interface
 public slots:
     QString getProfileClassId();
-    SDK::Profile *createProfile(const QString &id);
+    SDK::Profile* createProfile(const QString &id);
     void initObject(SDK::WebPage *page);
     QString getIcon(const QSize &size);
     QString getStorageInfo();

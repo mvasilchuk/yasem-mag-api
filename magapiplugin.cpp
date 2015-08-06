@@ -11,7 +11,7 @@ MagApiPlugin::MagApiPlugin(QObject* parent):
 
 MagApiPlugin::~MagApiPlugin()
 {
-
+    STUB();
 }
 
 void yasem::MagApiPlugin::register_dependencies()

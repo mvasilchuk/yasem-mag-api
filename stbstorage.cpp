@@ -1,6 +1,6 @@
 #include "stbstorage.h"
 #include "webpage.h"
-#include "datasourcepluginobject.h"
+#include "datasource.h"
 
 using namespace yasem;
 
@@ -11,24 +11,24 @@ StbStorage::StbStorage(MagProfile *profile, SDK::WebPage* page)
     //qDebug() << "logger: " << parent->getLogger();
     this->setObjectName("gSTB");
 
-    this->profile = profile;
+    this->m_profile = profile;
     this->m_page = page;
 }
 
 void StbStorage::setItem(const QString &name, const QString &value)
 {
     STUB() << name << value;
-    profile->datasource()->set(STB_STORAGE_GROUP, name, value);
+    m_profile->datasource()->set(STB_STORAGE_GROUP, name, value);
 }
 
 void StbStorage::removeItem(const QString &name)
 {
     STUB() << name;
-    profile->datasource()->set(STB_STORAGE_GROUP, name, "");
+    m_profile->datasource()->set(STB_STORAGE_GROUP, name, "");
 }
 
 QString StbStorage::getItem(const QString &name)
 {
     STUB() << name;
-    return profile->datasource()->get(STB_STORAGE_GROUP, name);
+    return m_profile->datasource()->get(STB_STORAGE_GROUP, name);
 }

@@ -17,7 +17,7 @@ class StbDownloadManager : public QObject
 {
     Q_OBJECT
 public:
-    explicit StbDownloadManager(MagProfile *profile, SDK::WebPage* page);
+    explicit StbDownloadManager(MagProfile *m_profile, SDK::WebPage* page);
 
 signals:
 
@@ -36,7 +36,7 @@ public slots:
 
     QString GetQueueInfo();
 protected:
-    MagProfile *profile;
+    MagProfile *m_profile;
     SDK::WebPage* m_page;
 };
 

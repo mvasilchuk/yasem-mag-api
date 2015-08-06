@@ -15,7 +15,7 @@ class StbUpdate : public QObject
 {
     Q_OBJECT
 public:
-    explicit StbUpdate(MagProfile *profile, SDK::WebPage* page);
+    explicit StbUpdate(MagProfile *m_profile, SDK::WebPage* page);
 
     enum UpdateStatus {
         UNDEFINED = -1,
@@ -61,7 +61,7 @@ public slots:
     QString getImageDescStr();
     QString getImageVersionStr();
 protected:
-    MagProfile* profile;
+    MagProfile* m_profile;
     SDK::WebPage* m_page;
 
 };

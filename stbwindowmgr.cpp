@@ -2,28 +2,28 @@
 #include "stbwindowmgr.h"
 #include "pluginmanager.h"
 #include "browser.h"
-#include "datasourcepluginobject.h"
 #include "stbpluginobject.h"
 #include "mag_macros.h"
 #include "magprofile.h"
 #include "profilemanager.h"
 #include "webpage.h"
+#include "datasource.h"
 
 using namespace yasem;
 
 StbWindowMgr::StbWindowMgr(MagProfile *profile, SDK::WebPage* page)
 {
-    this->profile = profile;
+    this->m_profile = profile;
     this->m_page = page;
 
-    SDK::DatasourcePluginObject* datasource = profile->datasource();
+    SDK::Datasource* datasource = profile->datasource();
     localPortalUrl = datasource->get(SDK::DB_TAG_PROFILE, CONFIG_INNER_PORTAL_URL, "");
     //gui = dynamic_cast<GuiPlugin*>(PluginManager::instance()->getByRole("gui"));
 }
 
 void StbWindowMgr::openWebFavorites(const QString &url, const QString &params = "")
 {
-    Q_ASSERT(profile->getProfilePlugin()->browser());
+    Q_ASSERT(m_profile->getProfilePlugin()->browser());
     openNewWindow(url, params, "WebFavorites");
 }
 
@@ -34,20 +34,20 @@ void StbWindowMgr::openWebFavorites(const QString &url, int params)
 
 void StbWindowMgr::openDownloadManager(const QString &url)
 {
-    Q_ASSERT(profile->getProfilePlugin()->browser());
+    Q_ASSERT(m_profile->getProfilePlugin()->browser());
     openNewWindow(url, "", "DownloadManager");
 }
 
 QString StbWindowMgr::transformInnerPortalPathToLocal(QString innerPortalPath)
 {
     STUB();
-    bool isInternalPortal = static_cast<MagProfile*>(SDK::ProfileManager::instance()->getActiveProfile())->isInternalPortal();
+    bool isInternalPortal = qSharedPointerCast<MagProfile>(SDK::ProfileManager::instance()->getActiveProfile())->isInternalPortal();
     QString result;
 
     if(innerPortalPath.startsWith("/home/web/"))
     {
         if(isInternalPortal)
-            result = innerPortalPath.replace("/home/web/", profile->getProfilePlugin()->browser()->browserRootDir()) ;
+            result = innerPortalPath.replace("/home/web/", m_profile->getProfilePlugin()->browser()->browserRootDir()) ;
         else
             result = innerPortalPath.replace("/home/web/", "file://" + localPortalUrl) ;
     }

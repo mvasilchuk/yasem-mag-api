@@ -10,7 +10,7 @@ StbEvent::StbEvent(MagProfile *profile, SDK::WebPage* page)
 {
     this->setObjectName("StbEvent");
     this->m_page = page;
-    this->profile = profile;
+    this->m_profile = profile;
 }
 
 /**
@@ -22,7 +22,7 @@ void StbEvent::sendEvent(int eventCode)
     STUB() << eventCode << ", name:" << getEventName((Events)eventCode);
     m_page->evalJs(QString("javascript: stbEvent.onEvent(%1)").arg(eventCode));
 
-    this->eventCode = eventCode;
+    this->m_event_code = eventCode;
 }
 
 /**
@@ -163,7 +163,7 @@ void StbEvent::onWindowActivated()
 
 int StbEvent::getEventCode()
 {
-    return eventCode;
+    return m_event_code;
 }
 
 QString StbEvent::getEventName(StbEvent::Events event)

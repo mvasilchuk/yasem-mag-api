@@ -36,14 +36,12 @@ MagApiStbObject::~MagApiStbObject()
     STUB();
 }
 
-
-
 QString yasem::MagApiStbObject::getProfileClassId()
 {
     return "mag";
 }
 
-SDK::Profile *yasem::MagApiStbObject::createProfile(const QString &id)
+SDK::Profile* yasem::MagApiStbObject::createProfile(const QString &id)
 {
     return new MagProfile(this, id);
 }
@@ -100,24 +98,24 @@ void MagApiStbObject::resetObjects(SDK::WebPage *page)
 {
     QHash<QString, QObject*>& api = getApi();
 
-    MagProfile* profile = dynamic_cast<MagProfile*>(SDK::ProfileManager::instance()->getActiveProfile());
+    const QSharedPointer<MagProfile>& profile = qSharedPointerCast<MagProfile>(SDK::ProfileManager::instance()->getActiveProfile());
 
     cleanApi();
-    api.insert("screen", QPointer<QObject>(new StbScreen(profile)));
+    api.insert("screen", QPointer<QObject>(new StbScreen(profile.data())));
 
     // TODO: Move to smart pointer
-    GStb* stb = new GStb(profile, page);
+    GStb* stb = new GStb(profile.data(), page);
     api.insert("stb", stb);
     api.insert("gSTB", stb);
-    api.insert("stbDownloadManager", new StbDownloadManager(profile, page));
-    api.insert("stbWindowMgr", new StbWindowMgr(profile, page));
-    api.insert("pvrManager", new PvrManager(profile, page));
-    api.insert("stbUpdate", new StbUpdate(profile, page));
-    api.insert("stbWebWindow", new StbWebWindow(profile, page));
-    api.insert("timeShift", new TimeShift(profile, page));
-    api.insert("netscape", new Netscape(profile));
-    api.insert("stbEvent", new StbEvent(profile, page));
-    api.insert("stbStorage", new StbStorage(profile, page));
+    api.insert("stbDownloadManager", new StbDownloadManager(profile.data(), page));
+    api.insert("stbWindowMgr", new StbWindowMgr(profile.data(), page));
+    api.insert("pvrManager", new PvrManager(profile.data(), page));
+    api.insert("stbUpdate", new StbUpdate(profile.data(), page));
+    api.insert("stbWebWindow", new StbWebWindow(profile.data(), page));
+    api.insert("timeShift", new TimeShift(profile.data(), page));
+    api.insert("netscape", new Netscape(profile.data()));
+    api.insert("stbEvent", new StbEvent(profile.data(), page));
+    api.insert("stbStorage", new StbStorage(profile.data(), page));
 
     /*
     connect(mediaPlayer, &QtAV::AVPlayer::paused,               &this->mediaSignalSender, &MediaSignalSender::paused);
@@ -158,9 +156,6 @@ QUrl MagApiStbObject::handleUrl(QUrl &url)
 SDK::PluginObjectResult MagApiStbObject::init()
 {
     StbPluginObject::init();// It's reqired to register profile class id
-
-    player(SDK::__get_plugin<SDK::MediaPlayer*>(SDK::ROLE_MEDIA));
-    browser(SDK::__get_plugin<SDK::Browser*>(SDK::ROLE_BROWSER));
 
     QFile res(QString(":/mag/fixes/fontfix.js"));
     res.open(QIODevice::ReadOnly|QIODevice::Text);

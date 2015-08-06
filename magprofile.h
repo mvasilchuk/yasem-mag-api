@@ -17,7 +17,7 @@ class MagProfile : public QObject, public SDK::Profile
 {
     Q_OBJECT
 public:
-    explicit MagProfile(SDK::StbPluginObject *profilePlugin, const QString &id);
+    explicit MagProfile(SDK::StbPluginObject* profilePlugin, const QString &id);
     virtual ~MagProfile();
 
 signals:

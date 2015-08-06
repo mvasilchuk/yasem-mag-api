@@ -1,6 +1,6 @@
 #include "gstb.h"
 #include "stbpluginobject.h"
-#include "datasourceplugin.h"
+#include "datasourcefactory.h"
 #include "browser.h"
 #include "mediaplayer.h"
 #include "gui.h"
@@ -8,7 +8,6 @@
 #include "mag_enums.h"
 #include "mag_macros.h"
 #include "core.h"
-#include "datasourcepluginobject.h"
 #include "magprofile.h"
 #include "stbevent.h"
 #include "mediaplayer.h"
@@ -18,6 +17,7 @@
 #include "samba.h"
 #include "sambanode.h"
 #include "webpage.h"
+#include "datasource.h"
 
 #ifdef CONFIG_QCA
 #include "remotecontrolhandler.h"
@@ -84,17 +84,17 @@ QString GStb::listLocalFiles(const QString &dir)
     return result;
 }
 
-SDK::MediaPlayer *GStb::player()
+SDK::MediaPlayer* GStb::player()
 {
     return profile()->getProfilePlugin()->player();
 }
 
-SDK::Browser *GStb::browser()
+SDK::Browser* GStb::browser()
 {
     return profile()->getProfilePlugin()->browser();
 }
 
-SDK::DatasourcePluginObject *GStb::datasource()
+SDK::Datasource* GStb::datasource()
 {
     return profile()->datasource();
 }
@@ -724,7 +724,7 @@ QString GStb::GetStorageInfo(const QString &param)
     STUB() << param;
 
     QJsonObject result;
-    QString info = ((MagApiStbObject*)profile()->getProfilePlugin())->getStorageInfo();
+    QString info = static_cast<MagApiStbObject*>(profile()->getProfilePlugin())->getStorageInfo();
     QJsonArray storages( QJsonDocument::fromJson(info.toUtf8()).array());
 
     result.insert("result", storages);
@@ -1163,7 +1163,7 @@ QString GStb::RDir(const QString &name)
     }
     if(name == "get_storage_info")
     {
-        return ((MagApiStbObject*)profile()->getProfilePlugin())->getStorageInfo();
+        return static_cast<MagApiStbObject*>(profile()->getProfilePlugin())->getStorageInfo();
     }
     if(name.startsWith("ResolveIP"))
     {
@@ -1213,7 +1213,7 @@ QString GStb::RDir(const QString &name)
     }
     else if(name == "get_hdd_info")
     {
-        result = ((MagApiStbObject*)profile()->getProfilePlugin())->getStorageInfo();
+        result = static_cast<MagApiStbObject*>(profile()->getProfilePlugin())->getStorageInfo();
     }
     else if(name.startsWith("mount"))
     {

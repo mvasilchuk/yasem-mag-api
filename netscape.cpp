@@ -6,7 +6,7 @@ using namespace yasem;
 Netscape::Netscape(MagProfile *profile):
     m_security(new Security())
 {
-    this->profile = profile;
+    this->m_profile = profile;
 }
 
 Netscape::~Netscape()

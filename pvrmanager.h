@@ -15,8 +15,8 @@ class PvrManager : public QObject
 {
     Q_OBJECT
 public:
-    explicit PvrManager(MagProfile *profile, SDK::WebPage* page);
-    MagProfile *profile;
+    explicit PvrManager(MagProfile *m_profile, SDK::WebPage* page);
+    MagProfile *m_profile;
     QString GetTaskByID(const QString &id);
 signals:
 

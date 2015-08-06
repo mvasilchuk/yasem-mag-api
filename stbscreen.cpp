@@ -1,13 +1,13 @@
 #include "stbscreen.h"
 #include "magprofile.h"
 #include "mag_enums.h"
-#include "datasourcepluginobject.h"
+#include "datasource.h"
 
 using namespace yasem;
 
 StbScreen::StbScreen(MagProfile *profile)
 {
-    SDK::DatasourcePluginObject* ds = profile->datasource();
+    SDK::Datasource* ds = profile->datasource();
 
     QString gmode = ds->get(DB_TAG_RDIR, "gmode", "1280");
 
@@ -29,6 +29,6 @@ StbScreen::StbScreen(MagProfile *profile)
 
     colorDepth = 32;
 
-    this->profile = profile;
+    this->m_profile = profile;
 }
 

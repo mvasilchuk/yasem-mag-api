@@ -43,9 +43,9 @@ public:
 
 protected:
     Security* m_security;
-    MagProfile *profile;
+    MagProfile *m_profile;
 public:
-    explicit Netscape(MagProfile *profile);
+    explicit Netscape(MagProfile *m_profile);
     virtual ~Netscape();
     Q_PROPERTY(Security* security READ getSecurity)
 

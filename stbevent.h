@@ -16,7 +16,7 @@ class StbEvent : public QObject
     Q_OBJECT
     Q_ENUMS(Events)
 public:
-    explicit StbEvent(MagProfile *profile, SDK::WebPage* page);
+    explicit StbEvent(MagProfile *m_profile, SDK::WebPage* page);
 
     Q_PROPERTY(int event READ getEventCode)
 
@@ -96,8 +96,8 @@ signals:
 
 public slots:
 
-    void sendEvent(int eventCode);
-    void onEvent(int eventCode, const QString& data);
+    void sendEvent(int m_event_code);
+    void onEvent(int m_event_code, const QString& data);
     void initEvents();
     void onBroadcastMessage(int windowId, const QString& message, const QString& data);
     void onInternetStateChange(bool status);
@@ -112,9 +112,9 @@ public slots:
     void onWindowActivated();
 
 protected:
-    MagProfile *profile;
+    MagProfile *m_profile;
     int getEventCode();
-    int eventCode;
+    int m_event_code;
     SDK::WebPage* m_page;
 
     QString getEventName(Events event);

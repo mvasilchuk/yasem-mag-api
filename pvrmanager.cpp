@@ -7,7 +7,7 @@ using namespace yasem;
 
 PvrManager::PvrManager(MagProfile *profile, SDK::WebPage* page)
 {
-    this->profile = profile;
+    this->m_profile = profile;
     this->m_page = page;
 }
 

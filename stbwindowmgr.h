@@ -16,7 +16,7 @@ class StbWindowMgr : public QObject
 {
     Q_OBJECT
 public:
-    explicit StbWindowMgr(MagProfile *profile, SDK::WebPage* page);
+    explicit StbWindowMgr(MagProfile *m_profile, SDK::WebPage* page);
 
 signals:
 
@@ -39,7 +39,7 @@ public slots:
     void windowInit(const QString &params);
 protected:
     SDK::GUI* gui;
-    MagProfile *profile;
+    MagProfile *m_profile;
     QString localPortalUrl;
     SDK::WebPage* m_page;
 

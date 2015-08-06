@@ -21,7 +21,7 @@ class StbStorage : public QObject
 {
     Q_OBJECT
 public:
-    explicit StbStorage(MagProfile *profile, SDK::WebPage* page);
+    explicit StbStorage(MagProfile *m_profile, SDK::WebPage* page);
 
 signals:
 
@@ -31,7 +31,7 @@ public slots:
     void setItem(const QString &name, const QString &value);
     QString getItem(const QString &name);
 protected:
-    MagProfile *profile;
+    MagProfile *m_profile;
     SDK::WebPage* m_page;
 };
 
