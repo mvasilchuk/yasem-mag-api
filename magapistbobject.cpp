@@ -74,8 +74,13 @@ QString MagApiStbObject::getStorageInfo()
         // If you want to revert just comment this code
         //*
         obj.insert("vendor", disk->mountPoint + " ");
+#ifndef Q_OS_WIN
         obj.insert("model", QString(""));
         obj.insert("label", disk->vendor + " " + disk->model);
+#else
+        obj.insert("model", QString(""));
+        obj.insert("label", QString(""));
+#endif
         /*/
         obj.insert("vendor", disk->vendor);
         obj.insert("model", disk->model != "" ? disk->model : disk->blockDevice.replace("/dev/", "").append(" "));
