@@ -234,7 +234,7 @@ int GStb::GetAspect()
 {
     STUB();
     CHECK_OR_RETURN(player(), SDK::ASPECT_RATIO_AUTO);
-    SDK::AspectRatio ratio = player()->getAspectRatio();
+    const SDK::AspectRatio ratio = player()->getAspectRatio();
 
     switch(ratio)
     {
@@ -355,21 +355,21 @@ QString GStb::GetDeviceActiveBank()
 
 QString GStb::GetDeviceImageDesc()
 {
-    QString description = profile()->datasource()->get(DB_TAG_RDIR, "ImageDescription");
+    const QString description = profile()->datasource()->get(DB_TAG_RDIR, "ImageDescription");
     LOG() << description;
     return description;
 }
 
 QString GStb::GetDeviceImageVersion()
 {
-    QString version = profile()->datasource()->get(DB_TAG_RDIR, "ImageVersion");
+    const QString version = profile()->datasource()->get(DB_TAG_RDIR, "ImageVersion");
     LOG() << QString("GetDeviceImageVersion(): %1").arg(version);
     return version;
 }
 
 QString GStb::GetDeviceImageVersionCurrent()
 {
-    QString version = profile()->datasource()->get(DB_TAG_RDIR, "DeviceImageVersionCurrent", "0.2.16-250 Tue Apr 9 18:10:19 EEST 2013");
+    const QString version = profile()->datasource()->get(DB_TAG_RDIR, "DeviceImageVersionCurrent", "0.2.16-250 Tue Apr 9 18:10:19 EEST 2013");
     LOG() << QString("GetDeviceImageVersionCurrent(): %1").arg(version);
     return version;
 }
@@ -379,14 +379,14 @@ QString GStb::GetDeviceMacAddress()
     if(!profile()->datasource())
         return "";
 
-    QString mac = profile()->datasource()->get(DB_TAG_RDIR, "MACAddress");
+    const QString mac = profile()->datasource()->get(DB_TAG_RDIR, "MACAddress");
     LOG() << QString("GetDeviceMacAddress(): %1").arg(mac);
     return mac;
 }
 
 QString GStb::GetDeviceModel()
 {
-    QString model = "MAG250";
+    const QString model = "MAG250";
     STUB() << QString("GetDeviceModel(): %1").arg(model);
     return model;
 }
@@ -402,21 +402,21 @@ QString GStb::GetDeviceSerialNumber()
     if(!profile()->datasource())
         return "";
 
-    QString serial = profile()->datasource()->get(DB_TAG_RDIR, "SerialNumber");
+    const QString serial = profile()->datasource()->get(DB_TAG_RDIR, "SerialNumber");
     LOG() << QString("GetDeviceSerialNumber(): %1").arg(serial);
     return serial;
 }
 
 QString GStb::GetDeviceVendor()
 {
-    QString vendor = profile()->datasource()->get(DB_TAG_RDIR, "HardwareVersion", "TeleTec");
+    const QString vendor = profile()->datasource()->get(DB_TAG_RDIR, "HardwareVersion", "TeleTec");
     STUB() << QString("GetDeviceVendor(): %1").arg(vendor);
     return vendor;
 }
 
 QString GStb::GetDeviceVersionHardware()
 {
-    QString device_hardware =  profile()->datasource()->get(DB_TAG_RDIR, "HardwareVersion", "1.7-BD-00");
+    const QString device_hardware =  profile()->datasource()->get(DB_TAG_RDIR, "HardwareVersion", "1.7-BD-00");
     STUB() << QString("GetDeviceVersionHardware(): %1").arg(device_hardware);
     return device_hardware;
 }
@@ -470,7 +470,7 @@ int GStb::GetMediaLen()
 {
     STUB();
     CHECK_OR_RETURN(player(), 0);
-    int len = (int)(player()->getDuration() / 1000);
+    const int len = (int)(player()->getDuration() / 1000);
     DEBUG() << "media length:" << len;
     return len;
 

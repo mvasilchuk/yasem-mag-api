@@ -75,8 +75,10 @@ QString MagApiStbObject::getStorageInfo()
         //*
         obj.insert("vendor", disk->mountPoint + " ");
 #ifndef Q_OS_WIN
-        obj.insert("model", QString(""));
-        obj.insert("label", disk->vendor + " " + disk->model);
+        //obj.insert("model", QString(""));
+        //obj.insert("label", disk->vendor + " " + disk->model);
+        obj.insert("model", "");
+        obj.insert("label", "");
 #else
         obj.insert("model", QString(""));
         obj.insert("label", QString(""));
