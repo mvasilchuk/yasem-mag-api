@@ -86,12 +86,12 @@ QString GStb::listLocalFiles(const QString &dir)
 
 SDK::MediaPlayer* GStb::player()
 {
-    return profile()->getProfilePlugin()->player();
+    return SDK::MediaPlayer::instance();
 }
 
 SDK::Browser* GStb::browser()
 {
-    return profile()->getProfilePlugin()->browser();
+    return SDK::Browser::instance();
 }
 
 SDK::Datasource* GStb::datasource()

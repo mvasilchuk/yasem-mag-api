@@ -104,13 +104,13 @@ void MagProfile::start()
     STUB();
 
 
-    SDK::Browser* browser = m_profile_plugin->browser();
+    SDK::Browser* browser = SDK::Browser::instance();
     if(!browser)
     {
         WARN() << "MagProfile::start() : browser not found!";
         return;
     }
-    SDK::MediaPlayer* player = m_profile_plugin->player();
+    SDK::MediaPlayer* player = SDK::MediaPlayer::instance();
     Q_ASSERT(player != NULL);
     if(player)
     {

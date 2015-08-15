@@ -23,7 +23,6 @@ StbWindowMgr::StbWindowMgr(MagProfile *profile, SDK::WebPage* page)
 
 void StbWindowMgr::openWebFavorites(const QString &url, const QString &params = "")
 {
-    Q_ASSERT(m_profile->getProfilePlugin()->browser());
     openNewWindow(url, params, "WebFavorites");
 }
 
@@ -34,7 +33,6 @@ void StbWindowMgr::openWebFavorites(const QString &url, int params)
 
 void StbWindowMgr::openDownloadManager(const QString &url)
 {
-    Q_ASSERT(m_profile->getProfilePlugin()->browser());
     openNewWindow(url, "", "DownloadManager");
 }
 
@@ -47,7 +45,7 @@ QString StbWindowMgr::transformInnerPortalPathToLocal(QString innerPortalPath)
     if(innerPortalPath.startsWith("/home/web/"))
     {
         if(isInternalPortal)
-            result = innerPortalPath.replace("/home/web/", m_profile->getProfilePlugin()->browser()->browserRootDir()) ;
+            result = innerPortalPath.replace("/home/web/", SDK::Browser::instance()->browserRootDir()) ;
         else
             result = innerPortalPath.replace("/home/web/", "file://" + localPortalUrl) ;
     }
