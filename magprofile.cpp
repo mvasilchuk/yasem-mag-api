@@ -17,6 +17,7 @@
 #include <QDir>
 
 static const QString CONFIG_INTERNAL_PORTAL = "internal_portal";
+static const QRegularExpression DISK_MATCH_REGEX("/{0,2}USB-\\d+-(\\d+)(/)?");
 
 using namespace yasem;
 
@@ -343,6 +344,29 @@ void MagProfile::initDefaults()
 bool MagProfile::isInternalPortal()
 {
     return internalPortal;
+}
+
+QString MagProfile::translateStbPathToLocal(const QString& path)
+{
+    STUB();
+    DEBUG() << "    " << qPrintable(path);
+    QRegularExpressionMatch diskRegexMatch = DISK_MATCH_REGEX.match(path);
+    QList<SDK::StorageInfo*> disks = SDK::Core::instance()->storages();
+
+    if(diskRegexMatch.hasMatch())
+    {
+        int diskIndex = diskRegexMatch.captured(1).toInt() - 1; // Disk index starts from 1
+        QString mountPoint = disks.at(diskIndex)->mountPoint;
+        if(!mountPoint.endsWith("/"))
+            mountPoint = mountPoint.append("/");
+
+        QString newPath = QString(path).replace(DISK_MATCH_REGEX, mountPoint);
+        DEBUG() << "     ->" << newPath;
+        return newPath;
+    }
+
+    DEBUG() << "--- path not changed ---";
+    return path;
 }
 
 

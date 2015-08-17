@@ -180,7 +180,7 @@ void GStb::ExecAction(const QString &str)
             return;
         }
 
-        QString path = translateStbPathToLocal(args.at(1));
+        QString path = MagProfile::translateStbPathToLocal(args.at(1));
         DEBUG() << "Making directory " << path;
         QDir dir(path);
         if(!dir.exists())
@@ -837,20 +837,22 @@ bool GStb::IsFileExist(QString fileName)
 {
     STUB() << fileName;
 
-    //Font fix
+    bool result = false;
+
     //fixme: should be really checked
     if(fileName.startsWith("/usr/lib"))
-    {
-        return true;
-        //fileName = "qrc://" + fileName;
-    }
-    return QFile(fileName).exists();
+        result = true;
+    else
+        result = QFile(MagProfile::translateStbPathToLocal(fileName)).exists();
+
+    DEBUG() << "result" << result;
+    return result;
 }
 
 bool GStb::IsFolderExist(const QString &folderName)
 {
     DEBUG() << "IsFolderExist:" <<  folderName;
-    return QDir(folderName).exists();
+    return QDir(MagProfile::translateStbPathToLocal(folderName)).exists();
 }
 
 bool GStb::IsInternalPortalActive()
@@ -943,7 +945,7 @@ QString GStb::ListDir(const QString &dir)
     // USB-X-Y dir (actually, it should be HDD)
     else
     {
-        QString newPath = translateStbPathToLocal(directoryPath);
+        QString newPath = MagProfile::translateStbPathToLocal(directoryPath);
         if(!newPath.isEmpty())
         {
             return listLocalFiles(newPath);
@@ -962,29 +964,7 @@ QString GStb::ListDir(const QString &dir)
     return QString("var dirs = %1; var files = %2;").arg(QString(QJsonDocument(dirs).toJson(QJsonDocument::Compact))).arg(QString(QJsonDocument(files).toJson(QJsonDocument::Compact)));
 }
 
-QString GStb::translateStbPathToLocal(const QString& path)
-{
-    STUB() << path;
-    QRegularExpression diskRegex("/{0,2}USB-\\d+-(\\d+)(/)?");
-    QRegularExpressionMatch diskRegexMatch = diskRegex.match(path);
-    QList<SDK::StorageInfo*> disks = SDK::Core::instance()->storages();
 
-    QString newPath = path;
-
-    if(diskRegexMatch.hasMatch())
-    {
-        qDebug() << "match disk";
-        int diskIndex = diskRegexMatch.captured(1).toInt() - 1; // Disk index starts from 1
-        QString mountPoint = disks.at(diskIndex)->mountPoint;
-        if(!mountPoint.endsWith("/"))
-            mountPoint = mountPoint.append("/");
-
-        newPath = newPath.replace(diskRegex, mountPoint);
-    }
-
-    qDebug() << "New path is " << newPath;
-    return newPath;
-}
 
 MagProfile *GStb::profile()
 {
@@ -1073,7 +1053,7 @@ void GStb::Play(const QString &playStr, const QString &proxyParams)
     {
         url = url.replace("//", "/");
 
-        url = translateStbPathToLocal(url);
+        url = MagProfile::translateStbPathToLocal(url);
     }
 
     //Transform multicast address
@@ -1833,7 +1813,7 @@ void GStb::StartLocalCfg()
 {
     STUB() << "GStb::StartLocalCfg";
     if(!m_system_settings.url.isEmpty())
-        m_page->openWindow(translateStbPathToLocal(m_system_settings.url), "", "LocalCfg");
+        m_page->openWindow(MagProfile::translateStbPathToLocal(m_system_settings.url), "", "LocalCfg");
 }
 
 void GStb::Step()

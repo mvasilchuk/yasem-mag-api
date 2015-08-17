@@ -41,11 +41,7 @@ protected:
     struct SystemSettingsCfg {
         QString url;
         QString backgroundColor;
-
     } m_system_settings;
-
-
-    QString translateStbPathToLocal(const QString &path);
 
 signals:
 

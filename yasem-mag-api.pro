@@ -32,7 +32,8 @@ SOURCES += \
     stbevent.cpp \
     stbstorage.cpp \
     magapistbobject.cpp \
-    magapiplugin.cpp
+    magapiplugin.cpp \
+    taskinfo.cpp
 
 HEADERS +=\
     magapi_global.h \
@@ -52,7 +53,8 @@ HEADERS +=\
     magapistbobject.h \
     stbstorage.h \
     NetworkThread.h \
-    mag_enums.h
+    mag_enums.h \
+    taskinfo.h
 
 win32: {
 HEADERS += \
