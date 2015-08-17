@@ -40,10 +40,11 @@ public:
     bool isUsingMulticastProxy();
     QString getMulticastProxy();
 
+    static QString translateStbPathToLocal(const QString &path);
+
 #ifdef CONFIG_QCA
 public:
     RemoteControlHandler* getRemoteControl() { return m_remote_control_handler; }
-    static QString translateStbPathToLocal(const QString &path);
 protected:
     RemoteControlHandler* m_remote_control_handler;
 #endif //#ifdef CONFIG_QCA
