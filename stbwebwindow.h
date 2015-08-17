@@ -17,7 +17,7 @@ class StbWebWindow : public QObject
     Q_OBJECT
 public:
     explicit StbWebWindow(MagProfile *m_profile, SDK::WebPage* m_page);
-
+    virtual ~StbWebWindow();
 
 signals:
 

@@ -15,6 +15,11 @@ StbStorage::StbStorage(MagProfile *profile, SDK::WebPage* page)
     this->m_page = page;
 }
 
+StbStorage::~StbStorage()
+{
+    STUB();
+}
+
 void StbStorage::setItem(const QString &name, const QString &value)
 {
     STUB() << name << value;

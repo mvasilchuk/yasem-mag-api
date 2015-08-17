@@ -2,6 +2,7 @@
 #include "magprofile.h"
 #include "mag_enums.h"
 #include "datasource.h"
+#include "macros.h"
 
 using namespace yasem;
 
@@ -30,5 +31,10 @@ StbScreen::StbScreen(MagProfile *profile)
     colorDepth = 32;
 
     this->m_profile = profile;
+}
+
+StbScreen::~StbScreen()
+{
+    STUB();
 }
 

@@ -46,6 +46,11 @@ GStb::GStb(MagProfile *profile, SDK::WebPage* page):
     this->setObjectName("gSTB");
 }
 
+GStb::~GStb()
+{
+    STUB();
+}
+
 QString GStb::listLocalFiles(const QString &dir)
 {
     QDir* directory = new QDir(dir);

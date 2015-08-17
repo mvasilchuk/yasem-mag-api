@@ -105,26 +105,25 @@ void MagApiStbObject::resetObjects(SDK::WebPage *page)
 {
     QHash<QString, QObject*>& api = getApi();
 
-    const QSharedPointer<MagProfile>& profile = qSharedPointerCast<MagProfile>(SDK::ProfileManager::instance()->getActiveProfile());
+    MagProfile* profile = static_cast<MagProfile*>(SDK::ProfileManager::instance()->getActiveProfile());
 
-    cleanApi();
-    api.insert("screen", QPointer<QObject>(new StbScreen(profile.data())));
+    api.insert("screen", new StbScreen(profile));
 
     Q_ASSERT(page);
 
     // TODO: Move to smart pointer
-    GStb* stb = new GStb(profile.data(), page);
-    api.insert("stb", stb);
+    GStb* stb = new GStb(profile, page);
+    //api.insert("stb", stb);
     api.insert("gSTB", stb);
-    api.insert("stbDownloadManager", new StbDownloadManager(profile.data(), page));
-    api.insert("stbWindowMgr", new StbWindowMgr(profile.data(), page));
-    api.insert("pvrManager", new PvrManager(profile.data(), page));
-    api.insert("stbUpdate", new StbUpdate(profile.data(), page));
-    api.insert("stbWebWindow", new StbWebWindow(profile.data(), page));
-    api.insert("timeShift", new TimeShift(profile.data(), page));
-    api.insert("netscape", new Netscape(profile.data()));
-    api.insert("stbEvent", new StbEvent(profile.data(), page));
-    api.insert("stbStorage", new StbStorage(profile.data(), page));
+    api.insert("stbDownloadManager", new StbDownloadManager(profile, page));
+    api.insert("stbWindowMgr", new StbWindowMgr(profile, page));
+    api.insert("pvrManager", new PvrManager(profile, page));
+    api.insert("stbUpdate", new StbUpdate(profile, page));
+    api.insert("stbWebWindow", new StbWebWindow(profile, page));
+    api.insert("timeShift", new TimeShift(profile, page));
+    api.insert("netscape", new Netscape(profile));
+    api.insert("stbEvent", new StbEvent(profile, page));
+    api.insert("stbStorage", new StbStorage(profile, page));
 
     /*
     connect(mediaPlayer, &QtAV::AVPlayer::paused,               &this->mediaSignalSender, &MediaSignalSender::paused);

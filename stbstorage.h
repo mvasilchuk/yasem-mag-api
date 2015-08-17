@@ -22,6 +22,7 @@ class StbStorage : public QObject
     Q_OBJECT
 public:
     explicit StbStorage(MagProfile *m_profile, SDK::WebPage* page);
+    virtual ~StbStorage();
 
 signals:
 

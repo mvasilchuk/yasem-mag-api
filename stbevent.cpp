@@ -15,6 +15,11 @@ StbEvent::StbEvent(MagProfile *profile, SDK::WebPage* page):\
     Q_ASSERT(page);
 }
 
+StbEvent::~StbEvent()
+{
+    STUB();
+}
+
 /**
  * @brief StbEvent::sendEvent
  * @param eventCode @see Events

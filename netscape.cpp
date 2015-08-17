@@ -11,6 +11,7 @@ Netscape::Netscape(MagProfile *profile):
 
 Netscape::~Netscape()
 {
+    STUB();
     delete m_security;
 }
 

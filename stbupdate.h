@@ -16,6 +16,7 @@ class StbUpdate : public QObject
     Q_OBJECT
 public:
     explicit StbUpdate(MagProfile *m_profile, SDK::WebPage* page);
+    virtual ~StbUpdate();
 
     enum UpdateStatus {
         UNDEFINED = -1,

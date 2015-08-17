@@ -17,6 +17,7 @@ class StbEvent : public QObject
     Q_ENUMS(Events)
 public:
     explicit StbEvent(MagProfile *m_profile, SDK::WebPage* page);
+    virtual ~StbEvent();
 
     Q_PROPERTY(int event READ getEventCode)
 

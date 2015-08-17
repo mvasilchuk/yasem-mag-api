@@ -21,6 +21,11 @@ StbWindowMgr::StbWindowMgr(MagProfile *profile, SDK::WebPage* page)
     //gui = dynamic_cast<GuiPlugin*>(PluginManager::instance()->getByRole("gui"));
 }
 
+StbWindowMgr::~StbWindowMgr()
+{
+    STUB();
+}
+
 void StbWindowMgr::openWebFavorites(const QString &url, const QString &params = "")
 {
     openNewWindow(url, params, "WebFavorites");
@@ -39,7 +44,7 @@ void StbWindowMgr::openDownloadManager(const QString &url)
 QString StbWindowMgr::transformInnerPortalPathToLocal(QString innerPortalPath)
 {
     STUB();
-    bool isInternalPortal = qSharedPointerCast<MagProfile>(SDK::ProfileManager::instance()->getActiveProfile())->isInternalPortal();
+    bool isInternalPortal = static_cast<MagProfile*>(SDK::ProfileManager::instance()->getActiveProfile())->isInternalPortal();
     QString result;
 
     if(innerPortalPath.startsWith("/home/web/"))

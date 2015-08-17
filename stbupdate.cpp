@@ -11,6 +11,11 @@ StbUpdate::StbUpdate(MagProfile *profile, SDK::WebPage* page)
     this->m_page = page;
 }
 
+StbUpdate::~StbUpdate()
+{
+    STUB();
+}
+
 int StbUpdate::GetFlashBankCount()
 {
     STUB();

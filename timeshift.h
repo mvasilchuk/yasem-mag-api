@@ -17,6 +17,7 @@ class TimeShift : public QObject
     Q_OBJECT
 public:
     TimeShift(MagProfile *profile, SDK::WebPage* page);
+    virtual ~TimeShift();
 signals:
 
 public slots:

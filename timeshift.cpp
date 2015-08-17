@@ -16,6 +16,11 @@ TimeShift::TimeShift(MagProfile *profile, SDK::WebPage* page):
 
 }
 
+TimeShift::~TimeShift()
+{
+    STUB();
+}
+
 /**
  * @brief TimeShift::SetSlidingMode
  * @param enable
@@ -80,6 +85,7 @@ void TimeShift::EnterTimeShift()
  */
 void TimeShift::ExitTimeShift()
 {
+    STUB();
     m_entered_timeshift = false;
 }
 
@@ -92,6 +98,7 @@ void TimeShift::ExitTimeShift()
  */
 void TimeShift::ExitTimeShiftAndSave(const QString &path, const QString &name)
 {
+    STUB();
     m_entered_timeshift = false;
 }
 
@@ -106,5 +113,6 @@ void TimeShift::ExitTimeShiftAndSave(const QString &path, const QString &name)
  */
 void TimeShift::ExitTimeShiftAndSaveDuration(const QString &path, const QString &name, qint64 duration)
 {
+    STUB();
     m_entered_timeshift = false;
 }

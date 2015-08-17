@@ -12,6 +12,8 @@ class StbScreen : public QObject
     Q_OBJECT
 public:
     explicit StbScreen(MagProfile *m_profile);
+    virtual ~StbScreen();
+
     Q_PROPERTY(int width READ getWidth USER true)
     Q_PROPERTY(int height READ getHeight USER true)
     Q_PROPERTY(int innerWidth READ getWidth USER true)

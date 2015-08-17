@@ -22,6 +22,7 @@ class GStb : public QObject
 
 public:
     explicit GStb(MagProfile *profile, SDK::WebPage* page);
+    virtual ~GStb();
 
 
 protected:

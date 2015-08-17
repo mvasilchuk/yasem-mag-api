@@ -12,6 +12,11 @@ StbWebWindow::StbWebWindow(MagProfile *profile, SDK::WebPage* page)
     this->m_page = page;
 }
 
+StbWebWindow::~StbWebWindow()
+{
+    STUB();
+}
+
 void StbWebWindow::close()
 {
     STUB();

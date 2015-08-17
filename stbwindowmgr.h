@@ -17,7 +17,7 @@ class StbWindowMgr : public QObject
     Q_OBJECT
 public:
     explicit StbWindowMgr(MagProfile *m_profile, SDK::WebPage* page);
-
+    virtual ~StbWindowMgr();
 signals:
 
 public slots:
