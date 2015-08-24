@@ -17,6 +17,7 @@
 #include "mediaplayer.h"
 #include "gui.h"
 #include "browser.h"
+#include "webpage.h"
 
 #include <QFile>
 #include <QFileInfoList>
@@ -150,10 +151,15 @@ QUrl MagApiStbObject::handleUrl(QUrl &url)
 {
     QString urlString = url.toString();
 
-    if(urlString.startsWith("http://home/web"))
+    if(urlString.startsWith("file:///home/web/"))
+    {
+        QString url = SDK::ProfileManager::instance()->getActiveProfile()->page()->getRootDir();
+        urlString.replace("file:///home/web", url);
+    }
+    else if(urlString.startsWith("http://home/web"))
         urlString.replace(QString("http://home/web"), QString("%1:%2").arg(webServerHost).arg(webServerPort));
-    else if(urlString.startsWith("file:///home/web"))
-        urlString.replace(QString("file:///home/web"), QString("%1:%2").arg(webServerHost).arg(webServerPort));
+    //else if(urlString.startsWith("file:///home/web"))
+    //    urlString.replace(QString("file:///home/web"), QString("%1:%2").arg(webServerHost).arg(webServerPort));
     else if(urlString.startsWith("/home/web"))
         urlString.replace(QString("/home/web"), QString("%1:%2").arg(webServerHost).arg(webServerPort));
 
@@ -170,7 +176,7 @@ SDK::PluginObjectResult MagApiStbObject::init()
     fontFix = res.readAll();
 
     webServerHost = "http://127.0.0.1";
-    webServerPort = SDK::Core::instance()->settings()->value("web-server/port", 9999).toInt();
+    webServerPort = SDK::Core::instance()->settings()->value("web-server/port", 19999).toInt();
 
     QList<SDK::StbSubmodel>& submodels = getSubmodels();
 

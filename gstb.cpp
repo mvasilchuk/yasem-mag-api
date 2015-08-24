@@ -1103,6 +1103,7 @@ void GStb::PlaySolution(const QString &solution, const QString &url)
 
 QString GStb::RDir(const QString &name)
 {
+    STUB() << name;
     Q_ASSERT(profile()->datasource());
 
     if(name == "SerialNumber")
