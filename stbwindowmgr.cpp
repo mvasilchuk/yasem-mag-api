@@ -9,15 +9,17 @@
 #include "webpage.h"
 #include "datasource.h"
 
+#include <QTimer>
+
 using namespace yasem;
 
-StbWindowMgr::StbWindowMgr(MagProfile *profile, SDK::WebPage* page)
+StbWindowMgr::StbWindowMgr(MagProfile *profile, SDK::WebPage* page):
+    m_profile(profile),
+    m_page(page),
+    m_wild_page(NULL)
 {
-    this->m_profile = profile;
-    this->m_page = page;
-
     SDK::Datasource* datasource = profile->datasource();
-    localPortalUrl = datasource->get(SDK::DB_TAG_PROFILE, CONFIG_INNER_PORTAL_URL, "");
+    m_inner_portal_url = datasource->get(SDK::DB_TAG_PROFILE, CONFIG_INNER_PORTAL_URL, "");
     //gui = dynamic_cast<GuiPlugin*>(PluginManager::instance()->getByRole("gui"));
 }
 
@@ -47,6 +49,11 @@ void StbWindowMgr::addBrowserBookmark()
 void StbWindowMgr::closeWebWindow()
 {
     STUB();
+    if(m_wild_page)
+    {
+        m_wild_page->close();
+        delete m_wild_page;
+    }
 }
 
 /**
@@ -74,7 +81,9 @@ bool StbWindowMgr::closeWindow(int windowId)
 QString StbWindowMgr::getCurrentTitle() const
 {
     STUB();
-    return page()->getTitle();
+    if(m_wild_page)
+        return m_wild_page->getTitle();
+    return "";
 }
 
 /**
@@ -89,7 +98,9 @@ QString StbWindowMgr::getCurrentTitle() const
 QString StbWindowMgr::getCurrWebUrl() const
 {
     STUB();
-    return page()->getURL().toString();
+    if(m_wild_page)
+        return m_wild_page->getURL().toString();
+    return "";
 }
 
 /**
@@ -132,6 +143,21 @@ void StbWindowMgr::hideWindow(int windowId)
 void StbWindowMgr::initWebWindow(const QString &url)
 {
     STUB() << url;
+    if(m_wild_page)
+        delete m_wild_page;
+
+    m_wild_page = static_cast<SDK::WebPage*>(SDK::Browser::instance()->createNewPage(true, false));
+    dynamic_cast<QObject*>(m_wild_page)->setObjectName("Wild Web Window");
+    m_wild_page->load(url);
+
+    // Set background after timeout. If do it immediately a white box will appear for a second, which is not good.
+    QTimer* timer = new QTimer();
+    timer->setSingleShot(true);
+    connect(timer, &QTimer::timeout, [=]() {
+        m_wild_page->setStyleSheet("background: white");
+        delete timer;
+    });
+    timer->start(1000);
 }
 
 /**
@@ -186,7 +212,7 @@ bool StbWindowMgr::IsWebVkWindowExist() const
 bool StbWindowMgr::IsWebWindowExist() const
 {
     STUB();
-    return false;
+    return m_wild_page != NULL;
 }
 
 /**
@@ -200,6 +226,8 @@ bool StbWindowMgr::IsWebWindowExist() const
 void StbWindowMgr::LoadUrl(const QString &url)
 {
     STUB() << url;
+    if(m_wild_page)
+        m_wild_page->load(url);
 }
 
 /**
@@ -256,6 +284,16 @@ void StbWindowMgr::openWebCfgPortal(const QString& windowAttributes)
 int StbWindowMgr::openWebFace(const QString &url)
 {
     STUB() << url;
+
+    QString new_url(url);
+    if(url.startsWith("/home/web/"))
+    {
+        new_url = QUrl::fromPercentEncoding(url.toUtf8());
+
+        new_url = new_url.replace("/home/web/", QString("file://").append(m_inner_portal_url));
+    }
+    DEBUG() << new_url;
+    m_page->openWindow(new_url, "", "Web Face");
     return 0;
 }
 
@@ -316,6 +354,11 @@ void StbWindowMgr::raiseWebFaceWindow()
 void StbWindowMgr::raiseWebWindow()
 {
     STUB();
+    if(m_wild_page)
+    {
+        m_wild_page->show();
+        m_wild_page->raise();
+    }
 }
 
 /**
@@ -332,6 +375,13 @@ void StbWindowMgr::raiseWebWindow()
 void StbWindowMgr::resizeWebWindow(int x, int y, int width, int height)
 {
     STUB() << x << y << width << height;
+    if(m_wild_page)
+    {
+        m_wild_page->move(x, y);
+        m_wild_page->resize(width, height);
+    }
+    else
+        WARN() << __FUNCTION__ << "Wild web window not found!";
 }
 
 /**
@@ -386,6 +436,11 @@ void StbWindowMgr::SetFocusedInputText(const QString &text)
 void StbWindowMgr::SetVirtualKeyboardCoord(const QString &hint, int xPos, int yPos)
 {
     STUB() << hint << xPos << yPos;
+}
+
+void StbWindowMgr::SetVirtualKeyboardCoord()
+{
+    STUB();
 }
 
 /**
@@ -617,7 +672,7 @@ QString StbWindowMgr::transformInnerPortalPathToLocal(QString innerPortalPath)
         if(isInternalPortal)
             result = innerPortalPath.replace("/home/web/", SDK::Browser::instance()->browserRootDir()) ;
         else
-            result = innerPortalPath.replace("/home/web/", "file://" + localPortalUrl) ;
+            result = innerPortalPath.replace("/home/web/", "file://" + m_inner_portal_url) ;
     }
     else result = innerPortalPath;
 

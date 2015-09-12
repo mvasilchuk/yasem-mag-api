@@ -95,6 +95,7 @@ public slots:
     void setBookmarkImplUrl(const QString &url);
     void SetFocusedInputText(const QString& text);
     void SetVirtualKeyboardCoord (const QString& hint,int  xPos, int yPos);
+    void SetVirtualKeyboardCoord ();
     void setVirtualKeyboardInitAttr(const QString &windowAttributes);
     void setVirtualMouseMode(bool mode);
     void setWebFaceInitAttr(const QString &windowAttributes);
@@ -114,8 +115,9 @@ public slots:
 protected:
     SDK::GUI* gui;
     MagProfile *m_profile;
-    QString localPortalUrl;
+    QString m_inner_portal_url;
     SDK::WebPage* m_page;
+    SDK::WebPage* m_wild_page;
 
     SDK::WebPage* page() const;
 

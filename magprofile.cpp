@@ -30,6 +30,7 @@ MagProfile::MagProfile(SDK::StbPluginObject* profilePlugin, const QString &id = 
     Q_ASSERT(profilePlugin);
 
     userAgents.insert("MAG250", "Mozilla/5.0 (QtEmbedded; U; Linux; C) AppleWebKit/533.3 (KHTML, like Gecko) MAG200 stbapp ver: 2 rev: 234 Safari/533.3");
+    userAgents.insert("AuraHD", "Mozilla/5.0 (QtEmbedded; U; Linux; C) AppleWebKit/533.3 (KHTML, like Gecko) MAG200 stbapp ver: 2 rev: 234 Safari/533.3");
 
     portalResolutions.insert("720", QSize(720, 576));
     portalResolutions.insert("1280", QSize(1280, 720));
@@ -63,6 +64,8 @@ void MagProfile::loadConfigOptions()
     models.insert("MAG275", "MAG 275");
     models.insert("AuraHD", "AuraHD");
     main_group.m_options.append(SDK::ConfigOption(SDK::DB_TAG_PROFILE, "Model",         tr("STB Model"),          "MAG250",       "options", "", models));
+
+    main_group.m_options.append(SDK::ConfigOption(SDK::DB_TAG_PROFILE,  CONFIG_INNER_PORTAL_URL,   tr("Internal portal directory"),     "",  "string"));
 
     QHash<QString, QString> gmodes;
     gmodes.insert("720", "720x576");
@@ -169,7 +172,11 @@ void MagProfile::start()
         {
             DEBUG() << "[MEDIA]: status changed:" << status;
             StbEvent* event = static_cast<StbEvent*>(m_profile_plugin->getApi().value("stbEvent"));
-            Q_ASSERT(event);
+            if(!event)
+            {
+                WARN() << __FUNCTION__ << "event is NULL";
+                return;
+            }
             switch(status)
             {
                 case SDK::MediaInfoReceived: {
