@@ -111,7 +111,7 @@ QString PvrManager::CreateTask(const QString &url, const QString &fileName, cons
         }
     }
 
-    TaskInfo* task = new TaskInfo(++m_last_task_index, url, fileName, start_time, end_time, this);
+    TaskInfo* task = new TaskInfo(m_profile, ++m_last_task_index, url, fileName, start_time, end_time, this);
 
     connect(task, &TaskInfo::errorHappened, this, &PvrManager::onTaskError);
 
@@ -246,7 +246,7 @@ void PvrManager::loadTasks()
     const QJsonArray arr = QJsonDocument::fromJson(str.toUtf8()).array();
     for(size_t index = 0; index< arr.size(); index++)
     {
-        TaskInfo* task = TaskInfo::fromJson(arr.at(index).toObject(), this);
+        TaskInfo* task = TaskInfo::fromJson(m_profile, arr.at(index).toObject(), this);
         if(task)
         {
             m_tasks.insert(QString::number(task->m_id), task);

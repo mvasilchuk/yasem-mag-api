@@ -7,10 +7,11 @@
 
 using namespace yasem;
 
-TaskInfo::TaskInfo(int id, const QString &url, const QString &fileName,
+TaskInfo::TaskInfo(MagProfile* profile, int id, const QString &url, const QString &fileName,
                    const QDateTime &startTime, const QDateTime &endTime,
                    QObject* parent):
     QObject(parent),
+    m_profile(profile),
     m_id(id),
     m_url(url),
     m_file_name(fileName),
@@ -51,7 +52,7 @@ QJsonObject TaskInfo::toJson() const
     return result;
 }
 
-TaskInfo *TaskInfo::fromJson(const QJsonObject& json, QObject* parent)
+TaskInfo *TaskInfo::fromJson(MagProfile* profile, const QJsonObject& json, QObject* parent)
 {
     STUB() << json;
     if(json.contains("id")
@@ -62,7 +63,8 @@ TaskInfo *TaskInfo::fromJson(const QJsonObject& json, QObject* parent)
             && json.contains("startTime")
             && json.contains("endTime"))
     {
-        TaskInfo* task = new TaskInfo(json.value("id").toInt(),
+        TaskInfo* task = new TaskInfo(profile,
+                                      json.value("id").toInt(),
                                       json.value("url").toString(),
                                       json.value("fileName").toString(),
                                       QDateTime::fromMSecsSinceEpoch(json.value("startTime").toVariant().toLongLong()),
@@ -127,7 +129,7 @@ TaskInfo::ErrorCode TaskInfo::startRecord()
     m_state = STATE_RECORDING;
     scheduleStop();
 
-    const QString real_file_name = MagProfile::translateStbPathToLocal(m_file_name);
+    const QString real_file_name = m_profile->translateStbPathToLocal(m_file_name);
     DEBUG() << "Writing video to" << real_file_name;
 
     m_file = new QFile(real_file_name, this);

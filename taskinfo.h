@@ -11,11 +11,13 @@
 
 namespace yasem {
 
+class MagProfile;
+
 class TaskInfo: public QObject
 {
     Q_OBJECT
 public:
-    TaskInfo(int id, const QString& url, const QString& fileName, const QDateTime& startTime, const QDateTime& endTime, QObject* parent);
+    TaskInfo(MagProfile* profile, int id, const QString& url, const QString& fileName, const QDateTime& startTime, const QDateTime& endTime, QObject* parent);
     virtual ~TaskInfo();
 
     enum ErrorCode {
@@ -94,6 +96,8 @@ public:
         STATE_COMPLETED = 4
     };
 
+    MagProfile* m_profile;
+
     int m_id;               /// unique task identifier
     QString m_url;          /// recorded stream address
     QString m_file_name;    /// requested recording file name
@@ -107,7 +111,7 @@ public:
     TaskInfo::ErrorCode scheduleStart();
     TaskInfo::ErrorCode scheduleStop();
 
-    static TaskInfo* fromJson(const QJsonObject& json, QObject* parent);
+    static TaskInfo* fromJson(MagProfile* profile, const QJsonObject& json, QObject* parent);
 
 public slots:
     ErrorCode startRecord();

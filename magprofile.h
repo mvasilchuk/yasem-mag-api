@@ -40,7 +40,7 @@ public:
     bool isUsingMulticastProxy();
     QString getMulticastProxy();
 
-    static QString translateStbPathToLocal(const QString &path);
+    QString translateStbPathToLocal(const QString &path, bool append_scheme = true);
 
 #ifdef CONFIG_QCA
 public:

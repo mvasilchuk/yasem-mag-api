@@ -53,6 +53,7 @@ GStb::~GStb()
 
 QString GStb::listLocalFiles(const QString &dir)
 {
+    STUB() << dir;
     QDir* directory = new QDir(dir);
     QJsonArray files;
     QJsonArray dirs;
@@ -84,8 +85,10 @@ QString GStb::listLocalFiles(const QString &dir)
     dirs.append(QString(""));
     files.append(QJsonValue::fromVariant(QJsonDocument(QJsonObject()).toVariant()));
 
-    QString result =  QString("var dirs = %1; var files = %2;").arg(QString(QJsonDocument(dirs).toJson(QJsonDocument::Compact))).arg(QString(QJsonDocument(files).toJson(QJsonDocument::Compact)));
-    //DEBUG(result);
+    QString result =  QString("var dirs = %1; var files = %2;")
+            .arg(QString(QJsonDocument(dirs).toJson(QJsonDocument::Compact)))
+            .arg(QString(QJsonDocument(files).toJson(QJsonDocument::Compact)));
+    DEBUG() << qPrintable(result);
     return result;
 }
 
@@ -185,7 +188,7 @@ void GStb::ExecAction(const QString &str)
             return;
         }
 
-        QString path = MagProfile::translateStbPathToLocal(args.at(1));
+        QString path = profile()->translateStbPathToLocal(args.at(1));
         DEBUG() << "Making directory " << path;
         QDir dir(path);
         if(!dir.exists())
@@ -848,7 +851,7 @@ bool GStb::IsFileExist(QString fileName)
     if(fileName.startsWith("/usr/lib"))
         result = true;
     else
-        result = QFile(MagProfile::translateStbPathToLocal(fileName)).exists();
+        result = QFile(profile()->translateStbPathToLocal(fileName)).exists();
 
     DEBUG() << "result" << result;
     return result;
@@ -857,7 +860,7 @@ bool GStb::IsFileExist(QString fileName)
 bool GStb::IsFolderExist(const QString &folderName)
 {
     DEBUG() << "IsFolderExist:" <<  folderName;
-    return QDir(MagProfile::translateStbPathToLocal(folderName)).exists();
+    return QDir(profile()->translateStbPathToLocal(folderName)).exists();
 }
 
 bool GStb::IsInternalPortalActive()
@@ -888,7 +891,8 @@ bool GStb::IsVirtualKeyboardActiveEx()
 
 /**
  * @brief GStb::ListDir
- * @param dir Directory to get files and folders from
+ * @param dir route to the directory the contents whereof must be received
+ * @param lastModified flag is the last modification time is necessary
  *
  * Method should return string like:
  * @example var dir = ["dir1/","dir2/",""]; var files = [{"name": filename, "size": filesize}, {}];
@@ -906,9 +910,21 @@ bool GStb::IsVirtualKeyboardActiveEx()
  * as it returned by RDir("get_storage_info").
  *
  * \see @RDir
+ *
+ * FIXME: Stalker portal usually uses the result of this method in eval method, i.e.:
+ *
+ * <code>
+ * eval(gSTB.ListDir(path));
+ * console.log(dirs);
+ * console.log(files);
+ * </code>
+ *
+ * But this code won't work in JS strict mode (error: SCRIPT1041: Invalid usage of 'eval' in strict mode),
+ * and I don't know how to fix it.
+ *
  * @return
  */
-QString GStb::ListDir(const QString &dir)
+QString GStb::ListDir(const QString &dir, bool lastModified)
 {
     //TODO: Add UPnP, LAN & Favourites support
 
@@ -950,7 +966,7 @@ QString GStb::ListDir(const QString &dir)
     // USB-X-Y dir (actually, it should be HDD)
     else
     {
-        QString newPath = MagProfile::translateStbPathToLocal(directoryPath);
+        QString newPath = profile()->translateStbPathToLocal(directoryPath, false);
         if(!newPath.isEmpty())
         {
             return listLocalFiles(newPath);
@@ -1058,7 +1074,7 @@ void GStb::Play(const QString &playStr, const QString &proxyParams)
     {
         url = url.replace("//", "/");
 
-        url = MagProfile::translateStbPathToLocal(url);
+        url = profile()->translateStbPathToLocal(url);
     }
 
     //Transform multicast address
@@ -1819,7 +1835,10 @@ void GStb::StartLocalCfg()
 {
     STUB() << "GStb::StartLocalCfg";
     if(!m_system_settings.url.isEmpty())
-        m_page->openWindow(MagProfile::translateStbPathToLocal(m_system_settings.url), "", "LocalCfg");
+    {
+        m_page->openWindow(m_profile->translateStbPathToLocal(m_system_settings.url), "", "LocalCfg");
+    }
+
 }
 
 void GStb::Step()

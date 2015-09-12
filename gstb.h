@@ -132,7 +132,7 @@ public slots:
     bool IsPlaying();
     bool IsVirtualKeyboardActive();
     bool IsVirtualKeyboardActiveEx();
-    QString ListDir(const QString &dir);
+    QString ListDir(const QString &dir, bool lastModified = false);
     void LoadCASIniFile(const QString &iniFileName);
     void LoadExternalSubtitles(const QString &url);
     void LoadURL(const QString &str);

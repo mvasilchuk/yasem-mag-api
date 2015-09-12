@@ -200,15 +200,6 @@ void MagProfile::start()
         });
     }
 
-    //QString defaultUrl = "http://dmichael.org.ua/mag250";
-    //QString defaultUrl = "http://tvportal1.global.net.ba";
-    //QString defaultUrl = "http://stalker.local/stalker_portal/c/";
-    //QString defaultUrl = "http://192.168.0.71:8087/portal-dev/";
-    //QString defaultUrl = "http://tv.ipnet.ua/mag200/";
-    //QString defaultUrl = "http://iptv.bluepointtv.com";
-    //QString defaultUrl = datasource()->get("profile", "portal", "http://tv.tenet.ua/iptv/all22");
-    //QString urlString = "file:///home/max/www/test.html";
-
     internalPortal = get(CONFIG_INTERNAL_PORTAL, "").toLower() == "true";
 
     QString submodel = get("Model", "MAG250");
@@ -353,9 +344,9 @@ bool MagProfile::isInternalPortal()
     return internalPortal;
 }
 
-QString MagProfile::translateStbPathToLocal(const QString& path)
+QString MagProfile::translateStbPathToLocal(const QString& path, bool append_scheme)
 {
-    STUB();
+    STUB() << append_scheme;
     DEBUG() << "    " << qPrintable(path);
     QRegularExpressionMatch diskRegexMatch = DISK_MATCH_REGEX.match(path);
     QList<SDK::StorageInfo*> disks = SDK::Core::instance()->storages();
@@ -371,6 +362,31 @@ QString MagProfile::translateStbPathToLocal(const QString& path)
         DEBUG() << "     ->" << newPath;
         return newPath;
     }
+    else if(path.startsWith("/home/web"))
+    {
+        QString portal_url = datasource()->get(SDK::DB_TAG_PROFILE, CONFIG_INNER_PORTAL_URL, "");
+        if(portal_url.isEmpty())
+            portal_url = portal();
+
+        QUrl url = QUrl(portal_url);
+
+        DEBUG() << "     base portal address:" << portal_url << url;
+
+        QString newPath = QString(path);
+
+        QUrl::FormattingOptions options = QUrl::RemoveQuery | QUrl::RemoveFilename;
+        if(!append_scheme)
+            options |= QUrl::RemoveScheme;
+
+        if(newPath.startsWith("/home/web/"))
+            newPath = newPath.replace("/home/web/",
+                            url.toString(options)
+                        );
+
+        DEBUG() << "     ->" << newPath;
+        return newPath;
+    }
+
 
     DEBUG() << "--- path not changed ---";
     return path;
