@@ -124,12 +124,6 @@ void MagProfile::start()
             StbEvent* event = static_cast<StbEvent*>(m_profile_plugin->getApi().value("stbEvent"));
             event->sendEvent(StbEvent::STB_EVENT_NO_ERROR);
         });
-        connect(player, &SDK::MediaPlayer::started,              this, [=]()
-        {
-            DEBUG() << "[MEDIA]: started";
-            StbEvent* event = static_cast<StbEvent*>(m_profile_plugin->getApi().value("stbEvent"));
-            event->sendEvent(StbEvent::STB_EVENT_PLAY_START);
-        });
 
         connect(player, &SDK::MediaPlayer::speedChanged,         this, [=](qreal speed)
         {
@@ -171,6 +165,8 @@ void MagProfile::start()
         connect(player, &SDK::MediaPlayer::statusChanged,              this, [=](SDK::MediaStatus status)
         {
             DEBUG() << "[MEDIA]: status changed:" << status;
+            if(player->state() == SDK::StoppedState) return;
+
             StbEvent* event = static_cast<StbEvent*>(m_profile_plugin->getApi().value("stbEvent"));
             if(!event)
             {
@@ -179,6 +175,10 @@ void MagProfile::start()
             }
             switch(status)
             {
+                case SDK::LoadedMedia: {
+                    event->sendEvent(StbEvent::STB_EVENT_PLAY_START);
+                    break;
+                }
                 case SDK::MediaInfoReceived: {
                     event->sendEvent(StbEvent::STB_EVENT_GOT_INFO);
                     break;
@@ -187,7 +187,10 @@ void MagProfile::start()
                     event->sendEvent(StbEvent::STB_EVENT_GOT_VIDEO_INFO);
                     break;
                 }
-                case SDK::MediaStatus::NoMedia:
+                case SDK::MediaStatus::NoMedia: {
+                    //event->sendEvent(StbEvent::STB_EVENT_PLAY_ERROR);
+                    break;
+                }
                 case SDK::MediaStatus::EndOfMedia: {
                     event->sendEvent(StbEvent::STB_EVENT_EOF);
                     break;
@@ -217,7 +220,7 @@ void MagProfile::start()
 
     browser->setUserAgent(userAgent);
     browser->stb(m_profile_plugin);
-    setPage(browser->getActiveWebPage());
+    setPage(browser->getMainWebPage());
     page()->setPageViewportSize(portalSize);
 
     QString video_res = datasource()->get(DB_TAG_RDIR, "vmode", "720p");
@@ -258,6 +261,7 @@ void MagProfile::stop()
 #ifdef CONFIG_QCA
     getRemoteControl()->stop();
 #endif
+    disconnect();
 }
 
 void MagProfile::initDefaults()

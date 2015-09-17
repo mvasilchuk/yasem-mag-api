@@ -130,6 +130,10 @@ QString StbWindowMgr::GetFocusedInputInfo() const
 void StbWindowMgr::hideWindow(int windowId)
 {
     STUB() << windowId;
+    QHash<int, SDK::WebPage*> pages = SDK::Browser::instance()->pages();
+    if(pages.contains(windowId))
+        pages.value(windowId)->hide();
+
 }
 
 /**
@@ -146,7 +150,7 @@ void StbWindowMgr::initWebWindow(const QString &url)
     if(m_wild_page)
         delete m_wild_page;
 
-    m_wild_page = static_cast<SDK::WebPage*>(SDK::Browser::instance()->createNewPage(true, false));
+    m_wild_page = static_cast<SDK::WebPage*>(SDK::Browser::instance()->createNewPage(-1, false));
     dynamic_cast<QObject*>(m_wild_page)->setObjectName("Wild Web Window");
     m_wild_page->load(url);
 
@@ -564,7 +568,14 @@ bool StbWindowMgr::windowAttr(int windowId, const QString &windowAttributes)
 bool StbWindowMgr::windowClose(int windowId)
 {
     STUB() << windowId;
-    return true;
+    QHash<int, SDK::WebPage*> pages = SDK::Browser::instance()->pages();
+    if(pages.contains(windowId))
+    {
+        pages.value(windowId)->close();
+        return true;
+    }
+    else
+        return false;
 }
 
 /**
@@ -580,7 +591,14 @@ bool StbWindowMgr::windowClose(int windowId)
 bool StbWindowMgr::windowHide(int windowId)
 {
     STUB() << windowId;
-    return true;
+    QHash<int, SDK::WebPage*> pages = SDK::Browser::instance()->pages();
+    if(pages.contains(windowId))
+    {
+        pages.value(windowId)->hide();
+        return true;
+    }
+    else
+        return false;
 }
 
 /**
@@ -622,7 +640,14 @@ int StbWindowMgr::windowInit(const QString &windowAttributes)
 QString StbWindowMgr::windowList() const
 {
     STUB();
-    return WindowList().toString();
+    WindowList list;
+
+    for(const int id: SDK::Browser::instance()->pages().keys())
+    {
+        list.m_ids.append(id);
+    }
+
+    return list.toString();
 }
 
 /**
@@ -640,7 +665,14 @@ false	failed to execute
 bool StbWindowMgr::windowLoad(int windowId, const QString &url)
 {
     STUB() << windowId << url;
-    return true;
+    QHash<int, SDK::WebPage*> pages = SDK::Browser::instance()->pages();
+    if(pages.contains(windowId))
+    {
+        pages.value(windowId)->load(QUrl(url));
+        return true;
+    }
+    else
+        return false;
 }
 
 /**
@@ -656,10 +688,15 @@ false	failed to execute
 bool StbWindowMgr::windowShow(int windowId)
 {
     STUB() << windowId;
-    return true;
+    QHash<int, SDK::WebPage*> pages = SDK::Browser::instance()->pages();
+    if(pages.contains(windowId))
+    {
+        pages.value(windowId)->show();
+        return true;
+    }
+    else
+        return false;
 }
-
-
 
 QString StbWindowMgr::transformInnerPortalPathToLocal(QString innerPortalPath)
 {

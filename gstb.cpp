@@ -287,7 +287,7 @@ QString GStb::GetAudioPIDs()
         obj.insert("lang", names);
         resultArray.append(obj);
     }
-    QString res = QJsonDocument(resultArray).toJson();
+    QString res = QJsonDocument(resultArray).toJson(QJsonDocument::Compact);
     return res;
 }
 
@@ -1685,14 +1685,13 @@ void GStb::SetTeletextPID(unsigned int val)
 void GStb::SetTopWin(int winNum)
 {
     STUB() << "GStb::SetTopWin" << winNum;
-    CHECK_PLAYER_VOID
     if(winNum == WINDOW_BROWSER)
     {
-        browser()->setTopWidget(SDK::Browser::TOP_WIDGET_BROWSER);
+        SDK::GUI::instance()->setTopWidget(SDK::GUI::TOP_WIDGET_BROWSER);
     }
     else
     {
-        browser()->setTopWidget(SDK::Browser::TOP_WIDGET_PLAYER);
+        SDK::GUI::instance()->setTopWidget(SDK::GUI::TOP_WIDGET_PLAYER);
     }
 }
 
@@ -2185,8 +2184,8 @@ QString GStb::GetStatistics()
 int GStb::GetTopWin()
 {
     STUB();
-    SDK::Browser::TopWidget top = browser()->getTopWidget();
-    if(top == SDK::Browser::TOP_WIDGET_BROWSER)
+    SDK::GUI::TopWidget top = SDK::GUI::instance()->getTopWidget();
+    if(top == SDK::GUI::TOP_WIDGET_BROWSER)
         return 0;
     else
         return 1;

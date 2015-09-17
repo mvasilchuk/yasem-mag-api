@@ -54,43 +54,43 @@ public:
         /**
          * Found new teletext subtitles in stream.
          * */
-        STB_TELETEXT_FOUND = 9,
+        STB_EVENT_TELETEXT_FOUND = 9,
         /**
          * HDMI device has been connected.
          * */
-        HDMI_DEVICE_CONNECTED = 32,
+        STB_EVENT_HDMI_DEVICE_CONNECTED = 32,
         /**
          * HDMI device has been disconnected.
          * */
-        HDMI_DEVICE_DISCONNECTED = 33,
+        STB_EVENT_HDMI_DEVICE_DISCONNECTED = 33,
         /**
          * Recording task has been finished successfully. See Appendix 13. JavaScript API for PVR subsystem.
          * */
-        RECORDING_INISHED_SUCCESSFULLY = 34,
+        STB_EVENT_RECORDING_INISHED_SUCCESSFULLY = 34,
         /**
          * Recording task has been finished with error. See Appendix 13. JavaScript API for PVR subsystem.
          * */
-        RECORDING_FINISHED_WITH_ERROR = 35,
+        STB_EVENT_RECORDING_FINISHED_WITH_ERROR = 35,
         /**
          * Scanning DVB Channel in progress.
          * */
-        SCANNING_DVB_IN_PROGRESS = 40,
+        STB_EVENT_DVB_SCAN_PROGRESS = 40,
         /**
          * Scanning DVB Channel found.
          * */
-        DVB_CHANNEL_FOUND = 41,
+        STB_EVENT_DVB_SCAN_FOUND = 41,
         /**
          * DVB Channel EPG update.
          * */
-        DVB_CHANNEL_EPG_UPDATE = 42,
+        STB_EVENT_DVB_EPG_UPDATE = 42,
         /**
          * DVB antenna power off.
          * */
-        DVB_ANTENNA_POWER_OFF = 43,
+        STB_EVENT_DVB_ANTENNA_POWER_OFF = 43,
         /**
          * When playing RTP-stream the numbering of RTP-packets was broken.
          * */
-        RTP_PACKETS_BROKEN = 129
+        STB_EVENT_RTP_PACKETS_BROKEN = 129
     };
 
 signals:
