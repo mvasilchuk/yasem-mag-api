@@ -18,6 +18,7 @@
 #include "sambanode.h"
 #include "webpage.h"
 #include "datasource.h"
+#include "utils.h"
 
 #ifdef CONFIG_QCA
 #include "remotecontrolhandler.h"
@@ -1014,9 +1015,34 @@ void GStb::LoadURL(const QString &str)
  */
 QString GStb::LoadUserData(const QString &str)
 {
-    QString data = profile()->datasource()->get(DB_TAG_USER, str);
-    DEBUG() << str << data;
-    return data;
+    STUB() << str;
+    QString result;
+    SDK::Datasource* ds = profile()->datasource();
+
+    DEBUG() << "Loading as JSON...";
+    const QString group_name = QString("%1-%2").arg(DB_TAG_USER).arg(str);
+
+    ds->beginGroup(group_name);
+
+    QJsonObject json;
+    QStringList keys = ds->allKeys();
+    for(const QString& key: keys)
+    {
+        DEBUG() << key << ds->value(key);
+        json.insert(key, QJsonValue::fromVariant(ds->value(key)));
+    }
+
+    ds->endGroup();
+
+    if(json.isEmpty())
+        result = "";
+    else
+        result = QJsonDocument(json).toJson(QJsonDocument::Compact);
+
+
+    DEBUG() << "value:" << result;
+
+    return result;
 }
 
 void GStb::Pause()
@@ -1053,8 +1079,14 @@ void GStb::Play(const QString &playStr, const QString &proxyParams)
         urlString = urlString.replace("extTimeShift ", "");
     }
 
-    QRegularExpression urlRegex("^((?<proto>auto|rtp|rtsp_ac3|rtsp|rtpac3|rtpmpeg4_aac|ptpmpeg4|mpegts|mpegps|file|mp4_mpa|mp4|fm|ffmpeg|ffrt4|ffrt3|ffrt2|ffrt)\\s+)?\
-(?<url>.*?)$");
+    QRegularExpression urlRegex(
+        "^((?<proto>auto|rtp|rtsp_ac3|rtsp|rtpac3|rtpmpeg4_aac|ptpmpeg4|mpegts|mpegps|file|mp4_mpa|mp4|fm|ffmpeg|ffrt4|ffrt3|ffrt2|ffrt)\\s+)?"
+        "(?<url>.*?)"
+        "(\\sposition:(?<position>(\\d+|undefined)))?"
+        "(\\satrack:(?<atrack>\\d+))?"
+        "(\\svtrack:(?<vtrack>\\d+))?"
+        "(\\sstrack:(?<strack>\\d+))?"
+        "(\\ssubURL:(?<subURL>.*?))?$");
     QRegularExpressionMatch urlMatch = urlRegex.match(urlString);
 
 
@@ -1067,8 +1099,15 @@ void GStb::Play(const QString &playStr, const QString &proxyParams)
     QString protocol = !urlMatch.captured("proto").isEmpty() ? urlMatch.captured("proto"): "auto";
     QString url = urlMatch.captured("url");
 
-    qDebug() << "matched proto:" << protocol << ", url:" << url;
-
+    PRINT_DATA_HEADER("Media URL data");
+    DEBUG() << "    -> url:     "   << url;
+    DEBUG() << "    -> protocol:"   << protocol;
+    DEBUG() << "    -> position:"   << urlMatch.captured("position");
+    DEBUG() << "    -> atrack:  "   << urlMatch.captured("atrack");
+    DEBUG() << "    -> vtrack:  "   << urlMatch.captured("vtrack");
+    DEBUG() << "    -> strack:  "   << urlMatch.captured("strack");
+    DEBUG() << "    -> subURL:  "   << urlMatch.captured("subURL");
+    PRINT_DATA_FOOTER;
 
     if(url.startsWith("//"))
     {
@@ -1259,7 +1298,28 @@ void GStb::Rotate(qint16 angle)
 void GStb::SaveUserData(const QString &fileName, const QString &data)
 {
     DEBUG() << "SaveUserData:" << fileName << data;
-    datasource()->set(DB_TAG_USER, fileName, data);
+
+    DEBUG() << "Trying to parse JSON data...";
+    QJsonObject json = QJsonDocument::fromJson(data.toUtf8()).object();
+    if(json.isEmpty())
+    {
+        DEBUG() << "Not a JSON string";
+        datasource()->set(DB_TAG_USER, fileName, data);
+    }
+    else
+    {
+        DEBUG() << "Saving JSON data. Item count: " << json.keys().count();
+        const QString group_name = QString("%1-%2").arg(DB_TAG_USER).arg(fileName);
+        for(const QString key: json.keys())
+        {
+            const QString name = QString("%1/%2").arg(group_name).arg(key);
+            QJsonValue val = json.value(key);
+            datasource()->setValue(name, val.toVariant());
+        }
+    }
+
+    DEBUG() << "Type:" << QVariant::typeToName(45);
+
 }
 
 void GStb::SendEventToPortal(const QString &args)

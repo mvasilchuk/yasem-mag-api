@@ -121,6 +121,7 @@ protected:
 
     SDK::WebPage* page() const;
 
+    Q_DECL_DEPRECATED
     QString transformInnerPortalPathToLocal(QString innerPortalPath);
     QString openNewWindow(const QString &url, const QString &params, const QString &name);
 

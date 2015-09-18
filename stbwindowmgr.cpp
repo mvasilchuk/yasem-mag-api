@@ -172,6 +172,7 @@ void StbWindowMgr::initWebWindow(const QString &url)
 void StbWindowMgr::InitWebWindow()
 {
     STUB();
+    m_wild_page = static_cast<SDK::WebPage*>(SDK::Browser::instance()->createNewPage(-1, false));
 }
 
 /**
@@ -289,16 +290,13 @@ int StbWindowMgr::openWebFace(const QString &url)
 {
     STUB() << url;
 
-    QString new_url(url);
-    if(url.startsWith("/home/web/"))
-    {
-        new_url = QUrl::fromPercentEncoding(url.toUtf8());
+    SDK::Browser* browser = SDK::Browser::instance();
+    browser->setWindowOpenRequested(true);
+    int page_id = browser->nextPageId();
 
-        new_url = new_url.replace("/home/web/", QString("file://").append(m_inner_portal_url));
-    }
-    DEBUG() << new_url;
-    m_page->openWindow(new_url, "", "Web Face");
-    return 0;
+    m_page->openWindow(m_profile->translateStbPathToLocal(url), "", QString::number(page_id));
+
+    return page_id;
 }
 
 /**

@@ -251,7 +251,7 @@ public slots:
     void SetSyslogLevel(int level);
 
     void ConfigNetRc(const QString &deviceName, const QString &password);
-    void SetNetRcStatus(bool enable);
+    void SetNetRcStatus(bool enable = true);
 };
 
 }
