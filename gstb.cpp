@@ -2320,3 +2320,33 @@ void GStb::SetNetRcStatus(bool enable)
 #endif //CONFIG_QCA
 }
 
+/**
+ * @brief GStb::GetUID
+ * This method should return device_id, device_id2 and signature for MAG 250.
+ * However, I have no idea how should this method work.
+ * So for now it's required to enter this values manually.
+ * According to some information I know this method should create HMAC based on input values,
+ * but I don't know what algorithm it should use (it's possible it's SHA-1).
+ *
+ * @param arg1
+ * @param arg2
+ *
+ * TODO: Make GStb::GetUID() return correct values.
+ *
+ * @return device_id, device_id2 or signature
+ */
+QString GStb::GetUID(const QString &arg1 = "", const QString &arg2 = "")
+{
+    if(arg1.isEmpty())
+    {
+        return datasource()->get(DB_TAG_RDIR, "device_id");
+    }
+    else
+    {
+        if(arg2.isEmpty())
+            return datasource()->get(DB_TAG_RDIR, "signature");
+        else
+            return datasource()->get(DB_TAG_RDIR, "device_id2");
+    }
+}
+

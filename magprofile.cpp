@@ -67,6 +67,10 @@ void MagProfile::loadConfigOptions()
 
     main_group.m_options.append(SDK::ConfigOption(SDK::DB_TAG_PROFILE,  CONFIG_INNER_PORTAL_URL,   tr("Internal portal directory"),     "",  "string"));
 
+    main_group.m_options.append(SDK::ConfigOption(DB_TAG_RDIR,  "device_id",    tr("Device ID"),       "",  "string"));
+    main_group.m_options.append(SDK::ConfigOption(DB_TAG_RDIR,  "device_id2",   tr("Device ID 2"),     "",  "string"));
+    main_group.m_options.append(SDK::ConfigOption(DB_TAG_RDIR,  "signature",    tr("Signature"),       "",  "string"));
+
     QHash<QString, QString> gmodes;
     gmodes.insert("720", "720x576");
     gmodes.insert("1280", "1280x720");
