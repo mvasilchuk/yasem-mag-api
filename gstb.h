@@ -253,6 +253,8 @@ public slots:
     void ConfigNetRc(const QString &deviceName, const QString &password);
     void SetNetRcStatus(bool enable = true);
 
+    QString GetUID();
+    QString GetUID(const QString& arg1);
     QString GetUID(const QString& arg1, const QString& arg2);
 };
 

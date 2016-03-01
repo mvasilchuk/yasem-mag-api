@@ -2320,6 +2320,16 @@ void GStb::SetNetRcStatus(bool enable)
 #endif //CONFIG_QCA
 }
 
+QString GStb::GetUID()
+{
+    return datasource()->get(DB_TAG_RDIR, "device_id");
+}
+
+QString GStb::GetUID(const QString &arg1)
+{
+    return datasource()->get(DB_TAG_RDIR, "signature");
+}
+
 /**
  * @brief GStb::GetUID
  * This method should return device_id, device_id2 and signature for MAG 250.
@@ -2335,18 +2345,8 @@ void GStb::SetNetRcStatus(bool enable)
  *
  * @return device_id, device_id2 or signature
  */
-QString GStb::GetUID(const QString &arg1 = "", const QString &arg2 = "")
+QString GStb::GetUID(const QString &arg1, const QString &arg2)
 {
-    if(arg1.isEmpty())
-    {
-        return datasource()->get(DB_TAG_RDIR, "device_id");
-    }
-    else
-    {
-        if(arg2.isEmpty())
-            return datasource()->get(DB_TAG_RDIR, "signature");
-        else
-            return datasource()->get(DB_TAG_RDIR, "device_id2");
-    }
+    return datasource()->get(DB_TAG_RDIR, "device_id2");
 }
 
